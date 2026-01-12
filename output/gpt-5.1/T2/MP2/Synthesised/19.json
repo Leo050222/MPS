@@ -1,0 +1,40 @@
+{
+  "timestamp": "2026-01-04T17:55:15.434729+00:00",
+  "model": "gpt-5.1",
+  "type": "T2_MP2_synthesised_Evaluation",
+  "Problem_ID": 19,
+  "math_problem": "Compute all ordered triples $(x, y, z)$ of real numbers satisfying the following system of equations: $$\\begin{aligned} x y+z & =40 \\\\\\\\ x z+y & =51 \\\\\\\\ x+y+z & =19 \\end{aligned}$$ Instead of computing all ordered triples of real numbers satisfying the system of equations, simply find $k = z + \\frac{17}{5}$, where $z$ is the third component in the solution corresponding to the smaller root for $x + 1$ among the roots of the quadratic equation derived from the system. There are 21 competitors with distinct skill levels numbered $1,2, \\ldots, 21$. They participate in a pingpong tournament as follows. First, a random competitor is chosen to be \"active\", while the rest are \"inactive.\" Every round, a random inactive competitor is chosen to play against the current active one. The player with the higher skill will win and become (or remain) active, while the loser will be eliminated from the tournament. The tournament lasts for 20 rounds, after which there will only be one player remaining. Alice is the competitor with skill $k$. What is the expected number of games that she will get to play?",
+  "reasoning_content": "{  \n    \"reasoning\": \"From the system xy+z=40, xz+y=51, x+y+z=19, solve step by step. From the third equation, z=19−x−y. Substitute into the first: xy+19−x−y=40 ⇒ xy−x−y=21. Substitute into the second: x(19−x−y)+y=51 ⇒19x−x^2−xy+y=51 ⇒−x^2+19x−xy+y−51=0. Use xy from the first: xy=x+y+21. Then in the second: −x^2+19x−(x+y+21)+y−51=0 ⇒−x^2+18x−21−51=0 ⇒−x^2+18x−72=0 ⇒x^2−18x+72=0. The roots are x=(18±√(324−288))/2=(18±6)/2, so x=6 or x=12. Then x+1 has roots 7 and 13; the smaller is 7, so take x=6. Find the corresponding z: from xy−x−y=21 with x=6: 6y−6−y=21 ⇒5y−6=21 ⇒5y=27 ⇒y=27/5. Then z=19−x−y=19−6−27/5=13−27/5=(65−27)/5=38/5. Then k=z+17/5=38/5+17/5=55/5=11. So Alice has skill 11 among skills 1..21. Now compute the expected number of games Alice plays in the tournament described. The process: initially one active chosen uniformly; each round, a random inactive chosen, plays active; higher skill survives as active; loser eliminated; repeat until one remains. Alice plays exactly in the rounds in which she is active (either initially or after having won earlier) and is chosen to play some inactive opponent, until she is eliminated or the tournament ends. Because higher skill always wins, Alice can lose only to players with skill>11, i.e. skills 12..21 (10 stronger players). Let N=21. The initial active is uniform among 21. This is equivalent to forming a random permutation of the 21 players, where the first element is the initial active, and then at each step the current active plays the next element in the permutation; the higher-skilled of the two becomes the new active. This process eliminates exactly one player per step and matches the tournament description. In this permutation view, Alice plays a game every time we encounter her in the permutation while she is still alive, i.e. when she is either in the first position or she first meets a stronger player to her left. More simply: when we scan the permutation from left to right, maintain the current maximum skill M among seen players; the active after processing position i is the player with skill M so far. When we move from position i to i+1, a game is played between the player with skill M and the new player at i+1. So Alice plays a game if and only if (i) she appears at some position j, and (ii) at that moment the current active is someone else (predecessor max or successor, depending where she appears), and (iii) she survives as active until possibly beaten later by a stronger player. However, a clean way is to exploit linearity of expectation on each potential opponent. For each other player p, define an indicator that equals 1 if Alice ever plays against p, 0 otherwise. Expected number of games Alice plays equals the sum over all other players of the probability that she plays against that player. Consider players relative to Alice’s skill 11. First, weaker players: skills 1..10 (10 players). When will Alice play a specific weaker player w? In the permutation, consider just Alice (A) and w; also consider any players stronger than Alice (S set: skills 12..21). Alice must meet w before any stronger player eliminates her. In the permutation of all players, A and w play each other if and only if no stronger player lies strictly between them in the permutation; because the moment Alice and w are adjacent in the evolution occurs when the active player before the block is the strongest among all players in the prefix, and if a stronger lies between them it intervenes first. Equivalently, among the subset consisting of A, w, and all stronger players, if we look at the order, A and w meet if there is no stronger player between A and w in that restricted order. This occurs if and only if A and w appear consecutively in the restricted permutation after removing all weaker players than both. Among A, w and the 10 stronger players, there are 12 elements in total (1 weaker w, Alice, and 10 stronger). In the induced random permutation of these 12, the probability that A and w are adjacent with no stronger between them is 2/(12)=1/6, since in a random permutation, for any given pair of distinct elements, the chance they are adjacent is 2/n where n is the number of elements (because we can think of the pair as a block in two internal orders). However, adjacency in this restricted permutation is necessary and sufficient for them to play. Therefore, for each weaker player, P(Alice plays that weaker) = 1/6. There are 10 weaker players, so expected games versus weaker opponents is 10*(1/6)=10/6=5/3. Now consider stronger players: skills 12..21 (10 players). For a specific stronger player s, for Alice to play s, we again consider the induced permutation on A, s and any other stronger players that might intervene. Among A and all 10 stronger players, there are 11 elements (Alice + 10 stronger). Alice plays s if they are consecutive in that restricted order and s is on the side where eventually they meet before any even stronger player intervenes. But because the stronger always wins, whenever Alice meets s (who is stronger), s must be the current active or Alice is active; in either case they will meet as soon as their positions in the restricted permutation become adjacent without any even stronger between them. Thus adjacency in the restricted permutation (A plus the 10 stronger) again characterizes whether they ever play. In a random permutation of these 11 elements, probability that A and s are adjacent is 2/11. Hence for each stronger player, P(Alice plays that stronger)=2/11. With 10 stronger players, expected games versus stronger opponents is 10*(2/11)=20/11. Summing gives expected total games Alice plays: 5/3 + 20/11. Compute: 5/3=55/33, 20/11=60/33, total=115/33. This is already reduced (115 and 33 coprime). Therefore the expected number of games Alice plays is 115/33.\",\n    \"answer\": \"115/33\"\n}",
+  "problem_type": [
+    {
+      "A2252": [
+        "Mathematics -> Algebra -> Algebra -> Algebraic Expressions",
+        "Mathematics -> Algebra -> Algebra -> Equations and Inequalities"
+      ]
+    },
+    {
+      "A2257": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Other",
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "115/33"
+  ],
+  "ground_truth": [
+    {
+      "A2252": "(12,3,4),(6,5.4,7.6)"
+    },
+    {
+      "A2257": "\\frac{47}{42}"
+    }
+  ],
+  "correctness": [
+    false
+  ],
+  "prompt_tokens": 2583,
+  "completion_tokens": 1500,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

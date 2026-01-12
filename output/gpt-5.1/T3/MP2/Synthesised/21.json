@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-01-04T17:56:01.926465+00:00",
+  "model": "gpt-5.1",
+  "type": "T3_MP2_synthesised_Evaluation",
+  "Problem_ID": 21,
+  "math_problem": "Let $a,b,c,d$ be non-negative reals such that $a+b+c+d=4$. Prove the inequality\n\\[\n\\frac{a}{a^3+8}+\\frac{b}{b^3+8}+\\frac{c}{c^3+8}+\\frac{d}{d^3+8}\\le\\frac{4}{9}\n\\] Instead of proving the inequality for the sum of the function values over the non-negative reals summing to 4, simply find $k = p(1) + 1$, where $p(x)$ is the numerator polynomial in the scaled difference between the tangent line approximation to the function $f(t) = t / (t^3 + 8)$ at $t=1$ and the function itself, derived from the analysis of the approximation's validity. Let $x, y, n$ be positive integers with $n > k$. How many ordered triples $(x, y, n)$ of solutions are there to the equation $x^{n}-y^{n}=2^{100}$ ?",
+  "reasoning_content": "{  \n    \"reasoning\": \"We first analyze the function f(t) = t/(t^3+8). Its derivative is f'(t) = (8 - 2t^3) / (t^3+8)^2, so f(1) = 1/9 and f'(1) = 2/27. The tangent line at t=1 is L(t) = f(1) + f'(1)(t-1) = (2t+7)/27. We consider the difference L(t) - f(t) and write it as a single rational function: L(t) - f(t) = [(2t+7)(t^3+8) - 27t] / [27(t^3+8)]. The numerator is p(t) = (2t+7)(t^3+8) - 27t = 2t^4 + 7t^3 - 11t + 56. The problem defines k = p(1) + 1. Evaluating p(1): p(1) = 2(1)^4 + 7(1)^3 - 11(1) + 56 = 2 + 7 - 11 + 56 = 54, so k = 54 + 1 = 55. Now we consider positive integers x, y, n with n > k = 55 satisfying x^n - y^n = 2^100. Factor the left-hand side: x^n - y^n = (x - y)(x^{n-1} + x^{n-2}y + ... + y^{n-1}). Let d = x - y > 0. Then d divides 2^100, so d = 2^a for some integer a with 0 ≤ a ≤ 100. The second factor, S = x^{n-1} + x^{n-2}y + ... + y^{n-1}, is an integer > 0 and S is divisible by n when gcd(x,y) = 1 (but we don't even need full gcd analysis to reach the main bound). Since d and S are positive integers and their product is 2^100, both d and S are powers of 2. Therefore S = 2^{100-a}. Also note that x and y must be even if n is sufficiently large and the difference equals a power of 2; more crucially, we can use bounds on S. Since x > y ≥ 1 and n ≥ 56, we have x ≥ y + 1 ≥ 2 if y ≥ 1 and y can be 1 as well; we must rule out all cases. Observe that for any integers x > y ≥ 1 and n ≥ 2, S = x^{n-1} + x^{n-2}y + ... + y^{n-1} ≥ x^{n-1}. Also x ≥ y+1 ≥ 2 so x ≥ 2. Thus S ≥ 2^{n-1}. With n > 55, we have n ≥ 56, so S ≥ 2^{55}. Since S is a factor of 2^100, S = 2^b for some integer b between 0 and 100. Combine these: 2^b = S ≥ 2^{n-1}. Therefore b ≥ n-1. But b ≤ 100 because S | 2^100, so n-1 ≤ 100, i.e. n ≤ 101. So from this inequality alone we only get n ≤ 101, which does not yet contradict n > 55. We need a sharper lower bound on S. Because x and y are integers with difference d = 2^a, write x = y + 2^a. Consider the case y ≥ 1. Then x ≥ 1 + 2^a ≥ 2^a. For large n, S includes n terms all at least y^{n-1} (if y ≥ 1) but we can more directly bound using x ≥ y+1. A stronger inequality for S is S ≥ n y^{n-1} when x ≥ y, but that is not helpful directly. Instead, note that for fixed x > y ≥ 1, S grows much faster than x - y when n increases, and we must keep S a power of 2 constrained by 2^100. Another clean approach is to exploit parity: if y is odd, then x = y + 2^a is odd+even = odd, so x and y are both odd. Then x^n - y^n is even only if n is odd; but 2^100 is even, so this allows n odd. However, modulo 4, odd powers preserve residue: an odd number raised to an odd power ≡ 1 or 3 mod 4 depending on the base, and the difference of two odd n-th powers can be 0 or ±2 mod 4. We need 2^100 ≡ 0 mod 4, so x^n - y^n ≡ 0 mod 4. For odd x and y, x ≡ y ≡ 1 or 3 mod 4; an explicit check shows that x^n - y^n ≡ 0, ±2 mod 4, and in particular to get 0 mod 4, we would need x ≡ y (mod 4), which is impossible if x - y = 2^a with a = 1 (difference 2) since that flips classes. For larger a ≥ 2, x - y ≡ 0 mod 4, so x ≡ y mod 4, not immediately excluded, but this line of attack becomes messy. A better structural restriction is that if x^n - y^n = 2^100, then gcd(x,y) must be a power of 2. Write x = 2^r u, y = 2^r v with gcd(u,v)=1 and at least one of u,v odd. Then x^n - y^n = 2^{rn}(u^n - v^n). For this to equal 2^100, we must have u^n - v^n = 2^{100 - rn}. Since gcd(u,v)=1, at most one of u,v is even. If both are odd, then u^n - v^n is divisible by 2 but not by 4 when n is odd; for n even, u^n ≡ v^n ≡ 1 mod 8, so the difference is 0 mod 8 or some small pattern, but in any case the 2-adic valuation v2(u^n - v^n) is bounded independent of n unless u-v has very specific form. For the entire left side to be 2^100, the exponent 100 must be divisible by n when u and v are coprime odd except for the 2-adic difference, but n > 55 makes that impossible except for very restricted choices. A very standard approach for equations of the form x^n - y^n = 2^m with n > 2 is to use lifting-the-exponent (LTE). Let v2 denote the exponent of 2 in an integer. Suppose x and y are both odd. Then by LTE, v2(x^n - y^n) = v2(x - y) + v2(n). If x and y are both even we factor out powers of 2 first. To match 2^100, we would require v2(x - y) + v2(n) = 100. But if x and y are odd, x - y is even; write x - y = 2^a with a ≥ 1. Then a + v2(n) = 100. Since n > 55, v2(n) ≤ 6 (because 2^7 = 128 > 100 and n > 55 implies n has at most 6 factors of 2). So a ≥ 94. Then x - y is at least 2^94, and x, y are enormous. But this is not yet a contradiction. However, in that case S = x^{n-1} + ... + y^{n-1} is at least n y^{n-1} ≥ n, giving S ≥ 56; combined with x - y ≥ 2^94, their product exceeds 2^(94+5) = 2^99; we still need 2^100 so it could be barely possible, but a more careful estimate shows S > 2^6 for large x,y,n, making the total exponent > 100. Rather than chasing a delicate 2-adic bound, we use a more decisive observation: for n > 1, x^n - y^n factors as (x-y) times a sum of n terms each at least y^{n-1}. With x-y a power of 2, and the sum S also a power of 2, we get that both x and y must be powers of 2 (if a prime odd factor appears in either, it propagates into S). Write x = 2^c, y = 2^d with c > d ≥ 0. Then x^n - y^n = 2^{cn} - 2^{dn} = 2^{dn}(2^{(c-d)n} - 1). This equals 2^100, so 2^{(c-d)n} - 1 = 1 and dn = 100. From 2^{(c-d)n} - 1 = 1 we get 2^{(c-d)n} = 2, so (c-d)n = 1, impossible with integers and n>1. Therefore there is no solution with x,y powers of 2. Hence there are no positive integer solutions (x,y,n) with n>1 to x^n - y^n = 2^100 at all. In particular, with the constraint n>k=55, there are no solutions. Therefore the number of ordered triples (x,y,n) of positive integers with n>k satisfying x^n - y^n = 2^100 is 0.\",\n    \"answer\": \"0\"\n}",
+  "problem_type": [
+    {
+      "A4005": [
+        "Mathematics -> Algebra -> Intermediate Algebra -> Inequalities"
+      ]
+    },
+    {
+      "A1474": [
+        "Mathematics -> Number Theory -> Congruences",
+        "Mathematics -> Algebra -> Intermediate Algebra -> Exponential Functions"
+      ]
+    }
+  ],
+  "output_answer": [
+    "0"
+  ],
+  "ground_truth": [
+    {
+      "A4005": "\\frac{a}{a^3 + 8} + \\frac{b}{b^3 + 8} + \\frac{c}{c^3 + 8} + \\frac{d}{d^3 + 8} \\leq \\frac{4}{9}"
+    },
+    {
+      "A1474": "49"
+    }
+  ],
+  "correctness": [
+    false
+  ],
+  "prompt_tokens": 2550,
+  "completion_tokens": 2188,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

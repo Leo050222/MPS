@@ -1,0 +1,38 @@
+{
+  "timestamp": "2026-01-04T18:12:43.869511+00:00",
+  "model": "qwen-plus",
+  "type": "T1_MP2_synthesised_Evaluation",
+  "Problem_ID": 6,
+  "math_problem": "If $x$ and $y$ are positive integers with $x+y=31$, what is the largest possible value of $x y$? Instead of finding the largest possible value of the product $x y$, simply find $k$, which is that largest value minus 231. If a line segment joins the points $(-k,-2)$ and $(6,8)$, how many points on the line segment have coordinates that are both integers?",
+  "reasoning_content": "We are given that $x$ and $y$ are positive integers such that $x + y = 31$, and we are to find the largest possible value of the product $xy$.\n\nStep 1: Maximize $xy$ given $x + y = 31$\n\nFor a fixed sum, the product $xy$ is maximized when $x$ and $y$ are as close as possible to each other. Since $x + y = 31$, which is odd, the closest integers are $x = 15$, $y = 16$ or $x = 16$, $y = 15$. In either case:\n\n$$\nxy = 15 \\times 16 = 240\n$$\n\nSo the maximum possible value of $xy$ is 240.\n\nStep 2: Define $k = (\\text{max } xy) - 231$\n\n$$\nk = 240 - 231 = 9\n$$\n\nStep 3: Find how many points on the line segment joining $(-k, -2)$ and $(6, 8)$ have integer coordinates.\n\nSince $k = 9$, the first point is $(-9, -2)$, and the second is $(6, 8)$.\n\nWe want to count the number of lattice points (points with integer coordinates) on the line segment between $(-9, -2)$ and $(6, 8)$, including the endpoints.\n\nTo do this, we use the **lattice point counting formula** for a line segment between two points $(x_1, y_1)$ and $(x_2, y_2)$:\n\nThe number of lattice points on the segment is:\n\n$$\n\\gcd(|x_2 - x_1|, |y_2 - y_1|) + 1\n$$\n\nBut this only works if the line segment has rational slope and we move in integer steps — actually, the correct formula for the number of lattice points on the segment from $(x_1, y_1)$ to $(x_2, y_2)$, when both endpoints are lattice points, is:\n\n$$\n\\gcd(|x_2 - x_1|, |y_2 - y_1|) + 1\n$$\n\nYes, this is a standard result from number theory: the number of lattice points on the line segment between two lattice points is:\n\n$$\n\\gcd(\\Delta x, \\Delta y) + 1\n$$\n\nwhere $\\Delta x = |x_2 - x_1|$, $\\Delta y = |y_2 - y_1|$, but actually, since gcd is based on absolute values, we can compute differences directly.\n\nLet’s compute:\n\n$$\n\\Delta x = 6 - (-9) = 15 \\\\\n\\Delta y = 8 - (-2) = 10\n$$\n\nNow compute $\\gcd(15, 10) = 5$\n\nThen the number of lattice points on the segment is:\n\n$$\n\\gcd(15, 10) + 1 = 5 + 1 = 6\n$$\n\nWait! Actually, the correct formula is:\n\n> The number of lattice points (including endpoints) on the line segment joining $(x_1, y_1)$ and $(x_2, y_2)$, where all coordinates are integers, is:\n>\n> $$\n> \\gcd(|x_2 - x_1|, |y_2 - y_1|) + 1\n> $$\n\nYes, this is correct.\n\nSo here, $\\Delta x = 15$, $\\Delta y = 10$, $\\gcd(15, 10) = 5$, so number of lattice points is $5 + 1 = 6$.\n\nBut let's verify by parametrizing the line.\n\nParametrize from $(-9, -2)$ to $(6, 8)$:\n\nTotal change: $\\Delta x = 15$, $\\Delta y = 10$\n\nThe direction vector is $(15, 10)$, which reduces to $(3, 2)$ when divided by $\\gcd = 5$. So the line moves in steps of $(3, 2)$.\n\nSo starting at $(-9, -2)$, we add $(3,2)$ repeatedly:\n\n1. $(-9, -2)$\n2. $(-6, 0)$\n3. $(-3, 2)$\n4. $(0, 4)$\n5. $(3, 6)$\n6. $(6, 8)$\n\nThat’s 6 points. Correct.\n\nSo there are 6 lattice points on the segment.\n\nTherefore, the final answer is 6.\n\n{\n    \"answer\": \"6\"\n}",
+  "problem_type": [
+    {
+      "A2677": [
+        "Mathematics -> Algebra -> Prealgebra -> Simple Equations"
+      ]
+    },
+    {
+      "A2681": [
+        "Mathematics -> Algebra -> Prealgebra -> Integers"
+      ]
+    }
+  ],
+  "output_answer": [
+    "6"
+  ],
+  "ground_truth": [
+    {
+      "A2677": "240"
+    },
+    {
+      "A2681": "6"
+    }
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 358,
+  "completion_tokens": 1019,
+  "reasoning_tokens": 0,
+  "cost": 0.008438399999999999
+}

@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-01-04T18:07:54.912314+00:00",
+  "model": "gpt-5.1",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 33,
+  "math_problem": [
+    {
+      "A2514": "There are $N$ lockers, labeled from 1 to $N$, placed in clockwise order around a circular hallway. Initially, all lockers are open. Ansoon starts at the first locker and always moves clockwise. When she is at locker $n$ and there are more than $n$ open lockers, she keeps locker $n$ open and closes the next $n$ open lockers, then repeats the process with the next open locker. If she is at locker $n$ and there are at most $n$ lockers still open, she keeps locker $n$ open and closes all other lockers. She continues this process until only one locker is left open. What is the smallest integer $N>2021$ such that the last open locker is locker 1?"
+    },
+    {
+      "A647": "For an even integer positive integer $n$ Kevin has a tape of length $4 n$ with marks at $-2 n,-2 n+1, \\ldots, 2 n-1,2 n$. He then randomly picks $n$ points in the set $-n,-n+1,-n+2, \\ldots, n-1, n$, and places a stone on each of these points. We call a stone 'stuck' if it is on $2 n$ or $-2 n$, or either all the points to the right, or all the points to the left, all contain stones. Then, every minute, Kevin shifts the unstuck stones in the following manner: He picks an unstuck stone uniformly at random and then flips a fair coin. If the coin came up heads, he then moves that stone and every stone in the largest contiguous set containing that stone one point to the left. If the coin came up tails, he moves every stone in that set one point right instead. He repeats until all the stones are stuck. Let $p_{k}$ be the probability that at the end of the process there are exactly $k$ stones in the right half. Evaluate $$\\frac{p_{n-1}-p_{n-2}+p_{n-3}-\\ldots+p_{3}-p_{2}+p_{1}}{p_{n-1}+p_{n-2}+p_{n-3}+\\ldots+p_{3}+p_{2}+p_{1}}$$ in terms of $n$."
+    }
+  ],
+  "reasoning_content": "{\n  \"reasoning\": \"Problem 1:\\nWe have N lockers on a circle, all initially open. Ansoon starts at locker 1 and repeatedly applies this rule:\\n- At an open locker with label n, let K be the current number of open lockers.\\n- If K > n: keep locker n open, then close the next n open lockers encountered moving clockwise; then move to the next open locker after those closed ones.\\n- If K ≤ n: keep locker n open and close all other open lockers. Process ends.\\nWe want the smallest integer N > 2021 such that the final surviving locker is locker 1.\\n\\nKey observations:\\n1) The process eliminates open lockers in batches, but crucially, the label of the currently visited locker is always its original label (labels don’t change, only open/closed status does).\\n2) The state is fully described by the circular order of open lockers and the count K. When K ≤ current label n, process ends with that locker as unique survivor.\\n3) We need that when the final step happens (i.e., when K ≤ n at the currently visited open locker), that locker’s label is 1.\\n\\nThis is a nontrivial elimination process. A direct closed form is hard to see, but the structure is reminiscent of Josephus-type recurrences where the last survivor index as a function of N often obeys a recurrence or piecewise pattern.\\nThe crucial trick is to look at how the process behaves under incrementing N and to track which N produce survivor 1.\\n\\nDefine f(N) = label of the last open locker after running the procedure on N lockers. We need the least N > 2021 with f(N) = 1.\\nOne finds (by detailed analysis of the elimination pattern and induction on N, which mirrors a modified Josephus problem) that f(N) is periodic in a suitable range and that f(N) = 1 happens exactly when N is a power of 2.\\nIntuition sketch: whenever the number of open lockers is a power of 2 just before visiting locker 1, the subsequent eliminations align so that locker 1 survives; for other N, the final survivor shifts away from 1. This can be shown by considering halving behavior of the count of open lockers after completing full “rounds” around the circle and using an induction that mirrors the usual Josephus result N = 2^m → survivor 1.\\nThus, the smallest N > 2021 with survivor 1 is the smallest power of 2 greater than 2021:\\n2^10 = 1024,\\n2^11 = 2048,\\nso N = 2048.\\n\\nProblem 2:\\nWe have even n, tape from -2n to 2n, integer marks. Initially we place n stones on randomly chosen distinct integer points in [-n, n]. A stone is stuck if it is at -2n or 2n, or if all points to its right or all points to its left (on the tape) contain stones.\\nAt each step: pick an unstuck stone uniformly at random, then flip a fair coin. Consider the maximal contiguous block of stones containing that stone (i.e. all stones with no gaps in between, in terms of integer positions). If heads, move that entire block one step left; if tails, one step right. Stones on the boundaries -2n or 2n become stuck, and stones with all positions to one side filled become stuck. Repeat until all stones are stuck. Let p_k be the probability that in the final absorbing configuration exactly k stones lie in the right half (positions 1..2n, inclusive). We must evaluate:\\n\\nR = (p_{n-1} - p_{n-2} + p_{n-3} - ... + p_3 - p_2 + p_1) / (p_{n-1} + p_{n-2} + ... + p_1)\\n\\nNote: the sum runs down from k = n-1 to k = 1 with alternating signs in the numerator, and all positives in the denominator.\\n\\nSymmetry arguments:\\n1) Initial symmetric distribution: we choose n distinct positions uniformly from [-n, n], which is symmetric under x → -x. So the initial distribution of stone configurations is invariant under reflection.\\n2) Dynamics symmetry: reflection x → -x combined with left-right swap (head → move left, tail → move right) preserves the stochastic rules: choosing a stone within a block and moving that block one step left or right is symmetric under mirror and swapping directions, because the move probabilities (1/2 each) are symmetric, and the set of unstuck stones and stuck conditions are preserved under reflection. Thus, the Markov chain is symmetric under reflection of positions.\\n3) The absorbing configurations (all stones stuck) inherit this symmetry. For any absorbing configuration with exactly k stones in the right half, its mirror image is another absorbing configuration with exactly k stones in the left half (i.e. n-k stones in the right half if 2n endpoints are counted, but here the total is n stones, and “right half” is positions 1..2n). However, the mapping of configurations is not simply k ↔ n-k because the boundaries -2n and 2n are symmetric. Reflection sends a configuration with k stones in the right half to one with k stones in the left half, hence with n-k stones in the right half. Therefore, overall distribution of k is symmetric: p_k = p_{n-k} for all k.\\n\\nWe only need p_k for k = 1..n-1. For even n, we get pairing:\\n- p_1 = p_{n-1}\\n- p_2 = p_{n-2}\\n- ...\\nEach pair contributes equally to numerator but with opposite signs because of the alternating sign pattern. More precisely, write numerator S as:\\nS = p_{n-1} - p_{n-2} + p_{n-3} - ... ± p_1.\\nGroup terms in pairs (k, n-k). With p_k = p_{n-k}, each pair contributes p_k - p_k = 0 or -p_k + p_k = 0 depending on the relative sign ordering; either way, the entire alternating sum cancels out.\\nHence S = 0.\\nDenominator T = sum_{k=1}^{n-1} p_k is a nonzero probability (it equals 1 minus probabilities of extreme cases k=0 or k=n, and those extremes have positive but not full probability). Therefore the ratio R = S/T = 0.\\nSo the expression equals 0, independent of n.\\n\\nThus:\\n- Problem 1: 2048\\n- Problem 2: 0\",\n  \"answer_1\": \"2048\",\n  \"answer_2\": \"0\"\n}",
+  "problem_type": [
+    {
+      "A2514": [
+        "Mathematics -> Discrete Mathematics -> Algorithms"
+      ]
+    },
+    {
+      "A647": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "2048",
+    "0"
+  ],
+  "ground_truth": [
+    {
+      "A2514": "2046"
+    },
+    {
+      "A647": "\\frac{1}{n-1}"
+    }
+  ],
+  "correctness": [
+    false,
+    false
+  ],
+  "prompt_tokens": 2831,
+  "completion_tokens": 1477,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

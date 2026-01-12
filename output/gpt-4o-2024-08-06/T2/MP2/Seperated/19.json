@@ -1,0 +1,49 @@
+{
+  "timestamp": "2026-01-10T04:41:57.489920+00:00",
+  "model": "gpt-4o-2024-08-06",
+  "type": "T2_MP2_seperated_Evaluation",
+  "Problem_ID": 19,
+  "math_problem": [
+    {
+      "A2252": "Compute all ordered triples $(x, y, z)$ of real numbers satisfying the following system of equations: $$\\begin{aligned} x y+z & =40 \\\\ x z+y & =51 \\\\ x+y+z & =19 \\end{aligned}$$"
+    },
+    {
+      "A2257": "There are 21 competitors with distinct skill levels numbered $1,2, \\ldots, 21$. They participate in a pingpong tournament as follows. First, a random competitor is chosen to be \"active\", while the rest are \"inactive.\" Every round, a random inactive competitor is chosen to play against the current active one. The player with the higher skill will win and become (or remain) active, while the loser will be eliminated from the tournament. The tournament lasts for 20 rounds, after which there will only be one player remaining. Alice is the competitor with skill 11. What is the expected number of games that she will get to play?"
+    }
+  ],
+  "reasoning_content": "Problem 1:\nWe are given the system:\n1) xy + z = 40\n2) xz + y = 51\n3) x + y + z = 19\n\nFrom equation (3), we can express z = 19 - x - y.\n\nSubstitute z into (1):\nxy + (19 - x - y) = 40\n=> xy + 19 - x - y = 40\n=> xy - x - y = 21\n=> xy - x - y + 1 = 22\n=> (x - 1)(y - 1) = 22\n\nSimilarly, substitute z = 19 - x - y into (2):\nx(19 - x - y) + y = 51\n=> 19x - x^2 - xy + y = 51\nRearranged:\n-x^2 + 19x - xy + y = 51\n\nRecall from (1) that xy - x - y = 21.\nWe rewrite:\n-x^2 + 19x - xy + y = 51\nMultiply (xy - x - y) = 21 by -1:\n -xy + x + y = -21\n\nAdding this to the above equation:\n(-x^2 + 19x - xy + y) + (-xy + x + y) = 51 + (-21)\n=> -x^2 + 19x - 2xy + 2y + x + y = 30 (Wait: this doesn't simplify directly; maybe a better approach.)\n\nAlternatively, let me rewrite (2) directly using z:\nFrom (2): xz + y = 51\nSubstitute z = 19 - x - y:\nx(19 - x - y) + y = 51\n=> 19x - x^2 - x y + y = 51\n\nWe also know from (1), xy - x - y = 21.\n\nLet's isolate some terms:\nFrom (1): xy = x + y + 21\n\nSubstitute into the equation from (2):\n19x - x^2 - x y + y = 51\nRewrite with xy:\n19x - x^2 - (xy) + y = 51\nSubstitute xy = x + y + 21:\n19x - x^2 - (x + y + 21) + y = 51\n=> 19x - x^2 - x - y - 21 + y = 51\n=> 19x - x^2 - x - 21 = 51\n=> 19x - x^2 - x = 72\n=> -x^2 + 18x = 72\nMultiply both sides by -1:\nx^2 - 18x = -72\n\nRewrite as:\nx^2 - 18x + 72 = 0\n\nSolve quadratic:\nDiscriminant D = 18^2 - 4*72 = 324 - 288 = 36\nx = [18 ± 6]/2\nx1 = (18 + 6)/2 = 24/2 = 12\nx2 = (18 - 6)/2 = 12/2 = 6\n\nTry x=12 first:\nRecall from (1):\n(x - 1)(y - 1) = 22\nWhen x=12:\n(12 -1)(y -1)=22\n11(y -1)=22\ny -1=2\ny=3\n\nFind z from (3):\nz=19 - x - y=19 - 12 -3=4\n\nCheck (1):\nxy + z = 12*3 +4=36 +4=40 correct\nCheck (2):\nxz + y = 12*4 + 3=48 +3=51 correct\n\nTry x=6:\n(6 -1)(y -1) =22\n5(y -1)=22\ny -1=22/5=4.4\ny=5.4\n\nz=19 - x - y=19 - 6 -5.4=7.6\n\nCheck (1):\nxy + z=6*5.4 +7.6=32.4 +7.6=40 correct\n\nCheck (2):\nxz + y=6*7.6 + 5.4=45.6 +5.4=51 correct\n\nSo two solutions:\n(12, 3, 4) and (6, 27/5, 38/5)\n\nProblem 2:\nThere are 21 players with distinct skill levels from 1 to 21.\n\nAlice has skill 11.\n\nThe tournament is such that in each round:\n- The active player faces a random inactive player.\n- The higher skill player wins and becomes active.\n- The loser is eliminated.\n- After 20 rounds, only one player remains.\n\nWe want the expected number of games that Alice will play.\n\nKey points:\n- The initial active player is chosen uniformly at random.\n- Each round eliminates one player.\n- Alice only plays if she is chosen to play or if she is the active player.\n\nWe analyze the expected games Alice will play.\n\nApproach:\n1. The initial active player is random.\n2. If Alice starts as active, she will play every round until she loses.\n3. If the initial active player has a skill level higher than Alice, Alice cannot become active as she always loses to the stronger active player.\n4. If the initial active player has lower skill than Alice, Alice has a chance to become active if she is chosen to play and wins.\n\nWe define the set of players stronger than Alice: skill levels 12 through 21 (10 players).\n\nPlayers weaker than Alice: skills 1 to 10 (10 players).\n\nAlice skill=11.\n\nGiven symmetry and the process, the expected number of games Alice plays is the expected length of her run as active, which relates to her chance of becoming the active player and how long she can survive.\n\nFrom known results in such tournaments:\nThe expected number of times a player plays is 1 plus the expected number of stronger players eliminated before meeting her.\n\nFor Alice (skill 11), the expected number of stronger players eliminated before Alice is equal to the count of stronger players (10) divided by (total number of players 21). Because the higher skilled players must be eliminated by someone, and Alice can only eliminate those weaker than herself.\n\nAlternatively, the expected number of games Alice plays is equal to the expected number of players weaker or equal to Alice who are eliminated before her plus 1 (the initial game).\n\nIn fact, in this elimination model, the expected number of games a player with rank r plays is:\n\nE = harmonic number H_r = sum_{k=1}^r 1/k\n\nBecause the number of times a player wins equals their skill rank's harmonic number.\n\nAlice is skill 11, so\n\nE = H_11 = 1 + 1/2 + 1/3 + ... + 1/11\n\nCalculate H_11:\n\nH_11 = 1 + 1/2 + 1/3 + 1/4 + 1/5 + 1/6 + 1/7 + 1/8 + 1/9 + 1/10 + 1/11\n\nCalculate the sum:\n\n1 + 0.5 = 1.5  \n1.5 + 0.3333333 = 1.8333333  \n1.8333333 + 0.25 = 2.0833333  \n2.0833333 + 0.2 = 2.2833333  \n2.2833333 + 0.1666667 = 2.45  \n2.45 + 0.1428571 = 2.5928571  \n2.5928571 + 0.125 = 2.7178571  \n2.7178571 + 0.1111111 = 2.8289682  \n2.8289682 + 0.1 = 2.9289682  \n2.9289682 + 0.0909091 = 3.0198773\n\nSo the harmonic number H_11 ≈ 3.0198773, but since we want an exact value, it's:\n\nH_11 = 1 + 1/2 + 1/3 + 1/4 + 1/5 + 1/6 + 1/7 + 1/8 + 1/9 + 1/10 + 1/11\n\nWe can write it as a sum of fractions.\n\nHence final expected games Alice plays is H_11.\n\nSummary:\n\nProblem 1 solutions:\n(12, 3, 4) and (6, 27/5, 38/5)\n\nProblem 2 answer:\nExpected games Alice plays = H_11 = 1 + 1/2 + 1/3 + ... + 1/11\n\nExpressed exactly as:\n\n1 + 1/2 + 1/3 + 1/4 + 1/5 + 1/6 + 1/7 + 1/8 + 1/9 + 1/10 + 1/11\n\nNow transcribe this into the required JSON format.\n\n{\n    \"reasoning\": \"Problem 1 is solved by substitution and algebraic manipulation, yielding two solutions: (12, 3, 4) and (6, 27/5, 38/5). Problem 2 relies on understanding the tournament model and known results about expected games played in such elimination tournaments. The expected number of games Alice plays is the harmonic number H_11 = sum_{k=1}^11 1/k.\",\n    \"answer_1\": \"[(12, 3, 4), (6, 27/5, 38/5)]\",\n    \"answer_2\": \"1 + 1/2 + 1/3 + 1/4 + 1/5 + 1/6 + 1/7 + 1/8 + 1/9 + 1/10 + 1/11\"\n}",
+  "problem_type": [
+    {
+      "A2252": [
+        "Mathematics -> Algebra -> Algebra -> Algebraic Expressions",
+        "Mathematics -> Algebra -> Algebra -> Equations and Inequalities"
+      ]
+    },
+    {
+      "A2257": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Other",
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "[(12, 3, 4), (6, 27/5, 38/5)]",
+    "1 + 1/2 + 1/3 + 1/4 + 1/5 + 1/6 + 1/7 + 1/8 + 1/9 + 1/10 + 1/11"
+  ],
+  "ground_truth": [
+    {
+      "A2252": "(12,3,4),(6,5.4,7.6)"
+    },
+    {
+      "A2257": "\\frac{47}{42}"
+    }
+  ],
+  "correctness": [
+    true,
+    false
+  ],
+  "prompt_tokens": 478,
+  "completion_tokens": 2407,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}
