@@ -1,0 +1,48 @@
+{
+  "timestamp": "2026-01-10T03:38:16.735809+00:00",
+  "model": "gpt-4o-2024-08-06",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 1,
+  "math_problem": [
+    {
+      "A682": "The game of Penta is played with teams of five players each, and there are five roles the players can play. Each of the five players chooses two of five roles they wish to play. If each player chooses their roles randomly, what is the probability that each role will have exactly two players?"
+    },
+    {
+      "A1519": "Given a positive integer $k$, let \\|k\\| denote the absolute difference between $k$ and the nearest perfect square. For example, \\|13\\|=3 since the nearest perfect square to 13 is 16. Compute the smallest positive integer $n$ such that $\\frac{\\|1\\|+\\|2\\|+\\cdots+\\|n\\|}{n}=100$."
+    }
+  ],
+  "reasoning_content": "Problem 1:\nWe have 5 players, each choosing exactly 2 roles out of 5 possible roles. We want the probability that each role is chosen by exactly 2 players.\n\nFirst, let's analyze the setup:\n- There are 5 players.\n- Each player chooses 2 roles from {R1, R2, R3, R4, R5}. \n- So, each player picks a 2-element subset of a 5-element set.\n- Total number of ways for one player to choose roles is C(5,2) = 10.\n- Since players choose independently and randomly, total number of possible outcomes for the group is 10^5.\n\nNow, we want the number of outcomes where each role is chosen exactly twice.\n\nRoles chosen per player are unordered pairs, total 10 possible pairs: (1,2), (1,3), (1,4), (1,5), (2,3), (2,4), (2,5), (3,4), (3,5), (4,5).\n\nIf we sum the roles chosen per player:\n- 5 players * 2 roles each = 10 \"role selections\" in total.\n- Suppose each role appears exactly twice => total 5 * 2 = 10 roles selected confirming total 10.\n\nInterpretation:\nWe have 5 players, each choosing an edge (2-element subset) from the set of 5 nodes (roles), and total 10 edges chosen (one edge per player). The condition \"each role chosen exactly twice\" means that when we consider these edges as an undirected multigraph on 5 vertices, the degree of each vertex (role) is exactly 2.\n\nEdges chosen by players correspond to edges in a multigraph with 5 nodes and 5 edges (since 5 players), each has degree 2 at every vertex.\n\nA graph with 5 vertices and 5 edges, where every vertex has degree 2, is a 2-regular graph on 5 vertices with 5 edges.\n\n2-regular graph on 5 vertices is a union of cycles where each vertex has degree 2 (exactly). Since 5 vertices and 5 edges, it must be a single cycle of length 5.\n\nTherefore, the only way for each role to be chosen exactly twice is that the multigraph formed by the players' choices is a 5-cycle covering all 5 roles.\n\nCounting the number of such outcomes:\n- The number of 5-cycles on 5 labeled vertices is (5−1)! / 2 = 12.\nExplanation: The number of distinct cycles of length n on n labeled vertices is (n−1)! / 2.\n\nSo among all possible assignments, the players' chosen edges must constitute one of these 12 5-cycles.\n\nHowever, the players themselves are distinct and the order of players matters (the players choose roles independently and order matters in the probability calculation), so we need to count in how many ways the 5 players can choose edges that form a given 5-cycle.\n\nFor one 5-cycle containing edges E = {e1,e2,e3,e4,e5}, the players must choose these 5 edges as their choices, one per player, in some order.\n\nSo for a fixed 5-cycle, there are 5! ways to assign edges to players (since players are distinct and each chooses one edge of the 5-cycle).\n\nSince there are 12 distinct 5-cycles, total number of favorable outcomes = 12 * 5! = 12 * 120 = 1440.\n\nTotal number of possible choices is 10^5 = 100,000.\n\nTherefore, the probability is 1440 / 100,000 = 144 / 10,000 = 36 / 2500 = 18 / 1250 = 9 / 625.\n\nSo the probability = 9/625.\n\n---\n\nProblem 2:\nGiven a positive integer k, define ||k|| = absolute difference between k and the nearest perfect square.\n\nWe want to find the smallest positive integer n such that (||1|| + ||2|| + ... + ||n||)/n = 100.\n\nFirst, investigate ||k|| for k in the interval between perfect squares.\n\nLet m^2 ≤ k < (m+1)^2.\n\nFor k in this interval, the closest perfect square is either m^2 or (m+1)^2.\n\nNumber of integers in the interval [m^2, (m+1)^2 -1] is 2m + 1.\n\nThe midpoint between m^2 and (m+1)^2 is (m^2 + (m+1)^2)/2 = (m^2 + m^2 + 2m +1)/2 = (2m^2 +2m +1)/2.\n\nFor k < midpoint, nearest square is m^2; for k ≥ midpoint, nearest is (m+1)^2.\n\nSince the squares are increasing quadratically, the pattern of ||k|| repeats symmetrically around the midpoint.\n\nMoreover, we can sum the absolute differences in each interval.\n\nTotal sum in the interval [m^2, (m+1)^2 -1] for ||k|| is the sum of distances from each number to nearest perfect square.\n\nBecause symmetry, the sum for interval m is:\n\nSum_{k=m^2}^{(m+1)^2 -1} ||k|| = m(m+1)(2m+1)/6.\n\n(From the problem structure or known formulas related to triangular numbers and sum of squares.)\n\nNow sum over intervals up to n where n ≤ (M+1)^2 - 1 for some M.\n\nSum_{k=1}^{(M+1)^2 -1} ||k|| = sum_{m=0}^M m(m+1)(2m+1)/6\n\nBut m=0 term is zero.\n\nSum_{m=1}^M m(m+1)(2m+1)/6 = 1/6 * sum_{m=1}^M (2m^3 +3m^2 + m)\n\nNow compute:\n\nsum_{m=1}^M 2m^3 = 2 * (M^2 (M+1)^2 / 4) = (M^2 (M+1)^2)/2\n\nsum_{m=1}^M 3m^2 = 3 * (M (M+1)(2M+1)/6) = (M (M+1)(2M+1))/2\n\nsum_{m=1}^M m = M(M+1)/2\n\nSo total sum = (1/6) * [ (M^2 (M+1)^2)/2 + (M (M+1)(2M+1))/2 + M(M+1)/2 ]\n\n= (1/12) * [ M^2 (M+1)^2 + M (M+1)(2M+1) + M(M+1) ]\n\nFactor M(M+1):\n\n= (1/12) * M(M+1) [ M(M+1) + (2M+1) + 1 ]\n\n= (1/12) * M(M+1) [ M^2 + M + 2M + 1 + 1 ]\n\n= (1/12) * M(M+1) [ M^2 + 3M + 2 ]\n\nNote M^2 + 3M + 2 = (M+1)(M+2)\n\nFinal sum:\n\nSum_{k=1}^{(M+1)^2 -1} ||k|| = (1/12) * M(M+1)*(M+1)*(M+2) = (1/12) * M * (M+1)^2 * (M+2)\n\nSo:\n\nSum_{k=1}^{(M+1)^2 -1} ||k|| = (M (M+1)^2 (M+2)) / 12\n\nNumber of terms: n = (M+1)^2 - 1 = M^2 + 2M\n\nAverage = sum / n = [(M (M+1)^2 (M+2)) /12] / [M^2 + 2M]\n\nSimplify denominator:\n\nM^2 + 2M = M(M+2)\n\nSo average = [M (M+1)^2 (M+2) / 12] / [M (M+2)] = ((M+1)^2)/12\n\nBecause M(M+2) cancels numerator and denominator.\n\nHence average of ||k|| for n = (M+1)^2 -1 is ((M+1)^2)/12.\n\nWe want average = 100.\n\nSo:\n\n((M+1)^2)/12 = 100 => (M+1)^2 = 1200 => M+1 = sqrt(1200) ≈ 34.641\n\nSince M+1 must be integer (because n is defined in terms of squares), try M+1 = 35.\n\nCheck average:\n\n35^2 / 12 = 1225 / 12 ≈ 102.083 > 100\n\nFor M=33,\n\n34^2 / 12 = 1156 /12 ≈ 96.33 < 100\n\nWe want the smallest n where average is exactly 100, not approximate.\n\nBetween M=33 (average ≈ 96.33) and M=34 (average ≈ 102.08), average passes 100.\n\nOur exact values for n are of the form n = (M+1)^2 -1.\n\nWe need to find n so that average = 100 exactly.\n\nTry to solve for n explicitly.\n\nAlternatively, the average as a function of n is stepwise.\n\nLet's check n = M^2 + 2M for integer M, average = ((M+1)^2)/12.\n\nWe want average = 100:\n\n(M+1)^2 = 1200\n\nSo M+1 = sqrt(1200) = 20*sqrt(3) ≈ 34.641\n\nn = M^2 + 2M = (M+1)^2 -1 = 1200 -1 = 1199\n\nNow, at n=1199, average is exactly ((M+1)^2)/12 = 100.\n\nTherefore, n = 1199.\n\nIs that the smallest positive integer?\n\nYes, because the average jumps at these points, and for n less than 1199, average < 100, for n above 1199 (i.e., next n = (36)^2 -1 = 1295) average > 100.\n\nSo the smallest n is 1199.\n\n---\n\nFinal answers:\nProblem 1: Probability is 9/625\nProblem 2: n = 1199\n\n---\n\n{\n  \"reasoning\": \"Problem 1: Each player chooses 2 roles from 5, so 10 choices per player, total 10^5 outcomes. We want the probability that each of the 5 roles is chosen exactly twice, totaling 10 role picks. This corresponds to selecting 5 edges forming a 5-cycle in a graph on 5 vertices, since each role corresponds to a vertex and each choice corresponds to an edge. Number of distinct 5-cycles on 5 vertices is 12. Each cycle can be assigned to the 5 players in 5! ways, so favorable outcomes are 12*120=1440. Probability = 1440/100000 = 9/625.\\n\\nProblem 2: Define the sum of absolute differences from nearest perfect squares up to (M+1)^2 -1. Derive the formula for sum of ||k|| for k=1 to (M+1)^2 -1: (M (M+1)^2 (M+2))/12. Number of terms n = (M+1)^2 -1. Average = sum/n = ((M+1)^2)/12. Set average = 100 => (M+1)^2 = 1200 => M+1 = sqrt(1200)=approximately 34.641. Choose M+1=35 as integer, then n = 35^2 -1 = 1225 -1 = 1199, and average = 35^2/12=1225/12=102.08 > 100. For M=33, average < 100. Thus smallest n where average=100 exactly corresponds to n=1199.\",\n  \"answer_1\": \"9/625\",\n  \"answer_2\": \"1199\"\n}",
+  "problem_type": [
+    {
+      "A682": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations",
+        "Mathematics -> Discrete Mathematics -> Graph Theory"
+      ]
+    },
+    {
+      "A1519": [
+        "Mathematics -> Number Theory -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "9/625",
+    "1199"
+  ],
+  "ground_truth": [
+    {
+      "A682": "\\frac{51}{2500}"
+    },
+    {
+      "A1519": "89800"
+    }
+  ],
+  "correctness": [
+    false,
+    false
+  ],
+  "prompt_tokens": 432,
+  "completion_tokens": 3048,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

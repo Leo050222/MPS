@@ -1,0 +1,38 @@
+{
+  "timestamp": "2026-01-04T17:53:59.905317+00:00",
+  "model": "gpt-5.1",
+  "type": "T2_MP2_synthesised_Evaluation",
+  "Problem_ID": 14,
+  "math_problem": "Victoria wants to order at least 550 donuts from Dunkin' Donuts for the HMMT 2014 November contest. However, donuts only come in multiples of twelve. Assuming every twelve donuts cost $7.49, what is the minimum amount Victoria needs to pay, in dollars? Instead of computing the minimum cost to acquire at least the required number of units when purchases are constrained to multiples of the base quantity, simply find $e = \\left\\lfloor 550 / 12 \\right\\rfloor - 43$. There are two prime numbers $p$ so that $5 p$ can be expressed in the form $\\left\\lfloor\\frac{n^{e}}{5}\\right\\rfloor$ for some positive integer $n$. What is the sum of these two prime numbers?",
+  "reasoning_content": "{  \n    \"reasoning\": \"We are told not to actually compute the donut cost, but instead to compute e = floor(550 / 12) - 43. First compute floor(550/12). Since 12 * 45 = 540 and 12 * 46 = 552 > 550, we have floor(550/12) = 45. Thus e = 45 - 43 = 2.\\n\\nWe now want primes p such that 5p can be written as floor(n^e / 5) for some positive integer n, and we have found e = 2. So we need primes p such that 5p = floor(n^2 / 5) for some integer n.\\n\\nLet k = floor(n^2 / 5). Then we want k = 5p. That means:\\n5p ≤ n^2 / 5 < 5p + 1.\\nMultiply through by 5:\\n25p ≤ n^2 < 25p + 5.\\nSo n^2 is an integer square in the interval [25p, 25p+5). The possible integer values for n^2 here are 25p, 25p+1, 25p+2, 25p+3, 25p+4. We need one of these to be a perfect square.\\n\\nLet n^2 = 25p + a with a in {0,1,2,3,4}. Then p = (n^2 - a)/25 must be prime and (n^2 - a) must be divisible by 25.\\n\\nCase a = 0: n^2 = 25p => n = 5m, so 25m^2 = 25p, hence p = m^2. A prime that is a perfect square must be p = 1, which is not prime. So no solutions here.\\n\\nFor a in {1,2,3,4}: we require n^2 ≡ a (mod 25). The possible quadratic residues mod 25 are {0,1,4,6,9,11,14,16,19,21,24}. So residues 1,2,3,4 are only compatible with 1 and 4. Thus a can be 1 or 4.\\n\\nSo we consider:\\n1) n^2 = 25p + 1.\\n2) n^2 = 25p + 4.\\n\\n1) n^2 = 25p + 1 => 25p = n^2 - 1 = (n-1)(n+1). Since n-1 and n+1 differ by 2, their product is 25 times a prime. Factor 25 = 5^2; thus (n-1, n+1) together must contribute exactly two factors of 5 and possibly the prime p.\\n\\nWe look for small n that make (n^2 - 1)/25 prime.\\nCompute n^2 - 1 and divide by 25 for n such that n^2 ≡ 1 (mod 25). That occurs when n ≡ ±1, ±4, ±6, ±9, ±11 (mod 25). We'll try small n in those residue classes until the resulting p stops being prime or becomes obviously composite in a pattern.\\n\\nCheck small n explicitly:\\n- n = 4: n^2 = 16, so 25p + 1 = 16 => 25p = 15 => p not integer.\\n- n = 6: n^2 = 36, 25p + 1 = 36 => 25p = 35 => p not integer.\\n- n = 9: n^2 = 81, 25p + 1 = 81 => 25p = 80 => p = 80/25 = 16/5, not integer.\\n- n = 11: n^2 = 121, 25p + 1 = 121 => 25p = 120 => p = 24, composite.\\n- n = 14: n^2 = 196, 25p + 1 = 196 => 25p = 195 => p = 195/25 not integer.\\n- n = 16: n^2 = 256, 25p + 1 = 256 => 25p = 255 => p = 51, composite.\\n- n = 19: n^2 = 361, 25p + 1 = 361 => 25p = 360 => p = 72, composite.\\n- n = 21: n^2 = 441, 25p + 1 = 441 => 25p = 440 => p = 17.6, not integer.\\n- n = 24: n^2 = 576, 25p + 1 = 576 => 25p = 575 => p = 23, which is prime.\\nSo p = 23 is one solution.\\n\\nWe should check whether more solutions occur for larger n, but we also have case 2 to consider. Empirically, we’ve found a prime, and the problem statement says there are exactly two primes total. We'll find the other from the second case.\\n\\n2) n^2 = 25p + 4 => 25p = n^2 - 4 = (n-2)(n+2).\\nAgain, (n-2, n+2) differ by 4, and their product equals 25 times a prime. Also, n^2 ≡ 4 (mod 25) occurs when n ≡ ±2 or ±3 or ±7 or ±8 or ±12 (mod 25) (those whose squares are 4 mod 25). We test small candidates.\\n\\nWe want (n^2 - 4)/25 to be prime.\\n- n = 3: n^2 = 9; 25p+4=9 => 25p=5 => p=1/5 not integer.\\n- n = 7: n^2 = 49; 25p+4=49 => 25p=45 => p=9/5 not integer.\\n- n = 8: n^2 = 64; 25p+4=64 => 25p=60 => p=12/5 not integer.\\n- n = 12: n^2 = 144; 25p+4=144 => 25p=140 => p=28/5 not integer.\\n- n = 13: n^2=169; 25p+4=169 =>25p=165 => p=33/5 not integer.\\n- n = 17: n^2=289; 25p+4=289 =>25p=285 => p=57/5 not integer.\\n- n = 18: n^2=324; 25p+4=324 =>25p=320 => p=64/5 not integer.\\n- n = 22: n^2=484; 25p+4=484 =>25p=480 => p=96/5 not integer.\\n- n = 23: n^2=529; 25p+4=529 =>25p=525 => p=21, composite.\\n- n = 27: n^2=729; 25p+4=729 =>25p=725 => p=29, which is prime.\\nSo p = 29 is another solution.\\n\\nWe have found two primes p = 23 and p = 29. The problem states there are exactly two such primes, so these must be the only ones. Their sum is 23 + 29 = 52.\",\n    \"answer\": \"52\"\n}",
+  "problem_type": [
+    {
+      "A1694": [
+        "Mathematics -> Applied Mathematics -> Math Word Problems"
+      ]
+    },
+    {
+      "A1695": [
+        "Mathematics -> Number Theory -> Prime Numbers"
+      ]
+    }
+  ],
+  "output_answer": [
+    "52"
+  ],
+  "ground_truth": [
+    {
+      "A1694": "344.54"
+    },
+    {
+      "A1695": "52"
+    }
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 2490,
+  "completion_tokens": 1695,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

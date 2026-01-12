@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-01-09T19:51:06.208065+00:00",
+  "model": "meta-llama/llama-3.1-70b-instruct",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 34,
+  "math_problem": [
+    {
+      "A3709": "Find the greatest positive integer $x$ such that $23^{6+x}$ divides $2000!$"
+    },
+    {
+      "A1188": "Let $S=\\{-100,-99,-98, \\ldots, 99,100\\}$. Choose a 50-element subset $T$ of $S$ at random. Find the expected number of elements of the set $\\{|x|: x \\in T\\}$."
+    }
+  ],
+  "reasoning_content": "Let's solve the problems step by step.\n\n**Problem 1: Find the greatest positive integer x such that 23^(6 + x) divides 2000!**\n\n1. We need to find the highest power of 23 dividing 2000!, i.e., compute the exponent of 23 in 2000!.\n\n2. The exponent of a prime p in n! can be found using Legendre's formula:\n   \\[\n   \\text{exponent} = \\sum_{k=1}^{\\infty} \\left\\lfloor \\frac{n}{p^k} \\right\\rfloor\n   \\]\n   \n3. For p=23, compute:\n   - \\(\\left\\lfloor \\frac{2000}{23} \\right\\rfloor\\)\n   - \\(\\left\\lfloor \\frac{2000}{23^2} \\right\\rfloor\\)\n   - \\(\\left\\lfloor \\frac{2000}{23^3} \\right\\rfloor\\)\n   - higher powers are unnecessary if they exceed 2000.\n\n4. Calculate each term:\n   - \\(23^1 = 23\\), \\(\\lfloor 2000/23 \\rfloor = 86\\)\n   - \\(23^2 = 529\\), \\(\\lfloor 2000/529 \\rfloor = 3\\)\n   - \\(23^3 = 12167\\), which is greater than 2000, so the sum terminates here.\n\n5. Total exponent:\n   \\[\n   86 + 3 = 89\n   \\]\n\n6. We want the largest x such that \\(23^{6 + x}\\) divides 2000!. So, \\(6 + x \\leq 89\\), thus:\n   \\[\n   x \\leq 89 - 6 = 83\n   \\]\n\n7. The greatest such integer x is 83.\n\n---\n\n**Problem 2: Expectation of the number of elements in \\(|x|\\) for a randomly chosen 50-element subset T of S**\n\n1. S = \\{-100, -99, ..., -1, 0, 1, ..., 99, 100\\}, total size = 201.\n\n2. We choose a subset T of size 50 uniformly at random.\n\n3. For each element \\(x\\) in S, define an indicator variable that it is in T.\n\n4. The expected number of elements with a certain property is the sum over all elements of the probability that the element is in T.\n\n5. For the possible values of \\(x\\), the set \\(\\{|x|\\}\\) takes values from 0 to 100 (since 0 and the absolute values of positive integers).\n\n6. For each absolute value \\(k\\) (from 0 to 100):\n\n   - The elements with \\(|x|=k\\) are:\n\n     - For \\(k=0\\), only 0 (just one element).\n     - For \\(k \\geq 1\\), two elements: \\(k\\) and \\(-k\\).\n\n   - To count the expected size of \\(\\{|x|: x \\in T\\}\\):\n\n     - For \\(k=0\\):\n       Probability that 0 is in T: \\(\\frac{\\binom{200}{49}}{\\binom{201}{50}}\\) (since total 201 elements, pick 50).\n\n     - For each \\(k \\ge 1\\):\n       The two elements \\(k\\) and \\(-k\\).\n\n       - Probability that at least one of these two is in T:\n         \\[\n         1 - \\text{Probability that both are not in T}\n         \\]\n         \n       - Probability that both are not in T:\n         \\[\n         \\frac{\\binom{199}{50}}{\\binom{201}{50}}\n         \\]\n         \n       - Hence, probability at least one is in T:\n         \\[\n         1 - \\frac{\\binom{199}{50}}{\\binom{201}{50}}\n         \\]\n\n     - But since the indicator for the absolute value directs if at least one element with that absolute value is in T, each \\(k \\geq 1\\) contributes this probability.\n\n7. For the expectation, sum over all \\(k\\):\n\n   \\[\n   E = \\sum_{k=0}^{100} \\text{(number of elements with } |x|=k) \\times \\text{probability that at least one of those elements is in T}\n   \\]\n\n   - For \\(k=0\\):\n\n     \\[\n     \\text{contribution} = 1 \\times \\frac{\\binom{200}{50}}{\\binom{201}{50}}\n     \\]\n\n   - For \\(k=1,2,...,100\\):\n\n     \\[\n     2 \\times \\left(1 - \\frac{\\binom{199}{50}}{\\binom{201}{50}}\\right)\n     \\]\n\n7. The expected number of distinct absolute values is:\n\n   \\[\n   E = \\frac{\\binom{200}{50}}{\\binom{201}{50}} + 100 \\times 2 \\times \\left(1 - \\frac{\\binom{199}{50}}{\\binom{201}{50}}\\right)\n   \\]\n\n8. Simplify the ratios:\n\n   \\[\n   \\frac{\\binom{200}{50}}{\\binom{201}{50}} = \\frac{200!/(50! \\times 150!)}{201!/(50! \\times 151!)} = \\frac{200! \\times 151!}{201! \\times 150!}\n   \\]\n\n   \\[\n   = \\frac{200! \\times 151!}{(201 \\times 200!) \\times 150!} = \\frac{151!}{201 \\times 150!}\n   \\]\n\n   - Note \\(151! = 151 \\times 150!\\), so:\n\n     \\[\n     \\frac{151 \\times 150!}{201 \\times 150!} = \\frac{151}{201}\n     \\]\n\n   Similarly:\n\n   \\[\n   \\frac{\\binom{199}{50}}{\\binom{201}{50}} = \\frac{199!/(50! \\times 149!)}{201!/(50! \\times 151!)} = \\frac{199! \\times 151!}{201! \\times 149!}\n   \\]\n\n   - \\(201! = 201 \\times 200 \\times 199!\\)\n   - Thus:\n\n     \\[\n     \\frac{199! \\times 151!}{201 \\times 200 \\times 199! \\times 149!} = \\frac{151!}{201 \\times 200 \\times 149!}\n     \\]\n     \n   - Note \\(151! = 151 \\times 150 \\times 149!\\), so:\n\n     \\[\n     \\frac{151 \\times 150 \\times 149!}{201 \\times 200 \\times 149!} = \\frac{151 \\times 150}{201 \\times 200}\n     \\]\n\n   - Simplify numerator and denominator:\n\n     \\[\n     \\frac{151 \\times 150}{201 \\times 200}\n     \\]\n\n   - Now write the expectation:\n\n     \\[\n     E = \\frac{151}{201} + 100 \\times 2 \\times \\left(1 - \\frac{151 \\times 150}{201 \\times 200}\\right)\n     \\]\n\n     \\[\n     E = \\frac{151}{201} + 200 \\left(1 - \\frac{151 \\times 150}{201 \\times 200}\\right)\n     \\]\n\n   - Simplify the inner fraction:\n\n     \\[\n     \\frac{151 \\times 150}{201 \\times 200}\n     \\]\n\n9. Final form:\n\n   \\[\n   E = \\frac{151}{201} + 200 \\left(1 - \\frac{151 \\times 150}{201 \\times 200}\\right)\n   \\]\n\n   \\[\n   E = \\frac{151}{201} + 200 - \\frac{151 \\times 150}{201}\n   \\]\n\n   - Because \\(200 \\times \\frac{151 \\times 150}{201 \\times 200} = \\frac{151 \\times 150}{201}\\).\n\n10. Calculate:\n\n    \\[\n    E = \\frac{151}{201} + 200 - \\frac{151 \\times 150}{201}\n    \\]\n\n    - Break down the last term:\n\n    \\[\n    \\frac{151 \\times 150}{201} = \\frac{(151 \\times 150)}{201}\n    \\]\n\n    - Numerator: \\(151 \\times 150 = 22650\\).\n\n    - Now:\n\n    \\[\n    E = \\frac{151}{201} + 200 - \\frac{22650}{201}\n    \\]\n\n    - Convert all to common denominator 201:\n\n    \\[\n    E = \\frac{151}{201} + \\frac{200 \\times 201}{201} - \\frac{22650}{201}\n    \\]\n\n    \\[\n    E = \\frac{151 + 40200 - 22650}{201}\n    \\]\n\n    \\[\n    E = \\frac{151 + 40200 - 22650}{201} = \\frac{151 + 40200 - 22650}{201}\n    \\]\n\n    \\[\n    = \\frac{151 + 40200 - 22650}{201} = \\frac{151 + 40200 - 22650}{201}\n    \\]\n\n    Calculate numerator:\n\n    \\[\n    151 + 40200 = 40351\n    \\]\n\n    \\[\n    40351 - 22650 = 17701\n    \\]\n\n    Therefore,\n\n    \\[\n    E = \\frac{17701}{201}\n    \\]\n\n---\n\n**Final answers:**\n\n```json\n{\n    \"reasoning\": \"Problem 1: Compute the exponent of 23 in 2000! using Legendre's formula: ⎣2000/23⎦ + ⎣2000/529⎦ = 86 + 3 = 89. The maximum x such that 23^{6 + x} divides 2000! is 89 - 6 = 83. Problem 2: Number of absolute values in set S is 101 (0 to 100). The probability that at least one of the pair (k, -k) is included when choosing 50 elements from 201: For k=0, probability is (just 0 included), which is (binom(200,50)/binom(201,50)) = 151/201. For k≥1, probability is 1 - (binom(199,50)/binom(201,50)) = 1 - (151*150)/(201*200). The expected number of distinct absolute values is: (151/201) + 100*2*(1 - (151*150)/(201*200)) = (151/201) + 200*(1 - (151*150)/(201*200)) = (151/201) + 200 - (151*150)/201 = (151/201) + 40200/201 - 22650/201 = (151 + 40200 - 22650)/201 = 17701/201.\",\n    \"answer_1\": \"83\",\n    \"answer_2\": \"17701/201\"\n}\n```",
+  "problem_type": [
+    {
+      "A3709": [
+        "Mathematics -> Number Theory -> Factorization"
+      ]
+    },
+    {
+      "A1188": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations"
+      ]
+    }
+  ],
+  "output_answer": [
+    "83",
+    "17701/201"
+  ],
+  "ground_truth": [
+    {
+      "A3709": "83"
+    },
+    {
+      "A1188": "\\frac{8825}{201}"
+    }
+  ],
+  "correctness": [
+    true,
+    false
+  ],
+  "prompt_tokens": 442,
+  "completion_tokens": 2465,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

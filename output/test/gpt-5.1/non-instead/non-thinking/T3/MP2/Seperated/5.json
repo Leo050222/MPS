@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-01-10T17:21:14.813534+00:00",
+  "model": "gpt-5.1",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 5,
+  "math_problem": [
+    {
+      "A1054": "Among citizens of Cambridge there exist 8 different types of blood antigens. In a crowded lecture hall are 256 students, each of whom has a blood type corresponding to a distinct subset of the antigens; the remaining of the antigens are foreign to them. Quito the Mosquito flies around the lecture hall, picks a subset of the students uniformly at random, and bites the chosen students in a random order. After biting a student, Quito stores a bit of any antigens that student had. A student bitten while Quito had $k$ blood antigen foreign to him/her will suffer for $k$ hours. What is the expected total suffering of all 256 students, in hours?"
+    },
+    {
+      "A1733": "James writes down three integers. Alex picks some two of those integers, takes the average of them, and adds the result to the third integer. If the possible final results Alex could get are 42, 13, and 37, what are the three integers James originally chose?"
+    }
+  ],
+  "reasoning_content": "{\n  \"reasoning\": \"Problem 1:\\nThere are 8 antigens; each student corresponds to a distinct subset of {1,...,8}. Thus there are 2^8 = 256 students, one with each possible subset S ⊆ {1,...,8}.\\nQuito first chooses a random subset of the 256 students (each subset equally likely), then bites the chosen students in a random order. For expectation, we can focus on a fixed student and use linearity over students and over antigens.\\n\\nModel the process antigen-by-antigen. Fix a student with antigen set S, and a particular antigen a.\\n- If a ∈ S, then that antigen is never foreign to this student, so contribution to suffering from antigen a is 0.\\n- If a ∉ S, the student suffers for 1 hour for each time they are bitten while Quito carries antigen a.\\nThus for this student, suffering = sum over a ∉ S of (number of bites when Quito’s stored set contains a).\\n\\nCrucially, the expected suffering of a given student from a given foreign antigen a is independent of which student (as long as they don’t have a). By symmetry across subsets, all students missing a given antigen a behave identically.\\nAlso, the subsets of students Quito chooses and their bite order are symmetric in all 256 students, and all 8 antigens are symmetric as labels.\\n\\nInstead of directly simulating Quito’s random subset and order, use a more conceptual model: Bitten students form a random permutation of some random subset. But expectation is linear and permutation-symmetric, so we can imagine the following equivalent exposure process for a fixed antigen a:\\n- Among the 256 students, exactly half (128) have antigen a and half do not.\\n- Consider the random subset of all students who will ever be bitten. Conditional on this subset, the bite order is a random permutation.\\n- For each bitten student lacking a, we need the expected number of previously bitten students having a (since once bitten, Quito carries a if any previous bitten student had a).\\n\\nHowever, a more direct global symmetry argument is simpler. Consider a pair (student i, antigen a) with a ∉ S_i. Define an indicator for each bite event of student i that antigen a is present in Quito at that moment. Summing over all events and all such pairs counts the total suffering from antigen a across all students. By symmetry, each ordered pair (bitten student i, earlier bitten student j) with a ∈ S_j and a ∉ S_i contributes equally in expectation, and the random choice of bitten subset/ordering does not bias towards or against any antigen. Moreover, because each antigen is present in exactly half of the students, each antigen behaves the same way in expectation.\\n\\nA standard symmetry shortcut: Because each student corresponds to a subset of antigens and all 2^8 subsets appear exactly once, for any fixed student the distribution of other students’ antigen sets is uniform over all 2^8 subsets. Consequently, from that student’s perspective, the bite of any other particular student independently has each antigen with probability 1/2.\\nFor a student lacking antigen a, for any given other student who is bitten before them, the probability that other student has a is 1/2. Thus, conditional on the student being bitten at all, the expected number of earlier bitten students that have antigen a is (number of earlier bites)·(1/2). Averaging over positions and conditional inclusion, by symmetry, the expected number of earlier bitten students is exactly half the expected total number of other bitten students. So the expected contribution for antigen a to a given lacking student is (1/2)·E[# of other bitten students].\\nBut, by symmetry among students, E[# of bitten students] is the same constant c for each of the 256 students. Thus for each student, E[# of other bitten students] = c - P(this student is bitten). Also by symmetry, P(this student is bitten) = c/256. Hence E[# of other bitten students] = c - c/256 = c·(255/256). So the expected contribution from antigen a, for a student lacking a, is (1/2)·c·(255/256).\\nNow use the fact that half the students possess antigen a and half lack it. Summing the expected suffering from antigen a over all 256 students:\\n- 128 students have a: contribution 0\\n- 128 students lack a: contribution = 128 · (1/2)·c·(255/256) = c·(128/2)·(255/256) = c·64·(255/256)\\nBut the total suffering from antigen a must also equal the expected total number of times Quito carries antigen a while biting students lacking a. Alternatively, we can step back to a simpler symmetric count.\\nAn easier combinatorial method: directly represent all students and antigens uniformly.\\nEach student is a subset S ⊆ {1,...,8}. For each antigen a, exactly half of the 256 students have it; so 128 have a, 128 do not. Consider a single random bite of a random student under the following equivalent sampling: pick a random nonempty subset of students and a random student from that subset. That is equivalent to picking a random ordered pair (S, i) where S is the bitten set, i ∈ S, and all such (S, i) are equally likely.\\nIn such an ordered pair, the probability that student i is missing antigen a is 1/2, and independently, the probability that at least one earlier bitten student in S has antigen a is also 1/2 by symmetry, leading to probability 1/4 that a given antigen contributes 1 unit of suffering at that bite. Summing over 8 antigens gives expected suffering 8·(1/4) = 2 per bite. Next, the expected number of total bites is the expected size of the randomly chosen subset of the 256 students.\\nThe subset of students Quito bites is uniformly random among all 2^256 subsets. For a fixed student, the probability they are in the subset is 1/2. Hence each student is bitten with probability 1/2, and the expected total number of bitten students (bites) is 256·(1/2) = 128.\\nThus expected total suffering = (expected suffering per bite)·(expected number of bites) = 2 · 128 = 256.\\n\\nProblem 2:\\nLet the three original integers be x, y, z. Alex can choose any two, average them, and add to the third. That yields three possible expressions:\\n1) Choose x, y; add to z: (x + y)/2 + z\\n2) Choose x, z; add to y: (x + z)/2 + y\\n3) Choose y, z; add to x: (y + z)/2 + x\\nWe are told these three possible results are 42, 13, 37 in some order.\\nThus { (x + y)/2 + z, (x + z)/2 + y, (y + z)/2 + x } = {42, 13, 37}.\\nMultiply each expression by 2 to clear denominators:\\nA = x + y + 2z\\nB = x + z + 2y\\nC = y + z + 2x\\nThese three numbers, in some order, equal 84, 26, 74 respectively.\\nNote that A + B + C = (x + y + 2z) + (x + z + 2y) + (y + z + 2x)\\n= (x + x + 2x) + (y + 2y + y) + (2z + z + z)\\n= 4x + 4y + 4z = 4(x + y + z).\\nSo x + y + z = (A + B + C)/4.\\nBut A + B + C is also the sum of the three doubled results: 84 + 26 + 74 = 184.\\nThus x + y + z = 184 / 4 = 46.\\nNow, for each expression, e.g. A = x + y + 2z, we can write it as (x + y + z) + z = 46 + z.\\nSimilarly, B = 46 + y and C = 46 + x.\\nTherefore the multiset {A, B, C} = {46 + x, 46 + y, 46 + z} must equal {84, 26, 74}.\\nSo {x, y, z} = {84 - 46, 26 - 46, 74 - 46} = {38, -20, 28}.\\nThus the three integers James chose are 38, -20, and 28 (in any order). We can check:\\n- Using 38 and -20 averaged, add to 28:\\n(38 + (-20))/2 + 28 = 18/2 + 28 = 9 + 28 = 37.\\n- Using 38 and 28 averaged, add to -20:\\n(38 + 28)/2 + (-20) = 66/2 - 20 = 33 - 20 = 13.\\n- Using -20 and 28 averaged, add to 38:\\n(-20 + 28)/2 + 38 = 8/2 + 38 = 4 + 38 = 42.\\nThese match 42, 13, 37 exactly.\\n\\nFinal answers:\\nProblem 1: 256\\nProblem 2: 38, -20, 28\",\n  \"answer_1\": \"256\",\n  \"answer_2\": \"38, -20, 28\"\n}",
+  "problem_type": [
+    {
+      "A1054": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Other"
+      ]
+    },
+    {
+      "A1733": [
+        "Mathematics -> Algebra -> Algebra -> Equations and Inequalities"
+      ]
+    }
+  ],
+  "output_answer": [
+    "256",
+    "38, -20, 28"
+  ],
+  "ground_truth": [
+    {
+      "A1054": "\\frac{2^{135}-2^{128}+1}{2^{119} \\cdot 129}"
+    },
+    {
+      "A1733": "-20, 28, 38"
+    }
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 2542,
+  "completion_tokens": 2122,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

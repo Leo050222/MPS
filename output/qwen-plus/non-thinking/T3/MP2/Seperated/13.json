@@ -1,0 +1,48 @@
+{
+  "timestamp": "2026-01-05T04:34:46.615185+00:00",
+  "model": "qwen-plus",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 13,
+  "math_problem": [
+    {
+      "A3630": "Let $n$ be square with 4 digits, such that all its digits are less than 6. If we add 1 to each digit the resulting number is another square. Find $n$"
+    },
+    {
+      "A1051": "P is a polynomial. When P is divided by $x-1$, the remainder is -4 . When P is divided by $x-2$, the remainder is -1 . When $P$ is divided by $x-3$, the remainder is 4 . Determine the remainder when $P$ is divided by $x^{3}-6 x^{2}+11 x-6$."
+    }
+  ],
+  "reasoning_content": "{\n    \"reasoning\": \"Problem 1:\\n\\nWe are given that:\\n- $ n $ is a 4-digit perfect square.\\n- All digits of $ n $ are less than 6 (i.e., digits ∈ {0,1,2,3,4,5}).\\n- If we add 1 to each digit of $ n $, the resulting number is also a perfect square.\\n\\nLet’s solve step by step.\\n\\nStep 1: Determine the range of 4-digit squares.\\nThe smallest 4-digit number is 1000, largest is 9999.\\n$ \\\\sqrt{1000} \\\\approx 31.6 $, so smallest integer whose square is 4-digit: 32.\\n$ \\\\sqrt{9999} \\\\approx 99.99 $, so largest: 99.\\nSo $ n = k^2 $, where $ k $ ranges from 32 to 99.\\n\\nStep 2: We need all digits of $ n $ < 6 → digits ∈ {0,1,2,3,4,5}\\nAlso, when we add 1 to each digit, the new number has digits ∈ {1,2,3,4,5,6}, and this new number must also be a perfect square.\\n\\nLet’s denote:\\n- $ n = d_1d_2d_3d_4 $ in decimal digits.\\n- Then new number $ m = (d_1+1)(d_2+1)(d_3+1)(d_4+1) $, interpreted as a base-10 number.\\nNote: This digit-wise addition only makes sense if no carry-over occurs — which it doesn’t because each digit ≤ 5, so +1 makes it ≤ 6.\\n\\nSo $ m $ is formed by adding 1 to each digit of $ n $, numerically.\\nFor example, if $ n = 1234 $, then $ m = 2345 $.\\nBut here, $ n $ has digits ≤ 5, so $ m $ will have digits ≤ 6.\\n\\nWe can loop through all $ k $ from 32 to 99, compute $ n = k^2 $, check if all digits < 6, then form $ m $ by adding 1 to each digit, and check if $ m $ is a perfect square.\\n\\nLet’s do this systematically.\\n\\nWe’ll go through $ k $ from 32 to 99.\\n\\nRather than list all, let's think about constraints.\\n\\nAlternatively, write small logical code in mind.\\n\\nTry some examples:\\n\\nTry $ k = 32 $: $ n = 1024 $. Digits: 1,0,2,4 — all < 6. Good.\\nAdd 1 to each digit: 2,1,3,5 → number = 2135.\\nIs 2135 a perfect square? $ \\\\sqrt{2135} \\\\approx 46.2 $, $ 46^2 = 2116 $, $ 47^2 = 2209 $ → no.\\n\\nNext: $ k = 33 $: $ 1089 $ → digits: 1,0,8,9 → 8 and 9 ≥ 6 → invalid.\\n$ k = 34 $: 1156 → 1,1,5,6 → 6 not < 6 → invalid.\\n$ k = 35 $: 1225 → digits: 1,2,2,5 → all < 6 → valid.\\nAdd 1: 2,3,3,6 → number: 2336.\\n$ \\\\sqrt{2336} \\\\approx 48.3 $, $ 48^2=2304 $, $ 49^2=2401 $ → not square.\\n\\n$ k = 36 $: 1296 → 9,6 → invalid.\\n$ k = 37 $: 1369 → 6,9 → invalid.\\n$ k = 38 $: 1444 → digits: 1,4,4,4 → all < 6 → good.\\nAdd 1: 2,5,5,5 → 2555.\\n$ \\\\sqrt{2555} \\\\approx 50.5 $, $ 50^2=2500 $, $ 51^2=2601 $ → no.\\n\\n$ k = 39 $: 1521 → 1,5,2,1 → all < 6 → good.\\nAdd 1: 2,6,3,2 → 2632. Digit 6 is allowed in m? Yes, since we only require digits < 6 in n. m can have digits up to 6.\\nBut is 2632 square? $ \\\\sqrt{2632} \\\\approx 51.3 $, $ 51^2=2601 $, $ 52^2=2704 $ → no.\\n\\n$ k = 40 $: 1600 → 6 → invalid.\\n$ k = 41 $: 1681 → 6,8 → invalid.\\n$ k = 42 $: 1764 → 7,6 → invalid.\\n$ k = 43 $: 1849 → 8,9 → invalid.\\n$ k = 44 $: 1936 → 9 → invalid.\\n$ k = 45 $: 2025 → digits: 2,0,2,5 → all < 6 → good.\\nAdd 1: 3,1,3,6 → 3136.\\nIs 3136 a square?\\n$ \\\\sqrt{3136} = ? $\\nTry: $ 56^2 = 3136 $? $ 50^2=2500 $, $ 60^2=3600 $, $ 55^2=3025 $, $ 56^2 = (55+1)^2 = 3025 + 110 + 1 = 3136 $ → YES!\\n\\nSo $ n = 2025 $, $ m = 3136 = 56^2 $\\n\\nCheck: digits of 2025: 2,0,2,5 → all < 6 → yes.\\nAdd 1 to each digit: 3,1,3,6 → 3136 → yes, and it's $ 56^2 $.\\n\\nIs this the only one? Let’s check others to be safe.\\n\\n$ k = 46 $: 2116 → digits: 2,1,1,6 → 6 not < 6 → invalid.\\n$ k = 47 $: 2209 → 9 → invalid.\\n$ k = 48 $: 2304 → 2,3,0,4 → all < 6 → good.\\nAdd 1: 3,4,1,5 → 3415.\\n$ \\\\sqrt{3415} \\\\approx 58.4 $, $ 58^2=3364 $, $ 59^2=3481 $ → no.\\n\\n$ k = 49 $: 2401 → 2,4,0,1 → good.\\nAdd 1: 3,5,1,2 → 3512.\\n$ \\\\sqrt{3512} \\\\approx 59.25 $, $ 59^2=3481 $, $ 60^2=3600 $ → 3512 - 3481 = 31 → not square.\\n\\n$ k = 50 $: 2500 → 2,5,0,0 → all < 6 → good.\\nAdd 1: 3,6,1,1 → 3611.\\n$ \\\\sqrt{3611} \\\\approx 60.1 $, $ 60^2=3600 $, $ 61^2=3721 $ → 3611 - 3600 = 11 → not square.\\n\\n$ k = 51 $: 2601 → 6 → invalid.\\n$ k = 52 $: 2704 → 7 → invalid.\\n$ k = 53 $: 2809 → 8,9 → invalid.\\n$ k = 54 $: 2916 → 9 → invalid.\\n$ k = 55 $: 3025 → 3,0,2,5 → all < 6 → good.\\nAdd 1: 4,1,3,6 → 4136.\\n$ \\\\sqrt{4136} \\\\approx 64.3 $, $ 64^2=4096 $, $ 65^2=4225 $ → 4136 - 4096 = 40 → not square.\\n\\n$ k = 56 $: 3136 → 6 → but digit 6 not < 6 → invalid.\\n$ k = 57 $: 3249 → 9 → invalid.\\n$ k = 58 $: 3364 → 6 → invalid.\\n$ k = 59 $: 3481 → 8 → invalid.\\n$ k = 60 $: 3600 → 6 → invalid.\\n$ k = 61 $: 3721 → 7 → invalid.\\n$ k = 62 $: 3844 → 8 → invalid.\\n$ k = 63 $: 3969 → 9 → invalid.\\n$ k = 64 $: 4096 → 9 → invalid.\\n$ k = 65 $: 4225 → 4,2,2,5 → all < 6 → good.\\nAdd 1: 5,3,3,6 → 5336.\\n$ \\\\sqrt{5336} \\\\approx 73.05 $, $ 73^2=5329 $, $ 74^2=5476 $ → 5336 - 5329 = 7 → not square.\\n\\n$ k = 66 $: 4356 → 6 → invalid.\\n$ k = 67 $: 4489 → 8,9 → invalid.\\n$ k = 68 $: 4624 → 6 → invalid.\\n$ k = 69 $: 4761 → 7 → invalid.\\n$ k = 70 $: 4900 → 9 → invalid.\\n$ k = 71 $: 5041 → 5,0,4,1 → all < 6 → good.\\nAdd 1: 6,1,5,2 → 6152.\\n$ \\\\sqrt{6152} \\\\approx 78.4 $, $ 78^2=6084 $, $ 79^2=6241 $ → no.\\n\\n$ k = 72 $: 5184 → 8 → invalid.\\n$ k = 73 $: 5329 → 9 → invalid.\\n$ k = 74 $: 5476 → 7,6 → invalid.\\n$ k = 75 $: 5625 → 6 → invalid.\\n$ k = 76 $: 5776 → 7 → invalid.\\n$ k = 77 $: 5929 → 9 → invalid.\\n$ k = 78 $: 6084 → 6,8 → invalid.\\n$ k = 79 $: 6241 → 6 → invalid.\\n$ k = 80 $: 6400 → 6 → invalid.\\n$ k = 81 $: 6561 → 6 → invalid.\\n$ k = 82 $: 6724 → 7 → invalid.\\n$ k = 83 $: 6889 → 8 → invalid.\\n$ k = 84 $: 7056 → 7 → invalid.\\n$ k = 85 $: 7225 → 7 → invalid.\\n$ k = 86 $: 7396 → 9 → invalid.\\n$ k = 87 $: 7569 → 9 → invalid.\\n$ k = 88 $: 7744 → 7 → invalid.\\n$ k = 89 $: 7921 → 9 → invalid.\\n$ k = 90 $: 8100 → 8 → invalid.\\n$ k = 91 $: 8281 → 8 → invalid.\\n$ k = 92 $: 8464 → 8 → invalid.\\n$ k = 93 $: 8649 → 8,9 → invalid.\\n$ k = 94 $: 8836 → 8 → invalid.\\n$ k = 95 $: 9025 → 9 → invalid.\\n$ k = 96 $: 9216 → 9 → invalid.\\n$ k = 97 $: 9409 → 9 → invalid.\\n$ k = 98 $: 9604 → 9,6 → invalid.\\n$ k = 99 $: 9801 → 9,8 → invalid.\\n\\nOnly candidate found: $ n = 2025 $\\n\\nAnswer to Problem 1: 2025\\n\\nProblem 2:\\n\\nWe are given:\\n- $ P(1) = -4 $ (since remainder when divided by $ x-1 $ is -4)\\n- $ P(2) = -1 $\\n- $ P(3) = 4 $\\n\\nWe are to find the remainder when $ P(x) $ is divided by $ x^3 - 6x^2 + 11x - 6 $\\n\\nFirst, factor the divisor:\\n$ x^3 - 6x^2 + 11x - 6 $\\nTry rational roots: possible ±1,2,3,6\\nTry $ x=1 $: $ 1 - 6 + 11 - 6 = 0 $ → yes.\\nDivide: $ (x-1)(?) $\\nUse polynomial division or synthetic:\\nCoefficients: 1 | -6 | 11 | -6\\nSynthetic division with root 1:\\n1 | 1  -6  11  -6\\n   |     1  -5   6\\n   ----------------\\n     1  -5   6   0\\n→ $ (x-1)(x^2 -5x +6) $\\nNow factor $ x^2 -5x+6 = (x-2)(x-3) $\\nSo divisor = $ (x-1)(x-2)(x-3) $\\n\\nSo we are dividing $ P(x) $ by a cubic polynomial, so remainder $ R(x) $ is at most degree 2:\\nLet $ R(x) = ax^2 + bx + c $\\nThen:\\n$ P(x) = (x-1)(x-2)(x-3)Q(x) + R(x) $\\nThen:\\n$ P(1) = R(1) = -4 $\\n$ P(2) = R(2) = -1 $\\n$ P(3) = R(3) = 4 $\\n\\nSo we have:\\n$ R(1) = a(1)^2 + b(1) + c = a + b + c = -4 $ ...(1)\\n$ R(2) = 4a + 2b + c = -1 $ ...(2)\\n$ R(3) = 9a + 3b + c = 4 $ ...(3)\\n\\nSolve this system:\\nEq (1): $ a + b + c = -4 $\\nEq (2): $ 4a + 2b + c = -1 $\\nEq (3): $ 9a + 3b + c = 4 $\\n\\nSubtract (1) from (2):\\n(2)-(1): $ (4a+2b+c) - (a+b+c) = -1 - (-4) $\\n→ $ 3a + b = 3 $ ...(4)\\n\\n(3)-(2): $ (9a+3b+c) - (4a+2b+c) = 4 - (-1) $\\n→ $ 5a + b = 5 $ ...(5)\\n\\nNow (5) - (4): $ (5a + b) - (3a + b) = 5 - 3 $ → $ 2a = 2 $ → $ a = 1 $\\n\\nFrom (4): $ 3(1) + b = 3 $ → $ 3 + b = 3 $ → $ b = 0 $\\n\\nFrom (1): $ 1 + 0 + c = -4 $ → $ c = -5 $\\n\\nSo $ R(x) = 1x^2 + 0x - 5 = x^2 - 5 $\\n\\nCheck:\\nR(1) = 1 - 5 = -4 → correct\\nR(2) = 4 - 5 = -1 → correct\\nR(3) = 9 - 5 = 4 → correct\\n\\nSo remainder is $ x^2 - 5 $\\n\\nAnswer to Problem 2: x^2 - 5\",\n    \"answer_1\": \"2025\",\n    \"answer_2\": \"x^2 - 5\"\n}",
+  "problem_type": [
+    {
+      "A3630": [
+        "Mathematics -> Number Theory -> Prime Numbers",
+        "Mathematics -> Number Theory -> Congruences"
+      ]
+    },
+    {
+      "A1051": [
+        "Mathematics -> Algebra -> Algebra -> Polynomial Operations"
+      ]
+    }
+  ],
+  "output_answer": [
+    "2025",
+    "x^2 - 5"
+  ],
+  "ground_truth": [
+    {
+      "A3630": "2025"
+    },
+    {
+      "A1051": "x^{2}-5"
+    }
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 410,
+  "completion_tokens": 4168,
+  "reasoning_tokens": 0,
+  "cost": 0.033672
+}

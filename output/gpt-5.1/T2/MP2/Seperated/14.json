@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-01-04T17:53:05.008400+00:00",
+  "model": "gpt-5.1",
+  "type": "T2_MP2_seperated_Evaluation",
+  "Problem_ID": 14,
+  "math_problem": [
+    {
+      "A1694": "Victoria wants to order at least 550 donuts from Dunkin' Donuts for the HMMT 2014 November contest. However, donuts only come in multiples of twelve. Assuming every twelve donuts cost \\$7.49, what is the minimum amount Victoria needs to pay, in dollars?"
+    },
+    {
+      "A1695": "There are two prime numbers $p$ so that $5 p$ can be expressed in the form $\\left\\lfloor\\frac{n^{2}}{5}\\right\\rfloor$ for some positive integer $n$. What is the sum of these two prime numbers?"
+    }
+  ],
+  "reasoning_content": "{\n    \"reasoning\": \"Problem 1: Donuts come in dozens (12). Victoria needs at least 550 donuts. Compute the minimum number of dozens: 550 ÷ 12 ≈ 45.83..., so we need 46 dozens. Each dozen costs 7.49 dollars. Total cost = 46 × 7.49. Compute: 7.49 × 40 = 299.60, and 7.49 × 6 = 44.94. Sum = 299.60 + 44.94 = 344.54. So Victoria must pay 344.54 dollars.\\n\\nProblem 2: We want primes p such that 5p = ⌊n²/5⌋ for some positive integer n. Let n = 5k + r, where r ∈ {0,1,2,3,4}. Then n² = 25k² + 10kr + r², so\\n\\nn²/5 = 5k² + 2kr + r²/5, and ⌊n²/5⌋ = 5k² + 2kr + ⌊r²/5⌋.\\nWe need 5p = 5k² + 2kr + ⌊r²/5⌋, so p = k² + (2kr)/5 + ⌊r²/5⌋/5.\\nFor p to be an integer, 5 must divide 2kr + ⌊r²/5⌋·(mod 5 condition). An easier route is to analyze n² modulo 5: n² mod 5 can be 0,1,4. Write n² = 5m + s with s ∈ {0,1,4}. Then ⌊n²/5⌋ = m when s ∈ {0,1,4}. We require m = 5p, hence n² = 5(5p) + s = 25p + s, with s ∈ {0,1,4}. So n² ≡ s (mod 25), and n² = 25p + s ⇒ p = (n² - s)/25 must be prime.\\nNow consider n modulo 25 and compute n² mod 25. We need values congruent to s ∈ {0,1,4}. Also we need (n² - s)/25 prime and positive. Enumerate residues:\\nSquares mod 25 for n = 0..24 are: 0²=0, 1²=1, 2²=4, 3²=9, 4²=16, 5²=0, 6²=11, 7²=24, 8²=14, 9²=6, 10²=0, 11²=21, 12²=19, 13²=19, 14²=21, 15²=0, 16²=6, 17²=14, 18²=24, 19²=11, 20²=0, 21²=16, 22²=9, 23²=4, 24²=1 (all mod 25). The residues that equal 0,1,4 are possible s values, but recall s is exactly 0,1,4. So we need n² ≡ 0,1,4 (mod 25) and then set s equal to that residue.\\nCase s = 0: n² ≡ 0 mod 25. Then n multiple of 5. Let n = 5t, then n² = 25t², so 25p = n² (since s = 0) ⇒ p = t². For p prime and t positive integer, t² prime implies t = 1 and p = 1, not prime. So no solutions for s = 0.\\nCase s = 1: n² ≡ 1 mod 25. Then possible residues for n are those with square 1 mod 25: from the list, n ≡ 1,24 (or equivalently ±1). So n² = 25p + 1 ⇒ p = (n² - 1)/25. Note n² - 1 = (n-1)(n+1). For n ≡ 1 mod 25, write n = 25k + 1. Then n² - 1 = (25k + 1)² - 1 = 625k² + 50k. Factor 25: (n² - 1)/25 = 25k² + 2k = k(25k + 2). For this to be prime, k must be 1 (otherwise product of two >1). For k = 1, p = 1*(25*1 + 2) = 27, not prime. For n ≡ 24 mod 25, write n = 25k + 24. Then n² - 1 = (25k + 24)² - 1 = 625k² + 1200k + 576 - 1 = 625k² + 1200k + 575. Divide by 25: p = (n² - 1)/25 = 25k² + 48k + 23. We need this prime. Try small k.\\n- k = 0: n = 24, p = 23 (prime). Check original condition: n² = 576, n²/5 = 115.2, floor = 115 = 5*23, works.\\n- k = 1: p = 25 + 48 + 23 = 96, not prime.\\n- For k ≥ 2, 25k² + 48k + 23 grows and can be composite; however, the problem statement asserts only two prime solutions total, so we must also inspect the other s case.\\nCase s = 4: n² ≡ 4 mod 25. From the list, residues giving 4 are n ≡ 2,23 (i.e., ±2). Then n² = 25p + 4 ⇒ p = (n² - 4)/25. Also n² - 4 = (n-2)(n+2).\\nSubcase n ≡ 2 mod 25: n = 25k + 2. Then n² - 4 = (25k + 2)² - 4 = 625k² + 100k. So p = (n² - 4)/25 = 25k² + 4k = k(25k + 4). For primality, k must be 1. For k = 1: p = 1*(25+4) = 29 (prime). Then n = 27. Check: n² = 729, n²/5 = 145.8, floor = 145 = 5*29, works.\\nSubcase n ≡ 23 mod 25: n = 25k + 23. Then n² - 4 = (25k + 23)² - 4 = 625k² + 1150k + 529 - 4 = 625k² + 1150k + 525. Divide by 25: p = 25k² + 46k + 21. Try k = 0: p = 21, not prime. For k ≥ 1, expression becomes composite or at least not obviously prime, and the problem states there are exactly two such primes overall.\\nCollecting valid primes found: p = 23 (from n = 24) and p = 29 (from n = 27). These are the two primes such that 5p = floor(n²/5) for some positive integer n. Their sum is 23 + 29 = 52.\",\n    \"answer_1\": \"344.54\",\n    \"answer_2\": \"52\"\n}",
+  "problem_type": [
+    {
+      "A1694": [
+        "Mathematics -> Applied Mathematics -> Math Word Problems"
+      ]
+    },
+    {
+      "A1695": [
+        "Mathematics -> Number Theory -> Prime Numbers"
+      ]
+    }
+  ],
+  "output_answer": [
+    "344.54",
+    "52"
+  ],
+  "ground_truth": [
+    {
+      "A1694": "344.54"
+    },
+    {
+      "A1695": "52"
+    }
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 2463,
+  "completion_tokens": 1728,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

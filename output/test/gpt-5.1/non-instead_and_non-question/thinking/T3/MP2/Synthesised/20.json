@@ -1,0 +1,40 @@
+{
+  "timestamp": "2026-01-10T17:41:46.460247+00:00",
+  "model": "gpt-5.1",
+  "type": "T3_MP2_synthesised_Evaluation",
+  "Problem_ID": 20,
+  "math_problem": "Find all the pairs $(m, n)$ of integers which satisfy the equation \\[m^5 - n^5 = 16mn.\\] Let $k = n - 1$, where $n$ is the positive integer appearing in the solution pair with variables of opposite signs. Suppose $x^{3}-a x^{2}+b x-48$ is a polynomial with three positive roots $p, q$, and $r$ such that $p<q<r$. What is the minimum possible value of $k / p+2 / q+3 / r$ ?",
+  "reasoning_content": "{  \n    \"reasoning\": \"First solve the Diophantine equation m^5 - n^5 = 16mn.\\nRewrite as (m-n)(m^4 + m^3n + m^2n^2 + mn^3 + n^4) = 16mn.\\n\\n1) Case m = n gives 0 = 16n^2, so n = 0, m = 0, which is a trivial solution with same signs.\\n2) Assume m ≠ n, so m^4 + m^3n + m^2n^2 + mn^3 + n^4 = 16mn / (m-n).\\nWe can look for small integer solutions by symmetry and simple checking.\\n\\nCheck small n:\\n- Try n = 1.\\nEquation: m^5 - 1 = 16m.\\nTest integer m values:\\n m = 1: 1 - 1 = 0 ≠ 16.\\n m = 2: 32 - 1 = 31 ≠ 32.\\n m = -1: -1 - 1 = -2 ≠ -16.\\n m = -2: -32 - 1 = -33 ≠ -32.\\nNo solution.\\n\\n- Try n = 2.\\nm^5 - 32 = 32m.\\nTest m = 2: 32 - 32 = 0 ≠ 64.\\n m = -2: -32 - 32 = -64 = 32(-2), so m = -2, n = 2 works.\\nAlso test nearby small m: m = -1,0,1,3 don't work by direct substitution.\\nSo (-2,2) is a solution.\\n\\nCheck opposite sign with larger magnitude for n:\\nLet m = -n.\\nThen m^5 - n^5 = (-n)^5 - n^5 = -n^5 - n^5 = -2n^5.\\nRight side: 16mn = 16(-n)n = -16n^2.\\nSo -2n^5 = -16n^2 ⇒ 2n^5 = 16n^2 ⇒ n^2(n^3 - 8) = 0.\\nThus n = 0 or n^3 = 8 → n = 2.\\nWe already found (m,n) = (-2,2) and (0,0).\\n\\nWe should also test n = -2.\\nThen m^5 - (-32) = 16m(-2) ⇒ m^5 + 32 = -32m.\\nSet f(m) = m^5 + 32 + 32m.\\nTest small integers: m = 0 → 32 ≠ 0, m = -1 → -1 + 32 - 32 = -1 ≠ 0, m = -2 → -32 + 32 - 64 = -64 ≠ 0, m = 2 → 32 + 32 + 64 = 128 ≠ 0.\\nNo integer root near; symmetry indicates no additional opposite-sign solution besides (-2,2).\\n\\nSo integer solution pairs (m,n) are (0,0) and (-2,2). The problem states that n is positive and variables have opposite signs, so we use (m,n) = (-2,2). Then k = n - 1 = 2 - 1 = 1.\\n\\nNow consider the polynomial x^3 - a x^2 + b x - 48 with three positive roots p < q < r.\\nWe want the minimum possible value of k/p + 2/q + 3/r.\\nWe already have k = 1, so the expression is 1/p + 2/q + 3/r.\\nLet S = p + q + r, T = pq + pr + qr, and U = pqr.\\nBy Viète, for x^3 - a x^2 + b x - 48 = 0, we have S = a (positive), T = b (positive), U = 48.\\nWe are free to choose any triple (p,q,r) of positive real numbers with product 48, then a and b adjust accordingly.\\nSo the constraint is p, q, r > 0 and p q r = 48.\\nWe must minimize F = 1/p + 2/q + 3/r under pqr = 48 and p<q<r.\\n\\nWe can first solve the unconstrained positive minimum (ignore ordering) via Lagrange multipliers.\\nLet G(p,q,r) = 1/p + 2/q + 3/r + λ(pqr - 48).\\nPartial derivatives:\\n∂G/∂p = -1/p^2 + λ q r = 0 ⇒ λqr = 1/p^2.\\n∂G/∂q = -2/q^2 + λ p r = 0 ⇒ λpr = 2/q^2.\\n∂G/∂r = -3/r^2 + λ p q = 0 ⇒ λpq = 3/r^2.\\n\\nFrom λqr = 1/p^2 and λpr = 2/q^2, divide second by first:\\n(λpr)/(λqr) = 2/q^2 ÷ 1/p^2 ⇒ p/q = 2p^2/q^2 ⇒ p/q = 2(p^2/q^2).\\nSimplify: multiply both sides by q^2: p q = 2p^2 ⇒ if p>0, q = 2p.\\n\\nNow compare λpr and λpq:\\n(λpr)/(λpq) = 2/q^2 ÷ 3/r^2 ⇒ r/q = 2r^2/(3q^2) ⇒ multiply by q^2: r q = 2 r^2/3 ⇒ if r>0, q = 2r/3.\\nFrom q = 2p and q = 2r/3 we get 2p = 2r/3 ⇒ r = 3p.\\nThus the stationary point satisfies q = 2p, r = 3p.\\nThe product constraint gives p q r = p · 2p · 3p = 6 p^3 = 48 ⇒ p^3 = 8 ⇒ p = 2.\\nThen q = 4, r = 6, so ordering p < q < r holds.\\n\\nCompute F at this triple:\\nF = 1/p + 2/q + 3/r = 1/2 + 2/4 + 3/6.\\nCompute each term: 1/2 = 3/6, 2/4 = 1/2 = 3/6, 3/6 = 3/6.\\nSum: 3/6 + 3/6 + 3/6 = 9/6 = 3/2.\\nThis is the unique critical point in the feasible region (p,q,r>0) and standard convexity/AM-GM arguments on sums of reciprocals under product constraints confirm it gives the global minimum.\\nMoreover the strict inequalities p<q<r already hold.\\n\\nThus the minimum possible value of k/p + 2/q + 3/r is 3/2.\",\n    \"answer\": \"3/2\"\n}",
+  "problem_type": [
+    {
+      "A3626": [
+        "Mathematics -> Algebra -> Algebra -> Equations and Inequalities",
+        "Mathematics -> Number Theory -> Factorization"
+      ]
+    },
+    {
+      "A992": [
+        "Mathematics -> Algebra -> Algebra -> Equations and Inequalities",
+        "Mathematics -> Algebra -> Algebra -> Polynomial Operations"
+      ]
+    }
+  ],
+  "output_answer": [
+    "3/2"
+  ],
+  "ground_truth": [
+    {
+      "A3626": "There are no pairs \\((m, n)\\) of integers that satisfy the equation \\(m^5 - n^5 = 16mn\\)."
+    },
+    {
+      "A992": "3 / 2"
+    }
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 2467,
+  "completion_tokens": 1614,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-01-04T17:51:31.461189+00:00",
+  "model": "gpt-5.1",
+  "type": "T2_MP2_seperated_Evaluation",
+  "Problem_ID": 10,
+  "math_problem": [
+    {
+      "A419": "$a$ and $b$ are integers such that $a+\\sqrt{b}=\\sqrt{15+\\sqrt{216}}$. Compute $a / b$."
+    },
+    {
+      "A681": "Mark has a cursed six-sided die that never rolls the same number twice in a row, and all other outcomes are equally likely. Compute the expected number of rolls it takes for Mark to roll every number at least once."
+    }
+  ],
+  "reasoning_content": "{\n  \"reasoning\": \"Problem 1: We want integers a, b such that a + sqrt(b) = sqrt(15 + sqrt(216)). First simplify sqrt(216) = sqrt(36·6) = 6√6. So we need a + √b = √(15 + 6√6). Assume a + √b is of the form √m + √n with m,n positive integers. Then (√m + √n)^2 = m + n + 2√(mn). Matching with 15 + 6√6 gives m + n = 15 and 2√(mn) = 6√6, so √(mn) = 3√6 and mn = 54. Solve the system m + n = 15, mn = 54: the quadratic t^2 − 15t + 54 = 0 has discriminant 225 − 216 = 9, roots t = (15 ± 3)/2 = 9, 6. So {m,n} = {9,6}. Thus √(15 + 6√6) = √9 + √6 = 3 + √6. Hence a = 3, b = 6, and a/b = 3/6 = 1/2.\\n\\nProblem 2: We have a six-sided die that never repeats the same face on consecutive rolls; any of the other five faces is equally likely each roll. We must find the expected number of rolls to see all 6 faces at least once. Because of the symmetry and the fact that immediate repeats are forbidden (which only affects the most recently seen face), the standard coupon collector logic largely carries over, with a slight adjustment for the last face. After the first roll we have 1 distinct face. Consider the transition from k distinct faces collected to k+1.\\n- Let k be the number of distinct faces already seen, with 1 ≤ k ≤ 5.\\n- On the next roll, the die cannot show the same face as the immediately previous roll; that face is one of the k faces seen so far.\\n- Among the 5 allowed outcomes, one is the last face itself, and the remaining 4 are the other faces; among those 4, (k−1) are faces already seen and (6−k) are new faces.\\n- Thus the probability the next roll shows a new face is (6−k)/5 for any k ≥ 1.\\nTherefore the expected number of rolls to go from k distinct faces to k+1 distinct faces is 1 / ((6−k)/5) = 5/(6−k). Summing from k = 1 to 5 gives total expected rolls after the first roll:\\nE_extra = Σ_{k=1..5} 5/(6−k) = 5 * (1/5 + 1/4 + 1/3 + 1/2 + 1) = 5 * (1 + 1/2 + 1/3 + 1/4 + 1/5).\\nThe harmonic sum H_5 = 1 + 1/2 + 1/3 + 1/4 + 1/5 = 137/60. So E_extra = 5 * 137/60 = 685/60 = 137/12. We must also include the very first roll that starts the process (it always gives a new face), so the total expectation is E_total = 1 + 137/12 = (12/12 + 137/12) = 149/12.\\n\\nThus the answers are a/b = 1/2 for Problem 1, and the expected number of rolls is 149/12 for Problem 2.\",\n  \"answer_1\": \"1/2\",\n  \"answer_2\": \"149/12\"\n}",
+  "problem_type": [
+    {
+      "A419": [
+        "Mathematics -> Algebra -> Intermediate Algebra -> Quadratic Functions"
+      ]
+    },
+    {
+      "A681": [
+        "Mathematics -> Applied Mathematics -> Probability -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "1/2",
+    "149/12"
+  ],
+  "ground_truth": [
+    {
+      "A419": "1/2"
+    },
+    {
+      "A681": "\\frac{149}{12}"
+    }
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 2426,
+  "completion_tokens": 825,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

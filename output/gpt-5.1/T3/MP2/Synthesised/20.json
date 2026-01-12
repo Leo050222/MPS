@@ -1,0 +1,40 @@
+{
+  "timestamp": "2026-01-04T17:55:43.390876+00:00",
+  "model": "gpt-5.1",
+  "type": "T3_MP2_synthesised_Evaluation",
+  "Problem_ID": 20,
+  "math_problem": "Find all the pairs $(m, n)$ of integers which satisfy the equation \\[m^5 - n^5 = 16mn.\\] Instead of determining all integer solutions to the Diophantine equation, simply find $k = n - 1$, where $n$ is the positive integer appearing in the solution pair with variables of opposite signs. Suppose $x^{3}-a x^{2}+b x-48$ is a polynomial with three positive roots $p, q$, and $r$ such that $p<q<r$. What is the minimum possible value of $k / p+2 / q+3 / r$ ?",
+  "reasoning_content": "{  \n    \"reasoning\": \"First solve the Diophantine equation m^5 - n^5 = 16mn for integer pairs (m,n). We look for a solution where m and n have opposite signs and n>0. Try small positive n.\\n\\nFor n=1: m^5 - 1 = 16m. Test integer m: m=1 gives 0≠16; m=2 gives 32-1=31≠32; m=-1 gives -1-1=-2≠-16. So no solution.\\n\\nFor n=2: m^5 - 32 = 32m. Check small m: m=2: 32-32=0≠64; m=-2: -32-32=-64, RHS 32·(-2)=-64, works. So (m,n)=(-2,2) is a solution with opposite signs and n>0. For larger |n| the growth of fifth powers makes matching 16mn unlikely; a standard approach (not fully reproduced here for brevity) shows this is the only opposite-sign integer solution, so the required n is 2, hence k = n-1 = 1.\\n\\nNow consider the polynomial x^3 - a x^2 + b x - 48 with positive roots p<q<r. By Vieta, pqr=48, p+q+r=a, pq+pr+qr=b. We must minimize F = k/p + 2/q + 3/r with k=1, so F = 1/p + 2/q + 3/r.\\n\\nLet p=1/x, q=1/y, r=1/z where x,y,z>0 and x>y>z (since p<q<r). Then pqr=48 becomes 1/(xyz)=48, so xyz = 1/48.\\n\\nWe want to minimize F = x + 2y + 3z subject to xyz = 1/48 and x>y>z>0. Ignoring the strict inequalities for the moment, use Lagrange multipliers for minimizing x+2y+3z with constraint xyz = 1/48.\\n\\nDefine L = x + 2y + 3z + λ(xyz - 1/48). Take partials:\\n∂L/∂x = 1 + λyz = 0 → λ = -1/(yz).\\n∂L/∂y = 2 + λxz = 0 → λ = -2/(xz).\\n∂L/∂z = 3 + λxy = 0 → λ = -3/(xy).\\nEquate: -1/(yz) = -2/(xz) ⇒ 1/(yz) = 2/(xz) ⇒ x = 2y. Also 2/(xz) = 3/(xy) ⇒ 2y = 3z ⇒ z = (2/3)y.\\n\\nThus x=2y, z=(2/3)y. Then xyz = (2y)(y)(2y/3) = (4/3)y^3 = 1/48, so y^3 = 3/192 = 1/64, giving y=1/4. Then x=1/2, z=1/6. In terms of p,q,r: p=1/x=2, q=1/y=4, r=1/z=6, which indeed satisfy p<q<r and pqr=48.\\n\\nCompute F: 1/p + 2/q + 3/r = 1/2 + 2/4 + 3/6 = 1/2 + 1/2 + 1/2 = 3/2. Standard convexity arguments (weighted AM-GM and the interior Lagrange multiplier solution) show this is the global minimum under p,q,r>0 with the product fixed, and the ordering p<q<r holds, so the minimum possible value is 3/2.\",\n    \"answer\": \"3/2\"\n}",
+  "problem_type": [
+    {
+      "A3626": [
+        "Mathematics -> Algebra -> Algebra -> Equations and Inequalities",
+        "Mathematics -> Number Theory -> Factorization"
+      ]
+    },
+    {
+      "A992": [
+        "Mathematics -> Algebra -> Algebra -> Equations and Inequalities",
+        "Mathematics -> Algebra -> Algebra -> Polynomial Operations"
+      ]
+    }
+  ],
+  "output_answer": [
+    "3/2"
+  ],
+  "ground_truth": [
+    {
+      "A3626": "There are no pairs \\((m, n)\\) of integers that satisfy the equation \\(m^5 - n^5 = 16mn\\)."
+    },
+    {
+      "A992": "3 / 2"
+    }
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 2459,
+  "completion_tokens": 883,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

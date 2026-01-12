@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-01-04T18:08:08.696244+00:00",
+  "model": "gpt-5.1",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 34,
+  "math_problem": [
+    {
+      "A3709": "Find the greatest positive integer $x$ such that $23^{6+x}$ divides $2000!$"
+    },
+    {
+      "A1188": "Let $S=\\{-100,-99,-98, \\ldots, 99,100\\}$. Choose a 50-element subset $T$ of $S$ at random. Find the expected number of elements of the set $\\{|x|: x \\in T\\}$."
+    }
+  ],
+  "reasoning_content": "{\n    \"reasoning\": \"Problem 1:\\nWe need the largest positive integer x such that 23^{6+x} divides 2000!.\\nThis is equivalent to v_{23}(2000!) >= 6 + x, where v_{23}(n) is the exponent of 23 in the prime factorization of n.\\nWe first compute v_{23}(2000!) using Legendre's formula:\\n v_{p}(n!) = sum_{k=1}^{\\infty} floor(n / p^k).\\nHere p = 23, n = 2000.\\nCompute terms:\\n floor(2000 / 23) = 2000 / 23 ≈ 86.956, so floor = 86\\n floor(2000 / 23^2) = floor(2000 / 529) ≈ 3.78, so floor = 3\\n floor(2000 / 23^3) = floor(2000 / 12167) = 0 (since 12167 > 2000)\\nAll higher powers give 0.\\nThus v_{23}(2000!) = 86 + 3 = 89.\\nWe need 6 + x <= 89, so x <= 83. Since x is a positive integer, the greatest possible x is 83.\\n\\nProblem 2:\\nS = { -100, -99, ..., -1, 0, 1, ..., 99, 100 }, so |S| = 201 elements.\\nWe choose a 50-element subset T of S uniformly at random, and we want the expected number of distinct absolute values in the set {|x| : x in T}.\\nLet A = {|x| : x in T}. We want E(|A|).\\nWe can use indicator random variables.\\nPossible absolute values are 0, 1, 2, ..., 100, so 101 possible values.\\nFor each k in {0,1,...,100}, define indicator I_k = 1 if there exists x in T with |x| = k, otherwise 0.\\nThen |A| = sum_{k=0}^{100} I_k and by linearity of expectation,\\n E(|A|) = sum_{k=0}^{100} E(I_k) = sum_{k=0}^{100} P(I_k = 1).\\nSo we need P(I_k = 1) for each k.\\nCase k = 0:\\nOnly element with |x| = 0 is x = 0 itself. So I_0 = 1 iff 0 is in T.\\nWe choose uniformly from all 50-element subsets of 201 elements. Probability that a specific element (here 0) is included is 50 / 201.\\nSo P(I_0=1) = 50/201.\\nCase k >= 1:\\nFor each k in {1,...,100}, there are exactly two elements in S with absolute value k: -k and k.\\nI_k = 1 if at least one of {-k, k} is chosen in T.\\nSo P(I_k = 1) = 1 - P(neither -k nor k is in T).\\nTotal elements = 201. Removing -k and k leaves 199 elements.\\nNumber of 50-subsets containing neither -k nor k is C(199, 50). Number of all 50-subsets is C(201, 50).\\nThus P(neither selected) = C(199, 50) / C(201, 50).\\nSo P(I_k = 1) = 1 - C(199, 50) / C(201, 50).\\nThis is the same for each k in 1..100.\\nThus the expectation:\\n E(|A|) = P(I_0 = 1) + sum_{k=1}^{100} P(I_k = 1)\\n         = 50/201 + 100 * (1 - C(199, 50)/C(201, 50)).\\nNow we simplify the combinatorial ratio.\\nCompute C(199, 50) / C(201, 50):\\n C(201, 50) = 201! / (50! 151!)\\n C(199, 50) = 199! / (50! 149!).\\nSo\\n C(199, 50) / C(201, 50)\\n  = [199! / (50! 149!)] / [201! / (50! 151!)]\\n  = [199! / (50! 149!)] * [50! 151! / 201!]\\n  = 199! * 151! / (149! * 201!).\\nNow expand 151! / 149! = 151 * 150.\\nAnd 201! = 201 * 200 * 199!.\\nThus\\n C(199, 50) / C(201, 50) = [199! * 151 * 150] / [149! * 201 * 200 * 199!]\\n = (151 * 150) / (201 * 200).\\nSimplify:\\n 151 * 150 = 22650.\\n 201 * 200 = 40200.\\nCompute gcd(22650, 40200):\\n 40200 - 22650 = 17550\\n 22650 - 17550 = 5100\\n 17550 = 3 * 5850; 5850 = 5100 + 750; 5100 is clearly divisible by 50; quicker: gcd(40200,22650): 40200 mod 22650 = 17550; 22650 mod 17550 = 5100; 17550 mod 5100 = 17550 - 3*5100 = 17550 - 15300 = 2250; 5100 mod 2250 = 600; 2250 mod 600 = 2250 - 3*600 = 450; 600 mod 450 = 150; 450 mod 150 = 0 so gcd = 150.\\nSo divide numerator and denominator by 150:\\n 22650 / 150 = 151\\n 40200 / 150 = 268.\\nSo C(199, 50) / C(201, 50) = 151 / 268.\\nTherefore P(I_k = 1) for k >= 1 is 1 - 151/268 = (268 - 151)/268 = 117/268.\\nNow compute expectation:\\n E(|A|) = 50/201 + 100 * (117/268).\\nSimplify the second term:\\n 100 * 117/268 = 11700/268.\\nWe now sum with 50/201.\\nCompute common denominator of 201 and 268.\\nFactor:\\n 201 = 3 * 67\\n 268 = 4 * 67 = 2^2 * 67\\nSo lcm = 2^2 * 3 * 67 = 804.\\nNow convert:\\n 50/201 = (50 * 4) / (201 * 4) = 200 / 804.\\n 11700/268 = (11700 * 3) / (268 * 3) = 35100 / 804.\\nSum: 200/804 + 35100/804 = 35300/804.\\nSimplify 35300/804.\\nFirst factor out 4 from denominator: 804 = 4 * 201.\\nWe can check gcd(35300,804).\\nCheck divisibility by 2: 35300 is even, 804 even. Divide by 2: 35300/2 = 17650, 804/2 = 402.\\nCheck again by 2: 17650 even, 402 even. Divide by 2: 17650/2 = 8825, 402/2 = 201.\\nSo dividing numerator and denominator by 4 gives 35300/804 = 8825/201.\\nNow 8825 and 201: 201 factors 3 * 67. Sum of digits of 8825 is 8+8+2+5=23, not divisible by 3. Try 67: 67*100=6700, 67*130=8710, 67*131=8777, 67*132=8844, so 8825 is not divisible by 67. Thus gcd(8825,201)=1.\\nSo the fraction is already in lowest terms.\\nHence the expected number of distinct absolute values in {|x| : x in T} is 8825/201.\\n\\nFinal results:\\nProblem 1 answer: 83.\\nProblem 2 answer: 8825/201.\",\n    \"answer_1\": \"83\",\n    \"answer_2\": \"8825/201\"\n}",
+  "problem_type": [
+    {
+      "A3709": [
+        "Mathematics -> Number Theory -> Factorization"
+      ]
+    },
+    {
+      "A1188": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations"
+      ]
+    }
+  ],
+  "output_answer": [
+    "83",
+    "8825/201"
+  ],
+  "ground_truth": [
+    {
+      "A3709": "83"
+    },
+    {
+      "A1188": "\\frac{8825}{201}"
+    }
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 2428,
+  "completion_tokens": 1954,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

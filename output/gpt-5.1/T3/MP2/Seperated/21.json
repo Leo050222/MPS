@@ -1,0 +1,48 @@
+{
+  "timestamp": "2026-01-04T18:01:05.820388+00:00",
+  "model": "gpt-5.1",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 21,
+  "math_problem": [
+    {
+      "A4005": "Let $a,b,c,d$ be non-negative reals such that $a+b+c+d=4$. Prove the inequality\n\\[\\frac{a}{a^3+8}+\\frac{b}{b^3+8}+\\frac{c}{c^3+8}+\\frac{d}{d^3+8}\\le\\frac{4}{9}\\]"
+    },
+    {
+      "A1474": "Let $x, y, n$ be positive integers with $n>1$. How many ordered triples $(x, y, n)$ of solutions are there to the equation $x^{n}-y^{n}=2^{100}$ ?"
+    }
+  ],
+  "reasoning_content": "{\n  \"reasoning\": \"Problem 1:\\nWe must prove for non‑negative reals a,b,c,d with a+b+c+d=4 that\\n  a/(a^3+8)+b/(b^3+8)+c/(c^3+8)+d/(d^3+8) ≤ 4/9.\\nA standard approach is to find a suitable simple upper bound for each term of the form\\n  a/(a^3+8) ≤ F(a)\\nwhere F is easy to average under the condition a+b+c+d=4.\\n\\n1) Key inequality for one variable.\\nWe look for something of the form\\n  a/(a^3+8) ≤ (k - m a)/9\\nfor constants k,m, because summing would give a linear expression in a,b,c,d. To match equality at a=2 (since all equal a=b=c=d=1 gives a sum about 0.44<4/9, a more natural equality point is where one variable is big and others small; the algebra works particularly nicely at a=2), one convenient candidate is\\n  a/(a^3+8) ≤ (4 - a)/18.\\nThis is symmetric around a=2 in a convenient way for the constraint sum=4. We now prove for all a≥0 that\\n  a/(a^3+8) ≤ (4 - a)/18.    (∗)\\nRewriting (∗):\\n  18a ≤ (4-a)(a^3+8).\\nExpand the right side:\\n  (4-a)(a^3+8) = 4a^3 + 32 - a^4 - 8a.\\nSo (∗) is equivalent to\\n  18a ≤ 4a^3 + 32 - a^4 - 8a\\n⇔ 0 ≤ 4a^3 + 32 - a^4 - 8a - 18a\\n⇔ 0 ≤ -a^4 + 4a^3 - 26a + 32.\\nMultiply by −1:\\n  a^4 - 4a^3 + 26a - 32 ≤ 0.\\nCall this polynomial P(a):\\n  P(a) = a^4 - 4a^3 + 26a - 32.\\nWe factor P(a). Observe that a=2 is a root:\\n  P(2) = 16 - 32 + 52 - 32 = 4 ≠0, so 2 is not a root. That suggests we instead look for a factorization guided by completing squares or using a substitution. A clean factorization is\\n  P(a) = (a-2)^2(a^2+4a+8).\\nCheck this expansion:\\n(a-2)^2 = a^2 - 4a + 4,\\n(a^2 - 4a + 4)(a^2+4a+8)\\n= a^4 + 4a^3 + 8a^2 - 4a^3 -16a^2 -32a + 4a^2 +16a +32\\n= a^4 + (4a^3-4a^3) + (8a^2-16a^2+4a^2) + (-32a+16a) + 32\\n= a^4 -4a^2 -16a +32.\\nThis is not P(a); therefore that naive factorization attempt is incorrect.\\nThus we need a different bounding strategy.\\n\\nInstead of the specific linear bound above, use a sharper but standard inequality derived from the substitution a=2t.\\nLet a=2t, t≥0. Then\\n  a/(a^3+8) = 2t/(8t^3+8) = t/(4(t^3+1)) = (1/4)· t/(t^3+1).\\nSo it suffices to bound t/(t^3+1) for t≥0. Note that t^3+1=(t+1)(t^2-t+1) and t^2-t+1≥3/4 for all t (its minimum at t=1/2 is 3/4). Thus\\n  t^3+1 ≥ (t+1)·(3/4) = 3(t+1)/4,\\nso\\n  t/(t^3+1) ≤ t / [3(t+1)/4] = 4t/(3(t+1)).\\nHence\\n  a/(a^3+8) = (1/4)·t/(t^3+1) ≤ (1/4)· 4t/(3(t+1)) = t/(3(t+1)).\\nSubstituting back t=a/2,\\n  a/(a^3+8) ≤ (a/2)/[3(a/2+1)] = a/[3(a+2)].   (1)\\nSo we have for all a≥0:\\n  a/(a^3+8) ≤ a/[3(a+2)].\\n\\n2) Turning this into an inequality under a+b+c+d=4.\\nSum (1) over a,b,c,d:\\n  Σ a/(a^3+8) ≤ Σ a/[3(a+2)] = (1/3) Σ a/(a+2).\\nWe now need an upper bound on Σ a/(a+2) when a+b+c+d=4 and a,b,c,d≥0.\\nConsider the function f(t)=t/(t+2) on [0,∞). It is concave there because\\n  f'(t)=2/(t+2)^2>0, f''(t) = -4/(t+2)^3 <0.\\nBy Karamata or simply by Jensen for concave functions,\\n  (f(a)+f(b)+f(c)+f(d))/4 ≤ f((a+b+c+d)/4) = f(1) = 1/(1+2)=1/3.\\nThus Σ f(a) ≤ 4·1/3=4/3, i.e.\\n  Σ a/(a+2) ≤ 4/3.\\nTherefore\\n  Σ a/(a^3+8) ≤ (1/3)·(4/3) = 4/9,\\nwhich is exactly the desired inequality. This proves Problem 1.\\n\\nEquality conditions: For Jensen with concave f, equality holds when a=b=c=d, i.e. a=b=c=d=1, and for the step (1) we have equality when t^2-t+1 attains its minimum 3/4, i.e. t=1/2 or a=1, so the equality case is consistent: a=b=c=d=1 gives equality throughout and achieves the upper bound 4/9.\\n\\nProblem 2:\\nWe want positive integers x,y,n>1 satisfying\\n  x^n - y^n = 2^100.\\nWe count ordered triples (x,y,n).\\n\\n1) Structural constraints on x,y.\\nLet g=gcd(x,y). Write x=g·u, y=g·v with gcd(u,v)=1. Then\\n  x^n - y^n = g^n(u^n - v^n) = 2^100.\\nSince the right side is a power of 2, both g and (u^n - v^n) must be powers of 2. Also, x,y positive integers, so g≥1 and u>v≥1.\\nBecause gcd(u,v)=1 and both are odd or one is even and the other odd, but the difference u^n-v^n must be a power of 2. Let us analyze parity.\\nIf u and v are both odd, then u^n≡v^n≡1 (mod 2), hence u^n-v^n≡0 (mod 2). Could it be a pure power of 2? That is possible in principle. But note u-v divides u^n-v^n, and u-v is odd if u,v both odd. A number >1 that divides a power of 2 must itself be a power of 2 and hence even, contradiction. Therefore u and v cannot both be odd.\\nIf exactly one of u,v is even, then gcd(u,v)=1 is fine; say u is even and v is odd. Then u-v is odd, so u-v divides u^n-v^n but is odd; again, since u^n-v^n is a power of 2, any divisor >1 must be even. Hence we must have u-v=1 (the only odd divisor allowed that keeps the whole number a power of 2 is 1). Since u>v, that forces u=v+1.\\nThus we have:\\n  gcd(u,v)=1, u=v+1, v≥1, and u^n - v^n = (v+1)^n - v^n is a power of 2.\\nWrite\\n  g^n · [(v+1)^n - v^n] = 2^100.\\nLet (v+1)^n - v^n = 2^k, g^n = 2^{100-k}.\\nSo we need all positive integer triples (g,v,n) with n>1, v≥1 such that (v+1)^n - v^n is a power of 2. Then for each such triple, g is determined up to choosing k, but k is exactly the exponent of 2 in that difference. More precisely, once n and v are fixed so that (v+1)^n - v^n = 2^k, then g must satisfy g^n = 2^{100-k}, so n|(100-k) and g = 2^{(100-k)/n}. So the real classification problem lies in describing all (v,n) with (v+1)^n - v^n a power of 2.\\n\\n2) Bounding v.\\nConsider n≥2 fixed and v≥1. Expand by binomial theorem:\\n  (v+1)^n - v^n = n v^{n-1} + (n choose 2)v^{n-2} + ... + 1.\\nFactor v^{n-1} from all but the final term:\\n  (v+1)^n - v^n = v^{n-1}·[n + (n choose 2)/v + ... + 1/v^{n-1}].\\nWe already know the entire expression is a power of 2. For v≥2 and n≥3, the factor v^{n-1} contains some odd prime or at least an odd factor unless v is a power of 2. So let us split into v a power of 2 and v not a power of 2.\\n\\nBut there is a simpler approach: we know u=v+1 and gcd(u,v)=1, so v and v+1 are consecutive integers. Among two consecutive integers, exactly one is even. So exactly one of u,v is even.\\nWe already used that, but now look at the size: for n≥2, (v+1)^n - v^n grows fast in v, and it is constrained to be a single prime-power 2^k.\\nWe can check small v systematically to see which ones can give a pure power of 2.\\n\\n3) Small v analysis.\\nLet’s compute (v+1)^n - v^n for small v:\\n- v=1: (1+1)^n - 1^n = 2^n - 1.\\n  For n>1, 2^n - 1 is odd and >1, never a power of 2 (since powers of 2>1 are even). So v=1 impossible.\\n- v=2: (3)^n - 2^n.\\n  n=2: 9-4=5, not power of 2.\\n  n=3: 27-8=19.\\n  n=4: 81-16=65.\\n  For n≥2, these are odd and not powers of 2; and they grow with n. No solutions here.\\n- v=3: (4)^n - 3^n.\\n  n=2: 16-9=7.\\n  n=3: 64-27=37.\\n  n=4: 256-81=175.\\n  Again none are powers of 2.\\n- v=4: 5^n - 4^n.\\n  n=2: 25-16=9.\\n  n=3: 125-64=61.\\n  n=4: 625-256=369.\\nNo powers of 2.\\n\\nWe can justify that for v≥2 and n≥2, (v+1)^n - v^n is odd (since v and v+1 have opposite parity, their nth powers also opposite parity when n is odd; and when n is even, both are odd or even? Actually, if v is even, v^n is even and (v+1)^n is odd, difference odd; if v is odd, v^n odd, (v+1)^n even, difference odd). So for any v≥1, n≥1, (v+1)^n - v^n is odd. Therefore if this difference equals 2^k, the only possibility is k=0, i.e.\\n  (v+1)^n - v^n = 1.\\nBut for n>1 and v≥1, this is impossible: the function t→t^n is strictly increasing, and the gaps between consecutive nth powers grow; except when n=1, we have (v+1)-v=1, but our n>1 by hypothesis. Hence there is no solution with u=v+1 and n>1 giving a power of 2>1. And since 2^100>1, no such (v,n) exist.\\nThis shows that our earlier assumption that u^n - v^n is a power of 2 forces a contradiction for all v≥1 and n>1. Therefore there are no positive integers u>v≥1, n>1 with u^n - v^n a (nontrivial) power of 2.\\n\\n4) Conclude for original equation.\\nWe had reduced the problem to the condition that u^n - v^n be a power of 2. We have just shown there are no such positive integers u>v, n>1 when the power is >1. Since 2^100>1, there is no triple (u,v,n) satisfying u^n - v^n =2^100. Consequently, there is no triple (x,y,n) with x^n - y^n =2^100 and n>1.\\nHence the number of ordered triples (x,y,n) of positive integers with n>1 solving x^n - y^n=2^100 is 0.\\n\\nFinal answers: Problem 1 inequality holds as proved; Problem 2 has 0 solutions.\",\n  \"answer_1\": \"The inequality is true and the maximum value of the sum is 4/9\",\n  \"answer_2\": \"0\"\n}",
+  "problem_type": [
+    {
+      "A4005": [
+        "Mathematics -> Algebra -> Intermediate Algebra -> Inequalities"
+      ]
+    },
+    {
+      "A1474": [
+        "Mathematics -> Number Theory -> Congruences",
+        "Mathematics -> Algebra -> Intermediate Algebra -> Exponential Functions"
+      ]
+    }
+  ],
+  "output_answer": [
+    "The inequality is true and the maximum value of the sum is 4/9",
+    "0"
+  ],
+  "ground_truth": [
+    {
+      "A4005": "\\frac{a}{a^3 + 8} + \\frac{b}{b^3 + 8} + \\frac{c}{c^3 + 8} + \\frac{d}{d^3 + 8} \\leq \\frac{4}{9}"
+    },
+    {
+      "A1474": "49"
+    }
+  ],
+  "correctness": [
+    false,
+    false
+  ],
+  "prompt_tokens": 2478,
+  "completion_tokens": 3345,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}
