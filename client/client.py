@@ -60,7 +60,6 @@ class BaseClient:
             base_url=self.base_url
         )
 
-    
     def get_models(self):
         try:
             return self.client.models.list()
@@ -68,10 +67,6 @@ class BaseClient:
             # Fallback to locally known models if remote listing is unavailable
             return self.models
 
-class gpt51Client(BaseClient):
-    def __init__(self, key_model: str = "gpt-5.1"):
-        super().__init__(model=key_model)
-    
     def get_response(self, prompt, reasoning: str = "medium"):
         try:
             # 构建请求 payload
@@ -84,7 +79,6 @@ class gpt51Client(BaseClient):
             else:
                 raise ValueError(f"Unsupported prompt type: {type(prompt)}")
             
-            # 根据实际模型名称设置 payload
             model_name = self.model
             payload = {
                 "model": model_name,
@@ -92,6 +86,9 @@ class gpt51Client(BaseClient):
                 "stream": True,
                 "stream_options": {"include_usage": True}
             }
+
+            if reasoning != "minimal":
+                payload["reasoning_effort"] = reasoning
             
             # 发送 HTTP 请求
             # 使用 context 禁用 SSL 验证（仅用于开发环境）
@@ -259,584 +256,73 @@ class gpt51Client(BaseClient):
             import traceback
             logger.error(traceback.format_exc())
             return None
-        
-class gpt51MediumClient(BaseClient):
-    def __init__(self, key_model: str = "gpt-5.1-medium"):
-        super().__init__(model=key_model)
-        
-    # def get_response(self, prompt, reasoning: str = "medium"):
-    #     try:
-    #         # 构建请求 payload
-    #         # prompt 可能是列表格式（OpenAI 消息格式）或字符串
-    #         if isinstance(prompt, list):
-    #             messages = prompt
-    #         elif isinstance(prompt, str):
-    #             # 如果是字符串，转换为消息格式
-    #             messages = [{"role": "user", "content": prompt}]
-    #         else:
-    #             raise ValueError(f"Unsupported prompt type: {type(prompt)}")
-            
-    #         # 根据实际模型名称设置 payload
-    #         model_name = self.model
-    #         payload = {
-    #             "model": model_name,
-    #             "messages": messages
-    #         }
-            
-    #         # 只有 gpt-5 系列模型支持 reasoning_effort 参数，gpt-4o 不支持
-    #         if self.model not in {"gpt-4o"}:
-    #             payload["reasoning_effort"] = reasoning
-            
-    #         # 发送 HTTP 请求
-    #         # 使用 context 禁用 SSL 验证（仅用于开发环境）
-    #         import ssl
-    #         context = ssl._create_unverified_context()
-    #         conn = http.client.HTTPSConnection("chrisapius.top", context=context)
-    #         payload_json = json.dumps(payload)
-    #         headers = {
-    #             'Authorization': f'Bearer {self.api_key}',
-    #             'Content-Type': 'application/json'
-    #         }
-            
-    #         conn.request("POST", "/v1/chat/completions", payload_json, headers)
-    #         res = conn.getresponse()
-    #         status_code = res.status
-            
-    #         # 读取响应数据
-    #         data = res.read()
-    #         conn.close()
-            
-    #         # 检查 HTTP 状态码
-    #         if status_code != 200:
-    #             logger.error(f"API returned HTTP status code {status_code}")
-    #             response_text = data.decode("utf-8", errors='ignore')
-    #             logger.error(f"Response body (first 500 chars): {response_text[:500]}")
-            
-    #         # 解析响应
-    #         response_text = data.decode("utf-8", errors='ignore')
-            
-    #         # 检查响应是否为空
-    #         if not response_text or not response_text.strip():
-    #             logger.error("API returned empty response")
-    #             logger.debug(f"Response status: {status_code}, Response length: {len(data)}")
-    #             return None
-            
-    #         # 尝试解析 JSON
-    #         try:
-    #             response_data = json.loads(response_text)
-    #         except json.JSONDecodeError as e:
-    #             logger.error(f"Failed to parse JSON response: {e}")
-    #             logger.error(f"Response text (first 1000 chars): {response_text[:1000]}")
-    #             logger.error(f"Response status code: {status_code}")
-    #             return None
-            
-    #         # 检查响应中是否有错误
-    #         if "error" in response_data:
-    #             logger.error(f"API returned error: {response_data.get('error')}")
-    #             return None
-            
-    #         logger.info(f"Response received successfully (status: {status_code})")
-    #         return response_data
-            
-    #     except Exception as e:
-    #         logger.error(f"Error getting response: {e}")
-    #         import traceback
-    #         logger.error(traceback.format_exc())
-    #         return None
-    
-    def get_response(self, prompt, reasoning: str = "medium"):
+
+    def get_response_not_stream(self, prompt, reasoning: str = "minimal"):
         try:
-            # 构建请求 payload
-            # prompt 可能是列表格式（OpenAI 消息格式）或字符串
             if isinstance(prompt, list):
                 messages = prompt
             elif isinstance(prompt, str):
-                # 如果是字符串，转换为消息格式
                 messages = [{"role": "user", "content": prompt}]
             else:
                 raise ValueError(f"Unsupported prompt type: {type(prompt)}")
-            
-            # 根据实际模型名称设置 payload
             model_name = self.model
             payload = {
                 "model": model_name,
-                "messages": messages,
-                "stream": True,
-                "stream_options": {"include_usage": True},
-                "reasoning_effort": reasoning
+                "messages": messages
             }
-            
-            
-            # 发送 HTTP 请求
-            # 使用 context 禁用 SSL 验证（仅用于开发环境）
-            import ssl
-            ctx = ssl.create_default_context()
-            ctx.check_hostname = False
-            ctx.verify_mode = ssl.CERT_NONE
-            
-            conn = http.client.HTTPSConnection("chrisapius.top", context=ctx)
+
+            if reasoning != "minimal":
+                payload["reasoning_effort"] = reasoning
+
+            context = ssl._create_unverified_context()
+            conn = http.client.HTTPSConnection("chrisapius.top", context=context)
             payload_json = json.dumps(payload)
             headers = {
                 'Authorization': f'Bearer {self.api_key}',
-                'Content-Type': 'application/json',
-                'Accept': 'text/event-stream'
+                'Content-Type': 'application/json'
             }
             
             conn.request("POST", "/v1/chat/completions", payload_json, headers)
             res = conn.getresponse()
             status_code = res.status
             
-            # 检查 HTTP 状态码
+            data = res.read()
+            conn.close()
+            
             if status_code != 200:
-                data = res.read()
-                conn.close()
                 logger.error(f"API returned HTTP status code {status_code}")
                 response_text = data.decode("utf-8", errors='ignore')
                 logger.error(f"Response body (first 500 chars): {response_text[:500]}")
-                return None
             
-            # 处理流式响应（SSE 格式）
-            full_content = ""
-            response_id = None
-            finish_reason = None
-            usage_info = None
-            model_name_from_response = model_name
+            response_text = data.decode("utf-8", errors='ignore')
+            response_data = json.loads(response_text)
             
-            # 逐行读取流式响应
-            while True:
-                line = res.readline()
-                if not line:
-                    break
-                
-                line_str = line.decode("utf-8", errors='ignore').strip()
-                
-                # 跳过空行
-                if not line_str:
-                    continue
-                
-                # 检查 [DONE] 标记
-                if line_str == "data: [DONE]":
-                    break
-                
-                # SSE 格式：每行以 "data: " 开头
-                if line_str.startswith("data: "):
-                    json_str = line_str[6:]  # 移除 "data: " 前缀
-                    
-                    try:
-                        chunk_data = json.loads(json_str)
-                    except json.JSONDecodeError as e:
-                        logger.warning(f"Failed to parse chunk JSON: {e}, line: {json_str[:100]}")
-                        continue
-                    
-                    # 获取 response ID（通常在第一个 chunk）
-                    if chunk_data.get("id") and not response_id:
-                        response_id = chunk_data.get("id")
-                    
-                    # 获取 model 名称
-                    if chunk_data.get("model"):
-                        model_name_from_response = chunk_data.get("model")
-                    
-                    # 处理 choices 数据
-                    if "choices" in chunk_data and len(chunk_data["choices"]) > 0:
-                        choice = chunk_data["choices"][0]
-                        
-                        # 提取内容增量
-                        delta = choice.get("delta", {})
-                        if delta.get("content"):
-                            delta_content = delta["content"]
-                            full_content += delta_content
-                            print(delta_content, end="", flush=True)
-                        
-                        # 获取 finish_reason
-                        if choice.get("finish_reason"):
-                            finish_reason = choice.get("finish_reason")
-                    
-                    # 提取 usage 信息（在最后一个数据包中）
-                    if "usage" in chunk_data and chunk_data["usage"] is not None:
-                        usage_info = chunk_data["usage"]
-                        # 确保 usage_info 是字典类型
-                        if isinstance(usage_info, dict):
-                            print("\n\n=== Token 使用统计 ===")
-                            print(f"输入 Tokens: {usage_info.get('prompt_tokens', 0)}")
-                            print(f"输出 Tokens: {usage_info.get('completion_tokens', 0)}")
-                            print(f"总 Tokens: {usage_info.get('total_tokens', 0)}")
-                            if "completion_tokens_details" in usage_info:
-                                reasoning_tokens = usage_info["completion_tokens_details"].get("reasoning_tokens", 0)
-                                print(f"推理 Tokens: {reasoning_tokens}")
-            
-            conn.close()
-            
-            # 检查是否收集到内容
-            if not full_content and not usage_info:
-                logger.error("No content or usage information received from stream")
-                return None
-            
-            # 构建标准非流式响应结构（与 qwenClient 格式一致）
-            response = {
-                "id": response_id or f"chatcmpl-{hash(str(prompt))}",
-                "object": "chat.completion",
-                "created": int(time.time()),
-                "model": model_name_from_response,
-                "choices": [{
-                    "index": 0,
-                    "message": {
-                        "role": "assistant",
-                        "content": full_content
-                    },
-                    "finish_reason": finish_reason or "stop"
-                }]
-            }
-            
-            # 添加 usage 信息
-            if usage_info:
-                usage_dict = {
-                    "prompt_tokens": usage_info.get("prompt_tokens", 0),
-                    "completion_tokens": usage_info.get("completion_tokens", 0),
-                    "total_tokens": usage_info.get("total_tokens", 0)
-                }
-                
-                # 提取 completion_tokens_details，确保 reasoning_tokens 被包含
-                completion_tokens_details = {}
-                if "completion_tokens_details" in usage_info and usage_info["completion_tokens_details"]:
-                    details = usage_info["completion_tokens_details"]
-                    # 提取 reasoning_tokens（关键字段）
-                    reasoning_tokens = details.get("reasoning_tokens", 0)
-                    completion_tokens_details["reasoning_tokens"] = reasoning_tokens
-                    # 其他可选字段
-                    if "accepted_prediction_tokens" in details:
-                        completion_tokens_details["accepted_prediction_tokens"] = details["accepted_prediction_tokens"]
-                    if "rejected_prediction_tokens" in details:
-                        completion_tokens_details["rejected_prediction_tokens"] = details["rejected_prediction_tokens"]
-                    if "audio_tokens" in details:
-                        completion_tokens_details["audio_tokens"] = details["audio_tokens"]
-                
-                # 确保 completion_tokens_details 总是存在（即使为空字典）
-                # 这样 extract 函数可以安全地调用 .get("reasoning_tokens", 0)
-                usage_dict["completion_tokens_details"] = completion_tokens_details
-                response["usage"] = usage_dict
-            else:
-                # 如果没有 usage 信息，使用默认值，但确保 completion_tokens_details 存在
-                response["usage"] = {
-                    "prompt_tokens": 0,
-                    "completion_tokens": 0,
-                    "total_tokens": 0,
-                    "completion_tokens_details": {
-                        "reasoning_tokens": 0
-                    }
-                }
-            
-            logger.info(f"Response received successfully (status: {status_code})")
-            return response
+            return response_data
             
         except Exception as e:
             logger.error(f"Error getting response: {e}")
             import traceback
             logger.error(traceback.format_exc())
             return None
+    
+class gpt51Client(BaseClient):
+    def __init__(self, key_model: str = "gpt-5.1"):
+        super().__init__(model=key_model)
+    
+class gpt51MediumClient(BaseClient):
+    def __init__(self, key_model: str = "gpt-5.1-medium"):
+        super().__init__(model=key_model)
 
 class gpt4oClient(BaseClient):
     def __init__(self, api_key = None, base_url = None, model = ""):
         super().__init__(api_key, base_url, model)
         
-    def get_response_not_stream(self, prompt, reasoning: str = "medium"):
-        try:
-            if isinstance(prompt, list):
-                messages = prompt
-            elif isinstance(prompt, str):
-                messages = [{"role": "user", "content": prompt}]
-            else:
-                raise ValueError(f"Unsupported prompt type: {type(prompt)}")
-            model_name = self.model
-            payload = {
-                "model": model_name,
-                "messages": messages
-            }
-
-            context = ssl._create_unverified_context()
-            conn = http.client.HTTPSConnection("chrisapius.top", context=context)
-            payload_json = json.dumps(payload)
-            headers = {
-                'Authorization': f'Bearer {self.api_key}',
-                'Content-Type': 'application/json'
-            }
-            
-            conn.request("POST", "/v1/chat/completions", payload_json, headers)
-            res = conn.getresponse()
-            status_code = res.status
-            
-            data = res.read()
-            conn.close()
-            
-            if status_code != 200:
-                logger.error(f"API returned HTTP status code {status_code}")
-                response_text = data.decode("utf-8", errors='ignore')
-                logger.error(f"Response body (first 500 chars): {response_text[:500]}")
-            
-            response_text = data.decode("utf-8", errors='ignore')
-            response_data = json.loads(response_text)
-            
-            return response_data
-            
-        except Exception as e:
-            logger.error(f"Error getting response: {e}")
-            import traceback
-            logger.error(traceback.format_exc())
-            return None
-        
-    def get_response(self, prompt, reasoning: str = "medium"):
-        try:
-            # 构建请求 payload
-            # prompt 可能是列表格式（OpenAI 消息格式）或字符串
-            if isinstance(prompt, list):
-                messages = prompt
-            elif isinstance(prompt, str):
-                # 如果是字符串，转换为消息格式
-                messages = [{"role": "user", "content": prompt}]
-            else:
-                raise ValueError(f"Unsupported prompt type: {type(prompt)}")
-            
-            # 根据实际模型名称设置 payload
-            model_name = self.model
-            payload = {
-                "model": model_name,
-                "messages": messages,
-                "stream": True,
-                "stream_options": {"include_usage": True},
-            }
-            
-            
-            # 发送 HTTP 请求
-            # 使用 context 禁用 SSL 验证（仅用于开发环境）
-            import ssl
-            ctx = ssl.create_default_context()
-            ctx.check_hostname = False
-            ctx.verify_mode = ssl.CERT_NONE
-            
-            conn = http.client.HTTPSConnection("chrisapius.top", context=ctx)
-            payload_json = json.dumps(payload)
-            headers = {
-                'Authorization': f'Bearer {self.api_key}',
-                'Content-Type': 'application/json',
-                'Accept': 'text/event-stream'
-            }
-            
-            conn.request("POST", "/v1/chat/completions", payload_json, headers)
-            res = conn.getresponse()
-            status_code = res.status
-            
-            # 检查 HTTP 状态码
-            if status_code != 200:
-                data = res.read()
-                conn.close()
-                logger.error(f"API returned HTTP status code {status_code}")
-                response_text = data.decode("utf-8", errors='ignore')
-                logger.error(f"Response body (first 500 chars): {response_text[:500]}")
-                return None
-            
-            # 处理流式响应（SSE 格式）
-            full_content = ""
-            response_id = None
-            finish_reason = None
-            usage_info = None
-            model_name_from_response = model_name
-            
-            # 逐行读取流式响应
-            while True:
-                line = res.readline()
-                if not line:
-                    break
-                
-                line_str = line.decode("utf-8", errors='ignore').strip()
-                
-                # 跳过空行
-                if not line_str:
-                    continue
-                
-                # 检查 [DONE] 标记
-                if line_str == "data: [DONE]":
-                    break
-                
-                # SSE 格式：每行以 "data: " 开头
-                if line_str.startswith("data: "):
-                    json_str = line_str[6:]  # 移除 "data: " 前缀
-                    
-                    try:
-                        chunk_data = json.loads(json_str)
-                    except json.JSONDecodeError as e:
-                        logger.warning(f"Failed to parse chunk JSON: {e}, line: {json_str[:100]}")
-                        continue
-                    
-                    # 获取 response ID（通常在第一个 chunk）
-                    if chunk_data.get("id") and not response_id:
-                        response_id = chunk_data.get("id")
-                    
-                    # 获取 model 名称
-                    if chunk_data.get("model"):
-                        model_name_from_response = chunk_data.get("model")
-                    
-                    # 处理 choices 数据
-                    if "choices" in chunk_data and len(chunk_data["choices"]) > 0:
-                        choice = chunk_data["choices"][0]
-                        
-                        # 提取内容增量
-                        delta = choice.get("delta", {})
-                        if delta.get("content"):
-                            delta_content = delta["content"]
-                            full_content += delta_content
-                            print(delta_content, end="", flush=True)
-                        
-                        # 获取 finish_reason
-                        if choice.get("finish_reason"):
-                            finish_reason = choice.get("finish_reason")
-                    
-                    # 提取 usage 信息（在最后一个数据包中）
-                    if "usage" in chunk_data and chunk_data["usage"] is not None:
-                        usage_info = chunk_data["usage"]
-                        # 确保 usage_info 是字典类型
-                        if isinstance(usage_info, dict):
-                            print("\n\n=== Token 使用统计 ===")
-                            print(f"输入 Tokens: {usage_info.get('prompt_tokens', 0)}")
-                            print(f"输出 Tokens: {usage_info.get('completion_tokens', 0)}")
-                            print(f"总 Tokens: {usage_info.get('total_tokens', 0)}")
-                            if "completion_tokens_details" in usage_info:
-                                reasoning_tokens = usage_info["completion_tokens_details"].get("reasoning_tokens", 0)
-                                print(f"推理 Tokens: {reasoning_tokens}")
-            
-            conn.close()
-            
-            # 检查是否收集到内容
-            if not full_content and not usage_info:
-                logger.error("No content or usage information received from stream")
-                return None
-            
-            # 构建标准非流式响应结构（与 qwenClient 格式一致）
-            response = {
-                "id": response_id or f"chatcmpl-{hash(str(prompt))}",
-                "object": "chat.completion",
-                "created": int(time.time()),
-                "model": model_name_from_response,
-                "choices": [{
-                    "index": 0,
-                    "message": {
-                        "role": "assistant",
-                        "content": full_content
-                    },
-                    "finish_reason": finish_reason or "stop"
-                }]
-            }
-            
-            # 添加 usage 信息
-            if usage_info:
-                usage_dict = {
-                    "prompt_tokens": usage_info.get("prompt_tokens", 0),
-                    "completion_tokens": usage_info.get("completion_tokens", 0),
-                    "total_tokens": usage_info.get("total_tokens", 0)
-                }
-                
-                # 提取 completion_tokens_details，确保 reasoning_tokens 被包含
-                completion_tokens_details = {}
-                if "completion_tokens_details" in usage_info and usage_info["completion_tokens_details"]:
-                    details = usage_info["completion_tokens_details"]
-                    # 提取 reasoning_tokens（关键字段）
-                    reasoning_tokens = details.get("reasoning_tokens", 0)
-                    completion_tokens_details["reasoning_tokens"] = reasoning_tokens
-                    # 其他可选字段
-                    if "accepted_prediction_tokens" in details:
-                        completion_tokens_details["accepted_prediction_tokens"] = details["accepted_prediction_tokens"]
-                    if "rejected_prediction_tokens" in details:
-                        completion_tokens_details["rejected_prediction_tokens"] = details["rejected_prediction_tokens"]
-                    if "audio_tokens" in details:
-                        completion_tokens_details["audio_tokens"] = details["audio_tokens"]
-                
-                # 确保 completion_tokens_details 总是存在（即使为空字典）
-                # 这样 extract 函数可以安全地调用 .get("reasoning_tokens", 0)
-                usage_dict["completion_tokens_details"] = completion_tokens_details
-                response["usage"] = usage_dict
-            else:
-                # 如果没有 usage 信息，使用默认值，但确保 completion_tokens_details 存在
-                response["usage"] = {
-                    "prompt_tokens": 0,
-                    "completion_tokens": 0,
-                    "total_tokens": 0,
-                    "completion_tokens_details": {
-                        "reasoning_tokens": 0
-                    }
-                }
-            
-            logger.info(f"Response received successfully (status: {status_code})")
-            return response
-            
-        except Exception as e:
-            logger.error(f"Error getting response: {e}")
-            import traceback
-            logger.error(traceback.format_exc())
-            return None
 class gpt5Client(BaseClient):
     def __init__(self, key_model: str = "gpt-5"):
         # key_model can be gpt-5-thinking / gpt-5-non-thinking / gpt-5
         super().__init__(model=key_model)
-        
-    def get_response(self, prompt, reasoning: str = "medium"):
-        try:
-            # 构建请求 payload
-            # prompt 可能是列表格式（OpenAI 消息格式）或字符串
-            if isinstance(prompt, list):
-                messages = prompt
-            elif isinstance(prompt, str):
-                # 如果是字符串，转换为消息格式
-                messages = [{"role": "user", "content": prompt}]
-            else:
-                raise ValueError(f"Unsupported prompt type: {type(prompt)}")
-            
-            # 根据实际模型名称设置 payload
-            # 如果 key_model 是 gpt-4o，使用 gpt-4o，否则使用 gpt-5
-            model_name = "gpt-5"
-            payload = {
-                "model": model_name,
-                "messages": messages
-            }
-            
-            # 只有 gpt-5 系列模型支持 reasoning_effort 参数，gpt-4o 不支持
-            if self.model not in {"gpt-4o"}:
-                payload["reasoning_effort"] = reasoning
-            
-            # 发送 HTTP 请求
-            # 使用 context 禁用 SSL 验证（仅用于开发环境）
-            context = ssl._create_unverified_context()
-            conn = http.client.HTTPSConnection("chrisapius.top", context=context)
-            payload_json = json.dumps(payload)
-            headers = {
-                'Authorization': f'Bearer {self.api_key}',
-                'Content-Type': 'application/json'
-            }
-            
-            conn.request("POST", "/v1/chat/completions", payload_json, headers)
-            res = conn.getresponse()
-            status_code = res.status
-            
-            # 读取响应数据
-            data = res.read()
-            conn.close()
-            
-            # 检查 HTTP 状态码
-            if status_code != 200:
-                logger.error(f"API returned HTTP status code {status_code}")
-                response_text = data.decode("utf-8", errors='ignore')
-                logger.error(f"Response body (first 500 chars): {response_text[:500]}")
-            
-            # 解析响应
-            response_text = data.decode("utf-8", errors='ignore')
-            response_data = json.loads(response_text)
-            
-            return response_data
-            
-        except Exception as e:
-            logger.error(f"Error getting response: {e}")
-            import traceback
-            logger.error(traceback.format_exc())
-            return None
-    
-class geminiClient:
+
+class geminiClient(BaseClient):
     def __init__(self, model: str = "gemini-2.5-flash") -> None:
         self.api_key = 'sk-83BacHuBgJAcd5GJX5GxDLOctAD52jRxrAZKRmf3GbtrMMLW'
         self.model = model
@@ -974,195 +460,7 @@ class qwenClient(BaseClient):
 class metallamaClient(BaseClient):
     def __init__(self, model: str = ""):
         super().__init__(model=model)
-    
-    def get_response(self, prompt, reasoning: str = "medium"):
-        try:
-            # 构建请求 payload
-            # prompt 可能是列表格式（OpenAI 消息格式）或字符串
-            if isinstance(prompt, list):
-                messages = prompt
-            elif isinstance(prompt, str):
-                # 如果是字符串，转换为消息格式
-                messages = [{"role": "user", "content": prompt}]
-            else:
-                raise ValueError(f"Unsupported prompt type: {type(prompt)}")
-            
-            # 根据实际模型名称设置 payload
-            model_name = self.model
-            payload = {
-                "model": model_name,
-                "messages": messages,
-                "stream": True,
-                "stream_options": {"include_usage": True},
-            }
-            
-            
-            # 发送 HTTP 请求
-            # 使用 context 禁用 SSL 验证（仅用于开发环境）
-            import ssl
-            ctx = ssl.create_default_context()
-            ctx.check_hostname = False
-            ctx.verify_mode = ssl.CERT_NONE
-            
-            conn = http.client.HTTPSConnection("chrisapius.top", context=ctx)
-            payload_json = json.dumps(payload)
-            headers = {
-                'Authorization': f'Bearer {self.api_key}',
-                'Content-Type': 'application/json',
-                'Accept': 'text/event-stream'
-            }
-            
-            conn.request("POST", "/v1/chat/completions", payload_json, headers)
-            res = conn.getresponse()
-            status_code = res.status
-            
-            # 检查 HTTP 状态码
-            if status_code != 200:
-                data = res.read()
-                conn.close()
-                logger.error(f"API returned HTTP status code {status_code}")
-                response_text = data.decode("utf-8", errors='ignore')
-                logger.error(f"Response body (first 500 chars): {response_text[:500]}")
-                return None
-            
-            # 处理流式响应（SSE 格式）
-            full_content = ""
-            response_id = None
-            finish_reason = None
-            usage_info = None
-            model_name_from_response = model_name
-            
-            # 逐行读取流式响应
-            while True:
-                line = res.readline()
-                if not line:
-                    break
-                
-                line_str = line.decode("utf-8", errors='ignore').strip()
-                
-                # 跳过空行
-                if not line_str:
-                    continue
-                
-                # 检查 [DONE] 标记
-                if line_str == "data: [DONE]":
-                    break
-                
-                # SSE 格式：每行以 "data: " 开头
-                if line_str.startswith("data: "):
-                    json_str = line_str[6:]  # 移除 "data: " 前缀
-                    
-                    try:
-                        chunk_data = json.loads(json_str)
-                    except json.JSONDecodeError as e:
-                        logger.warning(f"Failed to parse chunk JSON: {e}, line: {json_str[:100]}")
-                        continue
-                    
-                    # 获取 response ID（通常在第一个 chunk）
-                    if chunk_data.get("id") and not response_id:
-                        response_id = chunk_data.get("id")
-                    
-                    # 获取 model 名称
-                    if chunk_data.get("model"):
-                        model_name_from_response = chunk_data.get("model")
-                    
-                    # 处理 choices 数据
-                    if "choices" in chunk_data and len(chunk_data["choices"]) > 0:
-                        choice = chunk_data["choices"][0]
-                        
-                        # 提取内容增量
-                        delta = choice.get("delta", {})
-                        if delta.get("content"):
-                            delta_content = delta["content"]
-                            full_content += delta_content
-                            print(delta_content, end="", flush=True)
-                        
-                        # 获取 finish_reason
-                        if choice.get("finish_reason"):
-                            finish_reason = choice.get("finish_reason")
-                    
-                    # 提取 usage 信息（在最后一个数据包中）
-                    if "usage" in chunk_data and chunk_data["usage"] is not None:
-                        usage_info = chunk_data["usage"]
-                        # 确保 usage_info 是字典类型
-                        if isinstance(usage_info, dict):
-                            print("\n\n=== Token 使用统计 ===")
-                            print(f"输入 Tokens: {usage_info.get('prompt_tokens', 0)}")
-                            print(f"输出 Tokens: {usage_info.get('completion_tokens', 0)}")
-                            print(f"总 Tokens: {usage_info.get('total_tokens', 0)}")
-                            if "completion_tokens_details" in usage_info:
-                                reasoning_tokens = usage_info["completion_tokens_details"].get("reasoning_tokens", 0)
-                                print(f"推理 Tokens: {reasoning_tokens}")
-            
-            conn.close()
-            
-            # 检查是否收集到内容
-            if not full_content and not usage_info:
-                logger.error("No content or usage information received from stream")
-                return None
-            
-            # 构建标准非流式响应结构（与 qwenClient 格式一致）
-            response = {
-                "id": response_id or f"chatcmpl-{hash(str(prompt))}",
-                "object": "chat.completion",
-                "created": int(time.time()),
-                "model": model_name_from_response,
-                "choices": [{
-                    "index": 0,
-                    "message": {
-                        "role": "assistant",
-                        "content": full_content
-                    },
-                    "finish_reason": finish_reason or "stop"
-                }]
-            }
-            
-            # 添加 usage 信息
-            if usage_info:
-                usage_dict = {
-                    "prompt_tokens": usage_info.get("prompt_tokens", 0),
-                    "completion_tokens": usage_info.get("completion_tokens", 0),
-                    "total_tokens": usage_info.get("total_tokens", 0)
-                }
-                
-                # 提取 completion_tokens_details，确保 reasoning_tokens 被包含
-                completion_tokens_details = {}
-                if "completion_tokens_details" in usage_info and usage_info["completion_tokens_details"]:
-                    details = usage_info["completion_tokens_details"]
-                    # 提取 reasoning_tokens（关键字段）
-                    reasoning_tokens = details.get("reasoning_tokens", 0)
-                    completion_tokens_details["reasoning_tokens"] = reasoning_tokens
-                    # 其他可选字段
-                    if "accepted_prediction_tokens" in details:
-                        completion_tokens_details["accepted_prediction_tokens"] = details["accepted_prediction_tokens"]
-                    if "rejected_prediction_tokens" in details:
-                        completion_tokens_details["rejected_prediction_tokens"] = details["rejected_prediction_tokens"]
-                    if "audio_tokens" in details:
-                        completion_tokens_details["audio_tokens"] = details["audio_tokens"]
-                
-                # 确保 completion_tokens_details 总是存在（即使为空字典）
-                # 这样 extract 函数可以安全地调用 .get("reasoning_tokens", 0)
-                usage_dict["completion_tokens_details"] = completion_tokens_details
-                response["usage"] = usage_dict
-            else:
-                # 如果没有 usage 信息，使用默认值，但确保 completion_tokens_details 存在
-                response["usage"] = {
-                    "prompt_tokens": 0,
-                    "completion_tokens": 0,
-                    "total_tokens": 0,
-                    "completion_tokens_details": {
-                        "reasoning_tokens": 0
-                    }
-                }
-            
-            logger.info(f"Response received successfully (status: {status_code})")
-            return response
-            
-        except Exception as e:
-            logger.error(f"Error getting response: {e}")
-            import traceback
-            logger.error(traceback.format_exc())
-            return None
+
 def get_client(model: str = ""):
     if model in {"gpt-4o", "gpt-4o-2024-08-06"}:
         return gpt4oClient(model=model)
