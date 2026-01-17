@@ -1,5 +1,5 @@
 #!/bin/bash
-source /c/Users/Leo/miniconda3/etc/profile.d/conda.sh
+source /mnt/c/Users/Leo/miniconda3/etc/profile.d/conda.sh
 conda activate MPS
 
 model="gpt-5.1-medium"
@@ -7,9 +7,10 @@ reasoning_effort="medium"
 level="T5"
 class="MP2"
 task="MP2_Synthesised"
-base_path="data/SMP_100_Verified"
+base_path="${DATA_BASE_PATH:-data/SMP_100_Verified}"
+batch="${BATCH:-default}"
 data_path="$base_path/$level/$class"
-output_path="output/$model/$level/$class/Synthesised"
+output_path="output/$batch/$model/$level/$class/Synthesised"
 type="${level}_${task}_Evaluation_Summary"
 # special_list="[24]"
 

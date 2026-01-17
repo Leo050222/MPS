@@ -1,5 +1,5 @@
 #!/bin/bash
-source /c/Users/Leo/miniconda3/etc/profile.d/conda.sh
+source /mnt/c/Users/Leo/miniconda3/etc/profile.d/conda.sh
 conda activate MPS
 
 model="qwen-plus"
@@ -7,9 +7,10 @@ enable_thinking=False
 level="T2"
 class="MP2"
 task="MP2_Seperated"
-base_path="data/SMP_100_Verified"
+base_path="${DATA_BASE_PATH:-data/SMP_100_Verified}"
+batch="${BATCH:-default}"
 data_path="$base_path/$level/$class"
-output_path="output/$model/non-thinking/$level/$class/Seperated"
+output_path="output/$batch/$model/non-thinking/$level/$class/Seperated"
 type="${level}_${task}_Evaluation_Summary"
 # special_list="[24]"
 

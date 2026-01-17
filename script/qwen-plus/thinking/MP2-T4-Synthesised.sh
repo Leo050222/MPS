@@ -1,5 +1,5 @@
 #!/bin/bash
-source ~/miniconda3/bin/activate
+source /mnt/c/Users/Leo/miniconda3/etc/profile.d/conda.sh
 conda activate MPS
 
 model="qwen-plus"
@@ -7,9 +7,10 @@ enable_thinking=True
 level="T4"
 class="MP2"
 task="MP2_Synthesised"
-base_path="data/SMP_100_Verified"
+base_path="${DATA_BASE_PATH:-data/SMP_100_Verified}"
+batch="${BATCH:-default}"
 data_path="$base_path/$level/$class"
-output_path="output/$model/thinking/$level/$class/Synthesised"
+output_path="output/$batch/$model/thinking/$level/$class/Synthesised"
 type="${level}_${task}_Evaluation_Summary"
 # special_list="[24]"
 
