@@ -1,3 +1,4 @@
+from operator import truth
 import sys
 import os
 
@@ -190,15 +191,29 @@ def extract(response, task: str, model_company: str = "openai") -> dict:
         "answer": answer
     }
 
-def get_ground_truth(que: dict, task: str) -> list[str]:
+def get_ground_truth(que: dict, task: str, connecting_point: list = []) -> list[str]:
     truth_list_tmp = que.get("Ground_Truth") or []
     truth_list = []
+    mp, mode = parse_task_mode(task)
     for item in truth_list_tmp:
         if isinstance(item, dict):
             truth_list.append(list(item.values())[0])
         else:
             truth_list.append(item)
-    return truth_list
+    
+    conns = []
+    # pdb.set_trace()
+    if mode == "seperated" and connecting_point:
+        for inner in connecting_point[0].values():
+            for k in inner.keys():
+                conns.append(k)
+        
+        for inx, conn in enumerate(conns):
+            truth_list[inx] = conn
+        
+        return truth_list
+    else:
+        return truth_list
 
 def extract_correctness(response) -> list[bool]:
     """
@@ -426,7 +441,7 @@ def compute_cost_cny(model: str, input_tokens: int, completion_tokens: int, reas
     return float(cost)
 
 
-def make_per_problem_evaluation_json(ques, extracted_data, correctness,level: str, class_name: str, model: str, task: str) -> dict:
+def make_per_problem_evaluation_json(ques, extracted_data, truth_list, correctness,level: str, class_name: str, model: str, task: str) -> dict:
     mp, mode = parse_task_mode(task)
     type = f"{level}_{class_name}_{mode}_Evaluation"
     if mode == "seperated":
@@ -442,7 +457,7 @@ def make_per_problem_evaluation_json(ques, extracted_data, correctness,level: st
         "reasoning_content": extracted_data.get("content", ""),
         "problem_type": ques.get("Problem_Type"),
         "output_answer": extracted_data.get("answer", []),
-        "ground_truth": ques.get("Ground_Truth"),
+        "ground_truth": truth_list,
         "correctness": correctness,
         "prompt_tokens": extracted_data.get("input_token", 0),
         "completion_tokens": extracted_data.get("total_token", 0) - extracted_data.get("input_token", 0),
@@ -570,6 +585,7 @@ def main(
         
         try:
             groud_truth = que.get("Ground_Truth", [])
+            conneccting_point = que.get("Connecting_Point", [])
             groud_truth_list: list[str] = []
             if isinstance(groud_truth, list):
                for item in groud_truth:
@@ -578,7 +594,7 @@ def main(
                     else:
                         groud_truth_list.append(str(item))
 
-            truth_list = get_ground_truth(que=que, task=task)
+            truth_list = get_ground_truth(que=que, task=task, connecting_point=conneccting_point)
             logger.info(f"Ground truth for Problem_ID {Problem_ID}: {truth_list}")
 
             answer_list = extracted_data.get("answer", [])
@@ -601,7 +617,7 @@ def main(
             continue
         
         try:
-            per_problem_json = make_per_problem_evaluation_json(ques=que, extracted_data=extracted_data, correctness=correctness, level=level, class_name=class_name, model=model, task=task)
+            per_problem_json = make_per_problem_evaluation_json(ques=que, extracted_data=extracted_data, truth_list=truth_list, correctness=correctness, level=level, class_name=class_name, model=model, task=task)
         except Exception as e:
             logger.error(f"Error making per problem evaluation json for Problem_ID {Problem_ID}: {e}")
             skipped_id.append(Problem_ID)
