@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-
 def _reslove_base_url(model: str) -> str:
     if model in BASE_URL and BASE_URL.get(model):
         return BASE_URL[model]
@@ -309,9 +308,6 @@ class gpt51Client(BaseClient):
     def __init__(self, key_model: str = "gpt-5.1"):
         super().__init__(model=key_model)
     
-class gpt51MediumClient(BaseClient):
-    def __init__(self, key_model: str = "gpt-5.1-medium"):
-        super().__init__(model=key_model)
 
 class gpt4oClient(BaseClient):
     def __init__(self, api_key = None, base_url = None, model = ""):
@@ -466,16 +462,14 @@ def get_client(model: str = ""):
         return gpt4oClient(model=model)
     if model in {"gpt-5", "gpt-5-thinking", "gpt-5-non-thinking"}:
         return gpt5Client(key_model=model)
-    elif model == "gpt-5.1-medium":
-        return gpt51MediumClient(key_model=model)
+    elif model in["gpt-5.1", "gpt-5.1-medium"]:
+        return gpt51Client(key_model=model)
     elif model == "gemini-2.5-flash":
         return geminiClient(model = model)
     elif model == "gemini-2.5-pro":
         return geminiClient(model = model)
     elif model == "qwen-plus":
         return qwenClient(key_model=model)
-    elif model == "gpt-5.1":
-        return gpt51Client(key_model=model)
     elif model == "meta-llama/llama-3.1-70b-instruct":
         return metallamaClient(model=model)
     else:   

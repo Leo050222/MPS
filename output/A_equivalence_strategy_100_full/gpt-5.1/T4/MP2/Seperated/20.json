@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-01-17T17:35:44.551344+00:00",
+  "model": "gpt-5.1",
+  "type": "T4_MP2_seperated_Evaluation",
+  "Problem_ID": 20,
+  "math_problem": [
+    {
+      "A3192": "Find all positive integers $n, k_1, \\dots, k_n$ such that $k_1 + \\cdots + k_n = 5n-4$ and \\[ \\frac{1}{k_1} + \\cdots + \\frac{1}{k_n} = 1. \\] Instead of finding all positive integers $n$ and corresponding $k_1, \\dots, k_n$ satisfying the sum and reciprocal sum conditions, simply find $e = k + 2021$, where $k$ is the part size in the solution with the smallest possible $n$, derived from the structural consideration of minimal number of terms in the representation."
+    },
+    {
+      "A3214": "Alice and Bob play a game on a board consisting of one row of 2022 consecutive squares. They take turns placing tiles that cover two adjacent squares, with Alice going first. By rule, a tile must not cover a square that is already covered by another tile. The game ends when no tile can be placed according to this rule. Alice's goal is to maximize the number of uncovered squares when the game ends; Bob's goal is to minimize it. What is the greatest number of uncovered squares that Alice can ensure at the end of the game, no matter how Bob plays?"
+    }
+  ],
+  "reasoning_content": "{\n  \"reasoning\": \"Problem 1:\\nWe need positive integers n and k_1,...,k_n such that\\n(1) k_1 + ... + k_n = 5n - 4\\n(2) 1/k_1 + ... + 1/k_n = 1.\\nWe are not asked to list all solutions, but to use the structure and in particular the solution with the smallest possible n, and then define e = k + 2021 where k is the (common) part size in that minimal-n solution.\\n\\nFirst observe that if all k_i are equal to some k, then:\\n(1) nk = 5n - 4 → k = (5n - 4)/n = 5 - 4/n\\n(2) n*(1/k) = 1 → k = n.\\nEquating these: n = 5 - 4/n → n^2 - 5n + 4 = 0 → (n - 1)(n - 4) = 0 → n = 1 or n = 4.\\n\\nFor n=1, k_1 = n =1, and check sum: k_1 = 1, while 5n-4 = 1, and 1/k_1 =1, so this satisfies both equations. For n=4, k_i =4 for all i, sum is 4*4=16 and 5n-4=20-4=16, reciprocal sum is 4*(1/4)=1, so that also works.\\n\\nWe must consider whether any solution exists with n>1 but not all k_i equal. However, the problem statement hints that we should use “structural consideration of minimal number of terms in the representation”, so we focus on the solution with minimal n. Among the valid equal-part solutions, n=1 is the smallest possible number of terms. A non-constant solution cannot have n<1, so n=1 is the smallest n overall.\\n\\nThus the relevant solution has n=1 and k_1=1, so the part size k referred to in the problem is k=1. Then e = k + 2021 = 1 + 2021 = 2022.\\n\\nProblem 2:\\nWe have a row of 2022 consecutive squares. Alice and Bob alternately place 2×1 tiles (dominoes) on two adjacent empty squares; no overlap is allowed; game ends when no domino can be placed. Alice wants to maximize, Bob to minimize, the number of uncovered squares. We must find the maximum number of uncovered squares that Alice can guarantee.\\n\\nKey observations:\\n- Each move covers exactly 2 squares, so after m moves, 2m squares are covered.\\n- The game stops exactly when the remaining empty squares contain no adjacent pair of empty squares; that is, all empty squares are isolated (separated by covered squares or board boundary).\\n- In such a final position, the empty squares form isolated singles.\\n\\nLet U be the final number of uncovered squares and C the number of covered squares. Then C + U = 2022 and C is even (since each domino covers 2 squares). Because empty squares are isolated, they cannot be adjacent; for a line of length N, the maximum number of isolated empty squares is obtained by the pattern E C E C ... where E=empty, C=covered. The exact upper bound is:\\nU ≤ floor((N + 1) / 2).\\nFor N=2022, (2022+1)/2 = 1011.5, so max isolated U is 1011. Thus for any legal terminal position, U ≤ 1011. This gives an absolute upper bound: Alice can never force more than 1011 empty squares.\\n\\nWe now show Alice can force at least 1011 uncovered squares, regardless of Bob’s play, hence she can guarantee exactly 1011.\\n\\nA standard strategy is a pairing (symmetry) strategy. The length 2022 is even. Label positions 1 through 2022, and pair squares symmetrically: (1,2022), (2,2021), ... , (1011,1012). These are 1011 disjoint pairs. Note each pair consists of two squares that are symmetric with respect to the center point between squares 1011 and 1012.\\n\\nStrategy for Alice:\\n- Whenever Bob places a domino on squares (x,x+1), Alice responds by placing a domino on the reflection of that pair: namely, on squares (2022 - x, 2023 - x). This is always a legal move as long as Alice maintains the invariant that corresponding reflected squares are in the same state (both empty or both covered) at the times she moves.\\n- To start, Alice must make an initial move that fits this symmetry: she can place her first domino in the central pair (1011,1012). That pair is symmetric to itself, so it preserves the symmetry of the board.\\n- After Alice’s first move, the board is symmetric. On each of Bob’s moves, he picks some adjacent pair of empty squares; its reflection is also empty (by the maintained symmetry), so Alice can place her domino there and restore symmetry.\\n\\nBecause 2022 is even, the number of squares is 2 mod 4 when we consider pairing by dominoes: 2022/2 = 1011, which is odd. However, we must check move parity carefully. Each round of Bob+Alice moves places 2 dominoes, covering 4 squares. Alice starts, so the total number of moves is odd: Alice gets the first move and, potentially, the last move if Alice can always respond to Bob until the board saturates under the constraint of symmetry.\\n\\nBut the critical property is not who moves last; it is the structure of reachable terminal states under Alice’s symmetric strategy. Because Alice mirrors Bob’s moves around the center (with her initial move at the center pair), the board remains centrally symmetric after each of her moves. In a centrally symmetric position on a finite line with even length, and with only 2×1 dominoes placed, the configuration of empty squares is symmetric. In particular, empty squares occur in symmetric pairs (i,j) with i + j = 2023, unless the central pair is both covered (which it is from Alice’s first move). Thus empties always come in mirror pairs.\\n\\nThe game ends only when no two adjacent squares are empty; so all empties are isolated, but also paired by the central symmetry, giving an even number of empties that are isolated. However, the general maximum number of isolated empties is 1011; to attain this configuration under reflection symmetry with even length, the empties must be exactly all squares of one parity of indices (odd positions or even positions). For N=2022, such a pattern has 1011 isolated empties (all odds or all evens) and 1011 covered squares between them. This pattern is centrally symmetric.\\n\\nSince Alice can enforce central symmetry throughout the game, and since a symmetric terminal state with maximum isolated empties is feasible and consistent with moves, she can achieve the configuration with 1011 empty squares (e.g. all odd or all even positions empty) and all others filled with dominoes that match her mirroring strategy.\\n\\nThis shows that:\\n- U cannot exceed 1011 in any terminal position because empties must be isolated.\\n- Alice has a strategy ensuring a terminal state with U = 1011 (using symmetry and appropriate initial placement), regardless of Bob’s play.\\n\\nTherefore, the greatest number of uncovered squares that Alice can guarantee is 1011.\\n\\nFinal results:\\n- Problem 1: e = 2022.\\n- Problem 2: 1011 uncovered squares can be guaranteed by Alice.\",\n  \"answer_1\": \"2022\",\n  \"answer_2\": \"1011\"\n}",
+  "problem_type": [
+    {
+      "A3192": [
+        "Mathematics -> Algebra -> Algebra -> Equations and Inequalities",
+        "Mathematics -> Number Theory -> Prime Numbers"
+      ]
+    },
+    {
+      "A3214": [
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "2022",
+    "1011"
+  ],
+  "ground_truth": [
+    "2022",
+    "290"
+  ],
+  "correctness": [
+    true,
+    false
+  ],
+  "prompt_tokens": 2605,
+  "completion_tokens": 1695,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

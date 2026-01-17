@@ -1,39 +1,16 @@
 #!/bin/bash
-source /mnt/c/Users/Leo/miniconda3/etc/profile.d/conda.sh
-conda activate MPS
+# 加载公共配置
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../common.sh" 2>/dev/null || source "$SCRIPT_DIR/../../common.sh" 2>/dev/null || source "script/common.sh"
 
+# 脚本特定参数
 model="meta-llama/llama-3.1-70b-instruct"
 reasoning_effort="minimal"
 level="T4"
 class="MP2"
 task="MP2_Synthesised"
-base_path="${DATA_BASE_PATH:-data/SMP_100_Verified}"
-batch="${BATCH:-default}"
-data_path="$base_path/$level/$class"
-output_path="output/$batch/$model/$level/$class/Synthesised"
-type="${level}_${task}_Evaluation_Summary"
-# special_list="[24]"
 
-echo "Start inference"
-python expriment/inference.py  \
-    $model \
-    $reasoning_effort \
-    $level \
-    $class \
-    $task \
-    $data_path 
-    # $special_list
-
-echo "Inference done"
-echo "Start postprocess"
-# postprocess
-echo "[postprocess] model=$model task=$task type=$type"
-echo "[postprocess] output_dir=$output_path"
-python expriment/postprocess.py  \
-    $model \
-    $type \
-    $output_path \
-    $task
-
-echo "Postprocess done"
-
+# 构建路径并运行
+build_paths "$model" "$reasoning_effort" "$level" "$class" "$task" "Synthesised"
+run_inference "$model" "$reasoning_effort" "$level" "$class" "$task"
+run_postprocess "$model" "$task"
