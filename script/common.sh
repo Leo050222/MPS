@@ -8,6 +8,7 @@ conda activate MPS
 # 默认配置（可被 run.sh 覆盖）
 base_path="${DATA_BASE_PATH:-data/SMP_100_Verified}"
 batch="${BATCH:-default}"
+seed="${SEED:-42}"
 
 # 构建路径的函数
 # 用法: build_paths <model> <reasoning_param> <level> <class> <task> <task_type>
@@ -47,7 +48,7 @@ build_paths() {
     
     # 构建路径
     data_path="$base_path/$model_dir/$reasoning_subdir/$level/$class"
-    output_path="output/$batch/$model/$level/$class/$task_type"
+    output_path="output/$batch/$model/$reasoning_subdir/$level/$class/$task_type"
     type="${level}_${task}_Evaluation_Summary"
 }
 
@@ -67,7 +68,8 @@ run_inference() {
         "$class" \
         "$task" \
         "$data_path" \
-        "$output_path"
+        "$output_path" \
+        --seed "$seed"
     echo "Inference done"
 }
 

@@ -1,21 +1,29 @@
 #!/usr/bin/env bash
 
 BASE_DIR="script"
-SESSION="run_models"
 
+export DATASET_NAME="SMP_MP2_300"
 # 数据集基础路径
-export DATA_BASE_PATH="data/A_equivalence_strategy_100_full"
+export DATA_BASE_PATH="data/$DATASET_NAME"
 
 # 输出批次名称
-export BATCH="A_equivalence_strategy_100_full"
+export BATCH=$DATASET_NAME
+
+# 随机种子（用于模型采样确定性）
+export SEED=42
 
 SELECTED_MODELS=(
   # "gpt-4o"
   # "gpt-4o-2024-08-06"
-  "gpt-5.1"
+  # "gpt-5.1"
   # "meta-llama"
-  # "qwen-plus"
+  "qwen-plus"
 )
+
+# 用下划线连接模型名作为 session 名，去掉点号
+session_suffix=$(IFS=_; echo "${SELECTED_MODELS[*]}")
+session_suffix="${session_suffix//./-}"
+SESSION="run_${session_suffix}"
 
 echo "[run.sh] DATA_BASE_PATH=$DATA_BASE_PATH"
 echo "[run.sh] BATCH=$BATCH"

@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-01-26T16:19:07.950698+00:00",
+  "model": "qwen-plus",
+  "type": "T3_MP2_synthesised_Evaluation",
+  "Problem_ID": 31,
+  "math_problem": "The game of Penta is played with teams of five players each, and there are five roles the players can play. Each of the five players chooses two of five roles they wish to play. If each player chooses their roles randomly, what is the probability that each role will have exactly two players? Instead of computing the probability that every role is selected by precisely two players, simply find T(favorable), the total number of favorable outcomes where each role receives exactly two choices. Given a positive integer $k$, let $\\|k\\|$ denote the absolute difference between $k$ and the nearest perfect square. For example, $\\|13\\|=3$ since the nearest perfect square to 13 is 16. Compute the smallest positive integer $n$ such that $\\frac{\\|1\\|+\\|2\\|+\\cdots+\\|n\\|}{n}=(T(favorable)-1940)$.",
+  "reasoning_content": "{\n    \"reasoning\": \"To solve the problem, we first determine $ T(favorable) $, the number of favorable outcomes where each of the five roles is chosen exactly twice by the five players. This corresponds to counting the number of $ 5 \\\\times 5 $ binary matrices with row and column sums equal to 2. This is a known combinatorial problem, and the value for $ n = 5 $ is given by the OEIS sequence A001499, which counts such matrices. For $ n = 5 $, the value is **2040**.\\n\\nNext, we compute $ T(favorable) - 1940 = 2040 - 1940 = 100 $. The task now reduces to finding the smallest positive integer $ n $ such that the average of $ \\\\|1\\\\| + \\\\|2\\\\| + \\\\cdots + \\\\|n\\\\| $ equals 100.\\n\\nThe function $ \\\\|k\\\\| $ represents the absolute difference between $ k $ and the nearest perfect square. By analyzing intervals around perfect squares, we find that for each integer $ m \\\\geq 1 $, the interval $ [m^2 - m + 1, m^2 + m] $ contains values of $ k $ where the nearest square is $ m^2 $. Within this interval, the sum of $ \\\\|k\\\\| $ values is exactly $ m^2 $.\\n\\nUsing this structure, we calculate cumulative sums up to certain intervals. For large $ m $, the average $ \\\\frac{S(n)}{n} $ approaches $ \\\\frac{m}{3} $, so we estimate $ m \\\\approx 300 $ to reach an average of 100. Detailed calculations show that the first solution occurs at $ n = 89800 $, where the cumulative sum $ S(n) = 100n $ holds true. Smaller values of $ n $ do not satisfy the condition due to the increasing nature of the average.\",\n    \"answer\": \"89800\"\n}",
+  "problem_type": [
+    {
+      "A682": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations",
+        "Mathematics -> Discrete Mathematics -> Graph Theory"
+      ]
+    },
+    {
+      "A1519": [
+        "Mathematics -> Number Theory -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "89800"
+  ],
+  "ground_truth": [
+    "\\frac{51}{2500}",
+    "89800"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 487,
+  "completion_tokens": 24232,
+  "reasoning_tokens": 23773,
+  "cost": 0.1942456
+}

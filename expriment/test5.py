@@ -16,7 +16,8 @@ completion = client.chat.completions.create(
     ],
     stream=True,
     extra_body={"enable_thinking": True},
-    stream_options={"include_usage": True}
+    stream_options={"include_usage": True},
+    temperature=0
 )
 full_content = ""
 for chunk in completion:

@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-01-26T14:48:57.160295+00:00",
+  "model": "qwen-plus",
+  "type": "T2_MP2_synthesised_Evaluation",
+  "Problem_ID": 10,
+  "math_problem": "You are given a $10 \\times 2$ grid of unit squares. Two different squares are adjacent if they share a side. How many ways can one mark exactly nine of the squares so that no two marked squares are adjacent? Instead of counting the total number of ways to mark exactly nine of the squares so that no two marked squares are adjacent, simply find $w$, where $w$ is the number of ways to mark one square in each of nine consecutive rows such that no two marked squares in adjacent rows share the same column. Suppose that $m$ and $n$ are positive integers with $m<n$ such that the interval $[m, n)$ contains more multiples of $(w + 2019)$ than multiples of 2000. Compute the maximum possible value of $n-m$.",
+  "reasoning_content": "{\"reasoning\": \"To solve the problem, we proceed step by step.\\n\\n### Step 1: Determine $ w $\\n\\nWe are given a $10 \\\\times 2$ grid and asked to find $ w $, the number of ways to mark one square in each of **nine consecutive rows** such that no two marked squares in adjacent rows share the same column.\\n\\n- Each row has 2 columns.\\n- In any sequence of 9 rows, we must choose one column per row (either column 1 or 2), with the constraint that **no two adjacent rows have the same column**.\\n- This is equivalent to counting the number of binary sequences of length 9 where no two consecutive digits are equal.\\n\\nThis is a classic combinatorics problem:\\n- The first choice has 2 options.\\n- Each subsequent choice is forced to be the opposite of the previous one.\\n- Therefore, there are exactly **2 valid sequences**: alternating starting from column 1 or column 2.\\n\\nThus, $ w = 2 $.\\n\\n---\\n\\n### Step 2: Compute $ w + 2019 $\\n\\n$$\\nw + 2019 = 2 + 2019 = 2021\\n$$\\n\\nSo, we now consider the interval $[m, n)$ and want it to contain **more multiples of 2021 than of 2000**.\\n\\nLet:\\n- $ A = 2021 $\\n- $ B = 2000 $\\n\\nWe are to find the **maximum possible value of $ n - m $** such that the number of multiples of $ A $ in $[m, n)$ is strictly greater than the number of multiples of $ B $ in the same interval.\\n\\n---\\n\\n### Step 3: Analyze the Counting Condition\\n\\nLet:\\n- $ C_A = \\\\left\\\\lfloor \\\\frac{n-1}{A} \\\\right\\\\rfloor - \\\\left\\\\lfloor \\\\frac{m-1}{A} \\\\right\\\\rfloor $\\n- $ C_B = \\\\left\\\\lfloor \\\\frac{n-1}{B} \\\\right\\\\rfloor - \\\\left\\\\lfloor \\\\frac{m-1}{B} \\\\right\\\\rfloor $\\n\\nWe require $ C_A > C_B $.\\n\\nNote:\\n- Since $ A > B $, the density of multiples of $ A $ is less than that of $ B $.\\n- Over long intervals, $ C_B > C_A $, so only **short intervals** can satisfy $ C_A > C_B $.\\n\\nThe key insight is:\\n- An interval of length $ L $ contains at most $ \\\\left\\\\lfloor \\\\frac{L}{A} \\\\right\\\\rfloor $ multiples of $ A $, and at least $ \\\\left\\\\lfloor \\\\frac{L}{B} \\\\right\\\\rfloor $ multiples of $ B $.\\n- For $ C_A > C_B $, we need $ \\\\left\\\\lfloor \\\\frac{L}{A} \\\\right\\\\rfloor > \\\\left\\\\lfloor \\\\frac{L}{B} \\\\right\\\\rfloor $, which is only possible for small $ L $.\\n\\n---\\n\\n### Step 4: Maximum Interval Length Where $ C_A > C_B $\\n\\nUsing the **pigeonhole principle**, any interval of length $ \\\\geq B $ must contain at least one multiple of $ B $. Hence, for $ L \\\\geq B $, $ C_B \\\\geq 1 $, and since $ A > B $, $ C_A \\\\leq 1 $, so $ C_A \\\\leq C_B $.\\n\\nTherefore, the **maximum possible length** where $ C_A > C_B $ is **less than $ B $**.\\n\\nNow consider an interval of length $ B - 1 = 1999 $:\\n- It may contain **at most one** multiple of $ A $ (since $ A > B $).\\n- It may contain **zero** multiples of $ B $ (as it's shorter than $ B $).\\n- If it contains exactly one multiple of $ A $ and zero of $ B $, then $ C_A = 1 $, $ C_B = 0 $, satisfying $ C_A > C_B $.\\n\\nSuch intervals exist due to the **Bezout identity**:\\n$$\\n2000 \\\\cdot 385 - 2021 \\\\cdot 381 = 1\\n$$\\nThis implies that $ 2021 \\\\cdot 381 = 2000 \\\\cdot 385 - 1 $, i.e., the multiple of $ A $ is just before a multiple of $ B $.\\n\\nThus, the interval $[2000 \\\\cdot 384 + 1, 2000 \\\\cdot 385)$ has length 1999, contains one multiple of $ A $, and no multiples of $ B $, satisfying $ C_A > C_B $.\\n\\nAny longer interval would include at least one multiple of $ B $, making $ C_B \\\\geq 1 $, and since $ A > B $, $ C_A \\\\leq 1 $, so $ C_A \\\\leq C_B $.\\n\\nHence, the **maximum possible value of $ n - m $** is:\\n$$\\n\\\\boxed{1999}\\n\", \"answer\": \"1999\"}",
+  "problem_type": [
+    {
+      "A1402": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations"
+      ]
+    },
+    {
+      "A1403": [
+        "Mathematics -> Number Theory -> Congruences"
+      ]
+    }
+  ],
+  "output_answer": [
+    "1999"
+  ],
+  "ground_truth": [
+    "36",
+    "191999"
+  ],
+  "correctness": [
+    false
+  ],
+  "prompt_tokens": 464,
+  "completion_tokens": 32565,
+  "reasoning_tokens": 31346,
+  "cost": 0.2608912
+}

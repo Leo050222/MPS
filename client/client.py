@@ -7,7 +7,7 @@ import logging
 import time
 import ssl
 
-from config import API_KEYS, AVAILABLE_MODEL, BASE_URL
+from config import API_KEYS, AVAILABLE_MODEL, BASE_URL, TOP_P
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
@@ -66,7 +66,7 @@ class BaseClient:
             # Fallback to locally known models if remote listing is unavailable
             return self.models
 
-    def get_response(self, prompt, reasoning: str = "medium"):
+    def get_response(self, prompt, reasoning: str = "medium", seed: int = None):
         try:
             # 构建请求 payload
             # prompt 可能是列表格式（OpenAI 消息格式）或字符串
@@ -83,20 +83,19 @@ class BaseClient:
                 "model": model_name,
                 "messages": messages,
                 "stream": True,
-                "stream_options": {"include_usage": True}
+                "stream_options": {"include_usage": True},
+                "top_p": TOP_P
             }
 
             if reasoning != "minimal":
                 payload["reasoning_effort"] = reasoning
             
-            # 发送 HTTP 请求
-            # 使用 context 禁用 SSL 验证（仅用于开发环境）
-            import ssl
-            ctx = ssl.create_default_context()
-            ctx.check_hostname = False
-            ctx.verify_mode = ssl.CERT_NONE
+            # 添加 seed 参数（如果提供）
+            if seed is not None:
+                payload["seed"] = seed
             
-            conn = http.client.HTTPSConnection("chrisapius.top", context=ctx)
+            # 发送 HTTP 请求
+            conn = http.client.HTTPConnection("152.53.208.62", 9000)
             payload_json = json.dumps(payload)
             headers = {
                 'Authorization': f'Bearer {self.api_key}',
@@ -256,7 +255,7 @@ class BaseClient:
             logger.error(traceback.format_exc())
             return None
 
-    def get_response_not_stream(self, prompt, reasoning: str = "minimal"):
+    def get_response_not_stream(self, prompt, reasoning: str = "minimal", seed: int = None):
         try:
             if isinstance(prompt, list):
                 messages = prompt
@@ -267,14 +266,18 @@ class BaseClient:
             model_name = self.model
             payload = {
                 "model": model_name,
-                "messages": messages
+                "messages": messages,
+                "top_p": TOP_P
             }
 
             if reasoning != "minimal":
                 payload["reasoning_effort"] = reasoning
+            
+            # 添加 seed 参数（如果提供）
+            if seed is not None:
+                payload["seed"] = seed
 
-            context = ssl._create_unverified_context()
-            conn = http.client.HTTPSConnection("chrisapius.top", context=context)
+            conn = http.client.HTTPConnection("152.53.208.62", 9000)
             payload_json = json.dumps(payload)
             headers = {
                 'Authorization': f'Bearer {self.api_key}',
@@ -338,7 +341,7 @@ class geminiClient(BaseClient):
         }
         
         # Create a new connection for each request to avoid connection reuse issues
-        client = http.client.HTTPSConnection("chrisapius.top")
+        client = http.client.HTTPConnection("152.53.208.62", 9000)
         client.request("POST", f"/v1beta/models/{model}:generateContent", prompt_json, headers)
         res = client.getresponse()
         data = res.read()
@@ -349,7 +352,7 @@ class qwenClient(BaseClient):
     def __init__(self, key_model: str = "qwen-plus"):
         super().__init__(model=key_model)
         
-    def get_response(self, prompt, reasoning: bool = True):
+    def get_response(self, prompt, reasoning: bool = True, seed: int = None):
         client = self.client
         # 将 reasoning 转换为布尔值（处理字符串 "True"/"False" 的情况）
         if isinstance(reasoning, str):
@@ -357,12 +360,18 @@ class qwenClient(BaseClient):
         elif not isinstance(reasoning, bool):
             reasoning = bool(reasoning)
         
+        # 构建 extra_body，包含 enable_thinking 和可选的 seed
+        extra_body = {"enable_thinking": reasoning}
+        if seed is not None:
+            extra_body["seed"] = seed
+        
         completion = client.chat.completions.create(
             model=self.model,
             messages=prompt,
             stream=True,
-            extra_body={"enable_thinking": reasoning},
-            stream_options={"include_usage": True}
+            extra_body=extra_body,
+            stream_options={"include_usage": True},
+            top_p=TOP_P
         )
         
         # 初始化变量用于收集流式数据

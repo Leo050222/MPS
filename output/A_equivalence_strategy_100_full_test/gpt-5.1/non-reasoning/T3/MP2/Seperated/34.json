@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-01-18T07:21:00.073112+00:00",
+  "model": "gpt-5.1",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 34,
+  "math_problem": [
+    {
+      "A3709": "Find the greatest positive integer $x$ such that $23^{6+x}$ divides $2000!$ Instead of determining the largest additional exponent beyond 6 for which the prime power divides the factorial, simply find $m = \\lfloor n / p \\rfloor - 36$, where $\\lfloor n / p \\rfloor$ is the first term in the sum for the exponent of $p$ in $n!$."
+    },
+    {
+      "A1188": "Let $S=\\{-100,-99,-98, \\ldots, 99,100\\}$. Choose a 50-element subset $T$ of $S$ at random. Find the expected number of elements of the set $\\{|x|: x \\in T\\}$."
+    }
+  ],
+  "reasoning_content": "{\n  \"reasoning\": \"Problem 1:\\nWe want the greatest positive integer x such that 23^{6+x} divides 2000!. Normally, we would compute the exponent v_{23}(2000!) using Legendre's formula:\\n\\nv_{23}(2000!) = floor(2000/23) + floor(2000/23^2) + floor(2000/23^3) + ...\\n\\nThe problem text says: \\\"Instead of determining the largest additional exponent beyond 6 for which the prime power divides the factorial, simply find m = floor(n / p) - 36, where floor(n / p) is the first term in the sum for the exponent of p in n!.\\\" Here n = 2000 and p = 23, so the first term is floor(2000/23). Thus:\\n\\nfloor(2000/23) = floor(86.9565...) = 86.\\n\\nThen they define m = floor(n/p) - 36 = 86 - 36 = 50.\\n\\nSo, following the instruction, the answer they want reported for Problem 1 is m = 50.\\n\\nProblem 2:\\nS = {-100, -99, ..., 99, 100}, so |S| = 201 elements. We choose a 50-element subset T uniformly at random from all 50-element subsets. We want the expected number of distinct absolute values in the set { |x| : x in T }.\\n\\nThe absolute values possible are 0, 1, 2, ..., 100. So there are 101 possible absolute values. For k from 1 to 100, the value k corresponds to the pair {k, -k}, and for 0 we only have the single element 0.\\n\\nDefine indicator random variables:\\n- For each k in {1, 2, ..., 100}, let I_k = 1 if at least one of {k, -k} is in T, and 0 otherwise.\\n- For 0, let I_0 = 1 if 0 is in T, 0 otherwise.\\n\\nThen the total number of distinct absolute values present is:\\n\\nX = I_0 + sum_{k=1}^{100} I_k.\\n\\nBy linearity of expectation:\\n\\nE[X] = E[I_0] + sum_{k=1}^{100} E[I_k].\\n\\nEach E[I_*] is just the probability that the corresponding absolute value appears.\\n\\nFirst, P(0 in T): We are choosing 50 out of 201. The number of subsets containing 0 is C(200, 49) (we must choose 49 from the other 200 elements), while the total number of 50-subsets is C(201, 50). So:\\n\\nP(0 in T) = C(200, 49) / C(201, 50).\\n\\nUsing the combinatorial identity C(201, 50) = (201/50) * C(200, 49), we obtain:\\n\\nP(0 in T) = C(200, 49) / [ (201/50) * C(200, 49) ] = 50 / 201.\\n\\nSo E[I_0] = 50/201.\\n\\nNow for each k in {1, ..., 100}, we want P(I_k = 1), i.e., P(at least one of k or -k is chosen). Equivalently:\\n\\nP(I_k = 1) = 1 - P(neither k nor -k is chosen).\\n\\nThe number of 50-subsets that avoid both k and -k is C(199, 50), choosing all 50 elements from the remaining 199 elements of S. So:\\n\\nP(neither k nor -k in T) = C(199, 50) / C(201, 50).\\n\\nThus:\\n\\nP(I_k = 1) = 1 - C(199, 50) / C(201, 50).\\n\\nWe simplify the ratio C(199, 50) / C(201, 50). Using factorials:\\n\\nC(199, 50) = 199! / (50! * 149!),\\nC(201, 50) = 201! / (50! * 151!).\\n\\nSo:\\n\\nC(199, 50) / C(201, 50) = [199! / (50! 149!)] * [50! 151! / 201!]\\n= (199! * 151!) / (149! * 201!).\\n\\nBut 151! = 151 * 150 * 149!, and 201! = 201 * 200 * 199! * ... but we only need down to 199!:\\n\\n201! = 201 * 200 * 199!.\\n\\nSo:\\n\\n(199! * 151!) / (149! * 201!) = (199! * 151 * 150 * 149!) / (149! * 201 * 200 * 199!)\\n= (151 * 150) / (201 * 200).\\n\\nThus:\\n\\nC(199, 50) / C(201, 50) = (151 * 150) / (201 * 200).\\n\\nCompute numerator and denominator:\\n151 * 150 = 22650,\\n201 * 200 = 40200.\\n\\nSo the ratio is 22650 / 40200. Cancel by 150:\\n22650 / 150 = 151,\\n40200 / 150 = 268.\\n\\nSo we get 151 / 268.\\n\\nTherefore:\\n\\nP(I_k = 1) = 1 - 151/268 = (268 - 151) / 268 = 117 / 268.\\n\\nThis is the same for each k = 1,...,100. Hence:\\n\\nE[I_k] = 117/268 for each k, and\\nsum_{k=1}^{100} E[I_k] = 100 * (117/268).\\n\\nNow compute E[X]:\\n\\nE[X] = 50/201 + 100 * (117/268).\\n\\nWe simplify 100 * (117/268). First, simplify 100/268:\\n100/268 = 50/134 = 25/67.\\n\\nSo:\\n\\n100 * (117/268) = 117 * (25/67) = (117/67) * 25.\\n\\n117/67 is irreducible because 67 is prime and does not divide 117 (117 = 3^2 * 13). So:\\n\\n100 * (117/268) = (117 * 25) / 67 = 2925 / 67.\\n\\nTherefore:\\n\\nE[X] = 50/201 + 2925/67.\\n\\nNow combine these two fractions. The common denominator is 201 * 67 because gcd(201, 67) = 1 (201 = 3 * 67, so actually 67 divides 201; we need to be careful here).\\n\\nInstead, note 201 = 3 * 67, so the least common denominator of 201 and 67 is 201 (since 67 divides 201). Rewrite:\\n\\n2925/67 = (2925 * 3) / (67 * 3) = 8775 / 201.\\n\\nSo:\\n\\nE[X] = 50/201 + 8775/201 = (50 + 8775) / 201 = 8825 / 201.\\n\\nWe now simplify 8825 / 201 if possible. Factor:\\n8825 = 25 * 353 (since 353 * 25 = 8825), and 201 = 3 * 67. Neither 3 nor 67 divides 353 or 25, so gcd(8825, 201) = 1. Hence the fraction is already in lowest terms.\\n\\nTherefore the expected number of distinct absolute values in |x| for x in T is 8825/201.\\n\\nSo the final answers are: Problem 1: 50 (as defined by m = floor(2000/23) - 36), and Problem 2: 8825/201.\",\n  \"answer_1\": \"50\",\n  \"answer_2\": \"8825/201\"\n}",
+  "problem_type": [
+    {
+      "A3709": [
+        "Mathematics -> Number Theory -> Factorization"
+      ]
+    },
+    {
+      "A1188": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations"
+      ]
+    }
+  ],
+  "output_answer": [
+    "50",
+    "8825/201"
+  ],
+  "ground_truth": [
+    "50",
+    "\\frac{8825}{201}"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 2496,
+  "completion_tokens": 1852,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}
