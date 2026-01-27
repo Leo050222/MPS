@@ -299,13 +299,15 @@ def extract_correctness(response) -> list[bool]:
     logger.debug(f"extract_correctness: content preview: {content[:500]}")
     return []
 
-def judge(answer: list[str], truth: list[str], task: str) -> list[bool]:
+def judge(answer: list[str], truth: list[str], task: str, seed: int = None) -> list[bool]:
     """
     判断答案是否正确
     
     Args:
         answer: 模型给出的答案列表
         truth: 正确答案列表
+        task: 任务类型
+        seed: 随机种子（用于 GPT-4o 判断的确定性）
     
     Returns:
         布尔值列表，表示每个答案是否正确
@@ -317,7 +319,7 @@ def judge(answer: list[str], truth: list[str], task: str) -> list[bool]:
         truth = [truth[-1]]
     prompt = prompt_builder.judge_prompt(answer=answer, truth=truth)
     client = get_client(model="gpt-4o")
-    response = client.get_response_not_stream(prompt=prompt)
+    response = client.get_response_not_stream(prompt=prompt, seed=seed)
     
     if response is None:
         logger.warning("judge: response is None, returning empty list")
@@ -475,6 +477,7 @@ def main(
     output_path: str,
     specific_list,
     write_run_summary: bool = False,
+    seed: int = None,
 ):
     client = get_client(model=model)
     model_company = MODELS_COMPANIES_MAP.get(model, "openai")
@@ -543,7 +546,7 @@ def main(
             max_retry = 10
             i = 1
             while i <= max_retry:
-                response = client.get_response( prompt=prompt, reasoning=reasoning)
+                response = client.get_response(prompt=prompt, reasoning=reasoning, seed=seed)
                 # 检查 response 是否为 None（可能是 429 或其他错误）
                 if response is None:
                     logger.warning(f"Empty response for Problem_ID {Problem_ID}, retrying... {i}/{max_retry}")
@@ -602,7 +605,7 @@ def main(
                 answer_list = [str(answer_list)]
             
             try:
-                correctness = judge(answer=answer_list, truth=truth_list, task=task)
+                correctness = judge(answer=answer_list, truth=truth_list, task=task, seed=seed)
                 if not correctness:
                     logger.error(f"Error judging correctness for Problem_ID {Problem_ID}: correctness is empty")
                     skipped_id.append(Problem_ID)
@@ -650,20 +653,26 @@ def main(
         logger.info(f"Run summary saved to {output_path}/eval.json")
 
 if __name__ == "__main__":
+    import argparse
     
-    model = sys.argv[1]
-    reasoning = sys.argv[2]
-    level = sys.argv[3]
-    class_name = sys.argv[4]
-    task = sys.argv[5]
-    data_path = sys.argv[6]
-    output_path = sys.argv[7]
+    parser = argparse.ArgumentParser(description="Run inference on math problems")
+    parser.add_argument("model", type=str, help="Model name")
+    parser.add_argument("reasoning", type=str, help="Reasoning parameter")
+    parser.add_argument("level", type=str, help="Level (e.g., T1, T2)")
+    parser.add_argument("class_name", type=str, help="Class name (e.g., MP2)")
+    parser.add_argument("task", type=str, help="Task (e.g., MP2_Seperated)")
+    parser.add_argument("data_path", type=str, help="Path to data directory")
+    parser.add_argument("output_path", type=str, help="Path to output directory")
+    parser.add_argument("--seed", type=int, default=None, help="Random seed for model sampling")
+    parser.add_argument("--specific_list", type=str, default=None, help="JSON list of specific Problem_IDs")
     
-    # 可选参数：specific_list（JSON 格式的列表字符串，例如 "[1,2,3]"）
+    args = parser.parse_args()
+    
+    # 解析 specific_list
     specific_list = None
-    if len(sys.argv) > 8:
-        try: 
-            specific_list = json.loads(sys.argv[8])
+    if args.specific_list:
+        try:
+            specific_list = json.loads(args.specific_list)
             if not isinstance(specific_list, list):
                 logger.warning(f"specific_list should be a list, got {type(specific_list)}. Ignoring.")
                 specific_list = None
@@ -672,13 +681,14 @@ if __name__ == "__main__":
             specific_list = None
     
     main(
-        model=model,
-        reasoning=reasoning,
-        level=level,
-        class_name=class_name,
-        task=task,
-        data_path=data_path,
-        output_path=output_path,
+        model=args.model,
+        reasoning=args.reasoning,
+        level=args.level,
+        class_name=args.class_name,
+        task=args.task,
+        data_path=args.data_path,
+        output_path=args.output_path,
         specific_list=specific_list,
         write_run_summary=False,
+        seed=args.seed,
     )

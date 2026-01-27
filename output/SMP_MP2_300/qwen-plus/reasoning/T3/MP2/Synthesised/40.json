@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-01-26T16:49:35.872523+00:00",
+  "model": "qwen-plus",
+  "type": "T3_MP2_synthesised_Evaluation",
+  "Problem_ID": 40,
+  "math_problem": "Given that $a, b, c$ are positive integers satisfying $$a+b+c=\\operatorname{gcd}(a, b)+\\operatorname{gcd}(b, c)+\\operatorname{gcd}(c, a)+120$$ determine the maximum possible value of $a$. Instead of determining the maximum possible value among the three positive integers, simply find $k$ as the greatest common divisor of the largest integer and one of the equal smaller integers minus the value of each smaller integer, in the triple that achieves this maximum. Let $\\{a_{n}\\}_{n \\geq 1}$ be an arithmetic sequence and $\\{g_{n}\\}_{n \\geq 1}$ be a geometric sequence such that the first four terms of $\\{a_{n}+g_{n}\\}$ are $k$, $k$, $1$, and $k$, in that order. What is the 10th term of $\\{a_{n}+g_{n}\\}$?",
+  "reasoning_content": "{\n    \"reasoning\": \"To solve the problem, we begin by analyzing the equation involving positive integers $a, b, c$:\\n\\n$$\\na + b + c = \\\\gcd(a, b) + \\\\gcd(b, c) + \\\\gcd(c, a) + 120\\n$$\\n\\nWe aim to **maximize** $a$, and then determine a specific value $k$ based on the triple that achieves this maximum. The problem states:\\n\\n> \\\"k as the greatest common divisor of the largest integer and one of the equal smaller integers minus the value of each smaller integer\\\"\\n\\nThis implies that in the optimal configuration, two of the numbers are equal and smaller than the third (i.e., $b = c < a$). Let’s assume $b = c = x$, so the equation becomes:\\n\\n$$\\na + 2x = \\\\gcd(a, x) + x + \\\\gcd(a, x) + 120 \\\\Rightarrow a + 2x = 2\\\\gcd(a, x) + x + 120\\n$$\\n\\nSimplifying:\\n\\n$$\\na + x = 2\\\\gcd(a, x) + 120 \\\\Rightarrow a = 2d + 120 - x\\n$$\\n\\nwhere $d = \\\\gcd(a, x)$. Since $d \\\\mid x$, let $x = d \\\\cdot m$, and since $d \\\\mid a$, let $a = d \\\\cdot n$. Substituting into the equation gives:\\n\\n$$\\ndn = 2d + 120 - dm \\\\Rightarrow d(n + m) = 2d + 120 \\\\Rightarrow d(n + m - 2) = 120\\n$$\\n\\nThus, $d$ must be a positive divisor of 120. To maximize $a = dn$, we want to maximize $d \\\\cdot n$. From the equation $n + m = \\\\frac{120}{d} + 2$, and since $n \\\\geq m$, the maximum occurs when $m = 1$, giving:\\n\\n$$\\nn = \\\\frac{120}{d} + 1 \\\\Rightarrow a = d \\\\left( \\\\frac{120}{d} + 1 \\\\right) = 120 + d\\n$$\\n\\nThe largest possible value of $d$ is 120 (a divisor of 120), which gives:\\n\\n$$\\na = 120 + 120 = 240, \\\\quad b = c = 120\\n$$\\n\\nNow compute $k$ as defined:\\n\\n- Largest integer: $a = 240$\\n- Equal smaller integers: $b = c = 120$\\n- $\\\\gcd(240, 120) = 120$\\n- Value of each smaller integer: $120$\\n\\nSo:\\n\\n$$\\nk = \\\\gcd(240, 120) - 120 = 120 - 120 = 0\\n$$\\n\\n---\\n\\nNext, consider the sequences $\\\\{a_n\\\\}$ (arithmetic) and $\\\\{g_n\\\\}$ (geometric), such that the first four terms of $\\\\{a_n + g_n\\\\}$ are:\\n\\n$$\\n0, 0, 1, 0\\n$$\\n\\nLet:\\n- $a_n = a_1 + (n-1)d$\\n- $g_n = g_1 r^{n-1}$\\n\\nFrom the given values:\\n\\n1. $a_1 + g_1 = 0$\\n2. $a_1 + d + g_1 r = 0$\\n3. $a_1 + 2d + g_1 r^2 = 1$\\n4. $a_1 + 3d + g_1 r^3 = 0$\\n\\nFrom (1): $a_1 = -g_1$\\n\\nSubstitute into (2):\\n\\n$$\\n-g_1 + d + g_1 r = 0 \\\\Rightarrow d = g_1(1 - r)\\n$$\\n\\nSubstitute into (3):\\n\\n$$\\n-g_1 + 2g_1(1 - r) + g_1 r^2 = 1 \\\\Rightarrow g_1[(1 - 2r + r^2)] = 1 \\\\Rightarrow g_1(r - 1)^2 = 1\\n$$\\n\\nSubstitute into (4):\\n\\n$$\\n-g_1 + 3g_1(1 - r) + g_1 r^3 = 0 \\\\Rightarrow g_1[2 - 3r + r^3] = 0\\n$$\\n\\nSince $g_1 \\\\neq 0$, solve:\\n\\n$$\\nr^3 - 3r + 2 = 0 \\\\Rightarrow (r - 1)^2(r + 2) = 0\\n$$\\n\\nRoots: $r = 1$ (double root), $r = -2$. But $r = 1$ leads to contradiction in (3), so $r = -2$.\\n\\nThen from (3):\\n\\n$$\\ng_1(-2 - 1)^2 = 1 \\\\Rightarrow g_1 \\\\cdot 9 = 1 \\\\Rightarrow g_1 = \\\\frac{1}{9}\\n$$\\n\\nFrom (2):\\n\\n$$\\nd = g_1(1 - (-2)) = \\\\frac{1}{9} \\\\cdot 3 = \\\\frac{1}{3}\\n$$\\n\\nNow compute the 10th term of $\\\\{a_n + g_n\\\\}$:\\n\\n$$\\na_{10} = a_1 + 9d = -\\\\frac{1}{9} + 9 \\\\cdot \\\\frac{1}{3} = -\\\\frac{1}{9} + 3 = \\\\frac{26}{9}\\n$$\\n$$\\ng_{10} = g_1 \\\\cdot (-2)^9 = \\\\frac{1}{9} \\\\cdot (-512) = -\\\\frac{512}{9}\\n$$\\n$$\\na_{10} + g_{10} = \\\\frac{26}{9} - \\\\frac{512}{9} = -\\\\frac{486}{9} = -54\\n$$\",\n    \"answer\": \"-54\"\n}",
+  "problem_type": [
+    {
+      "A891": [
+        "Mathematics -> Number Theory -> Greatest Common Divisors (GCD)"
+      ]
+    },
+    {
+      "A1587": [
+        "Mathematics -> Algebra -> Algebra -> Sequences and Series"
+      ]
+    }
+  ],
+  "output_answer": [
+    "-54"
+  ],
+  "ground_truth": [
+    "240",
+    "-54"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 501,
+  "completion_tokens": 8498,
+  "reasoning_tokens": 7041,
+  "cost": 0.06838480000000001
+}

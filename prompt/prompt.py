@@ -77,7 +77,8 @@ class promptGenerator:
 
         IMPORTANT: After completing your step-by-step reasoning, you MUST provide your final answer in the following JSON format (no additional text before or after the JSON):
 
-        {{
+        {{  
+            "reasoning": "...",
             "answer": "your final answer"
         }}
 
@@ -136,12 +137,6 @@ class promptGenerator:
 
         {combination}
 
-        IMPORTANT: After your analysis, you MUST provide your judgment in the following JSON format (no additional text before or after the JSON):
-
-        {{
-            "correctness": [true/false for Answer 1, true/false for Answer 2, ...]
-        }}
-
         Rules for judgment:
         1. The JSON must be valid and properly formatted
         2. Compare each answer pair carefully - they should be considered correct if they are mathematically or logically equivalent
@@ -153,6 +148,18 @@ class promptGenerator:
         8. The JSON block should be the last part of your response
         9. Compare the answers and truths in the order of the combination list and return the correctness list in the same order
         10. Be very careful when you judge the correctness, as there are many ways to express an answer, be sure to consider all possible equivalent expressions.
+
+        Special Cases:
+        1. Be careful with the "%". For example, 18%=0.18=18/100=18:100. Moreover, the answer may be directly expressed as 18 without the "%" sign, it is also equivalent to 18%.
+        2. Notice that only pay attention to the key part of the answer, as long as the key part is equivalent, the answer is correct. For example, "2019,1010" is equivalent to "(j,k) = (2019,1010)". Moreover, "7200" is equivalent to "7200\\mathrm{{MB}}".
+        3. Some answers may include units and some may not. For example, "7200" is equivalent to "7200\\mathrm{{MB}}". 
+
+        IMPORTANT: After your analysis, you MUST provide your judgment in the following JSON format (no additional text before or after the JSON):
+
+        {{
+            "correctness": [true/false for Answer 1, true/false for Answer 2, ...]
+        }}
+
         Example format (for 1 answer):
         {{
             "correctness": [true]

@@ -1,0 +1,36 @@
+{
+  "timestamp": "2026-01-18T07:13:30.845801+00:00",
+  "model": "gpt-5.1",
+  "type": "T2_MP2_synthesised_Evaluation",
+  "Problem_ID": 19,
+  "math_problem": "Compute all ordered triples $(x, y, z)$ of real numbers satisfying the following system of equations: $$\\begin{aligned} x y+z & =40 \\\\\\\\ x z+y & =51 \\\\\\\\ x+y+z & =19 \\end{aligned}$$ Instead of computing all ordered triples of real numbers satisfying the system of equations, simply find $k = z + \\frac{17}{5}$, where $z$ is the third component in the solution corresponding to the smaller root for $x + 1$ among the roots of the quadratic equation derived from the system. There are 21 competitors with distinct skill levels numbered $1,2, \\ldots, 21$. They participate in a pingpong tournament as follows. First, a random competitor is chosen to be \"active\", while the rest are \"inactive.\" Every round, a random inactive competitor is chosen to play against the current active one. The player with the higher skill will win and become (or remain) active, while the loser will be eliminated from the tournament. The tournament lasts for 20 rounds, after which there will only be one player remaining. Alice is the competitor with skill $k$. What is the expected number of games that she will get to play?",
+  "reasoning_content": "{  \n    \"reasoning\": \"1) Solve the system for (x,y,z). From\\nxy + z = 40\\nxz + y = 51\\nx + y + z = 19,\\nlet S = y + z. From the third equation, S = 19 - x.\\nAlso xy + z = x(y+z) - yz = xS - yz = 40 ...(1)\\nand xz + y = xS - yz = 51 ...(2).\\nThus xS - yz must equal both 40 and 51, which is impossible unless we use another relation. Instead, treat y and z directly.\\nFrom x + y + z = 19, we get y + z = 19 - x.\\nSubtract the first two equations:\\n(xy + z) - (xz + y) = 40 - 51 = -11\\n⇒ x(y - z) + (z - y) = -11\\n⇒ (y - z)(x - 1) = -11 ...(A).\\nAdd the first two:\\nxy + z + xz + y = 40 + 51 = 91\\n⇒ x(y + z) + (y + z) = 91\\n⇒ (x + 1)(y + z) = 91.\\nBut y + z = 19 - x, so\\n(x + 1)(19 - x) = 91.\\nExpand:\\n19x + 19 - x^2 - x = 91\\n⇒ -x^2 +18x +19 = 91\\n⇒ -x^2 +18x -72 = 0\\n⇒ x^2 -18x +72 = 0.\\nSolve: discriminant Δ = 18^2 -4·72 = 324 -288 = 36, sqrt Δ = 6.\\nSo x = (18 ± 6)/2 ⇒ x = 12 or x = 6.\\nWe are told: consider the quadratic for x+1 and take the smaller root for x+1. The roots for x are 6 and 12, hence x+1 are 7 and 13, so the smaller root for x+1 corresponds to x = 6.\\nNow solve for y,z when x=6.\\nWe know (x+1)(y+z) = 91 ⇒ 7(y+z) = 91 ⇒ y+z = 13.\\nUse xy+z=40: 6y + z =40.\\nWith y+z=13, subtract: (6y+z)-(y+z) = 40-13 ⇒ 5y = 27 ⇒ y = 27/5.\\nThen z = 13 - 27/5 = (65 -27)/5 = 38/5.\\nThus for the chosen root, z = 38/5.\\nWe need k = z + 17/5 = 38/5 +17/5 = 55/5 = 11.\\nSo Alice has skill k=11.\\n2) Tournament model: 21 players, skills 1..21; higher skill always wins. One active at a time; each round an inactive opponent chosen uniformly at random to face current active; loser is eliminated; winner is active. Continue until one left.\\nWe want the expected number of games Alice (skill 11) plays.\\nKey facts:\\n- Since higher skill always wins, the overall tournament winner is necessarily player 21 (the strongest). The process is just a random elimination order in which at each step, the current active meets a random remaining opponent and the stronger survives.\\n- For any pair of players i<j, they can play at most once (since loser is eliminated). If they ever meet, j wins.\\nThus we can view the process as generating a random permutation (elimination order) consistent with the rule “when two meet, the stronger survives,” but we don’t need the full distribution. There is a standard symmetry argument:\\nClaim: For any two distinct players A and B, the probability they play each other at some point during the tournament is 1/2, independent of their skills (as long as no ties and higher skill always wins). Intuition sketch: Consider only A and B; ignore others’ identities. At each game involving at most one of {A,B}, their status (alive/dead) evolves but does not determine who is active when/if the other one joins. By symmetry of the random choices of opponents, the event that A is eliminated by someone else before ever facing B is as likely as the event that B is eliminated by someone else before ever facing A, giving probability 1/2 that they eventually meet. More concretely, if we imagine revealing the tournament backwards from the end (where only the strongest is guaranteed to survive), among any two given players one is closer in the “ancestry tree” to the final champion; the chance they lie on the same ancestor path is 1/2.\\nGiven that intuition/result, every unordered pair of players (i,j) has probability 1/2 to meet, and if they meet, they play exactly one game.\\nAlternatively, we can reason directly for expectations: For Alice (skill 11), every game she plays is against some distinct opponent; she can face each other player at most once. For each opponent s ≠ 11, define indicator X_s =1 if Alice ever plays against skill s, else 0. Then Alice’s total number of games is X = Σ_{s≠11} X_s. By linearity of expectation, E[X] = Σ_{s≠11} E[X_s] = Σ_{s≠11} P(Alice plays s).\\nBy the symmetry argument above, P(Alice plays s) = 1/2 for each s≠11, regardless of s being stronger or weaker.\\nThere are 20 such opponents, so\\nE[X] = 20 · (1/2) = 10.\\nThus the expected number of games Alice plays is 10.\",\n    \"answer\": \"10\"\n}",
+  "problem_type": [
+    {
+      "A2252": [
+        "Mathematics -> Algebra -> Algebra -> Algebraic Expressions",
+        "Mathematics -> Algebra -> Algebra -> Equations and Inequalities"
+      ]
+    },
+    {
+      "A2257": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Other",
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "10"
+  ],
+  "ground_truth": [
+    "(12,3,4),(6,5.4,7.6)",
+    "\\frac{47}{42}"
+  ],
+  "correctness": [
+    false
+  ],
+  "prompt_tokens": 2606,
+  "completion_tokens": 1298,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

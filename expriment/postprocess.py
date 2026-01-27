@@ -165,20 +165,8 @@ def main(model: str, type: str, output_dir: str, task: str):
     total_reasoning_tokens = 0
     total_cost = 0.0
     
-    # 按类别统计（仅对纳入准确率统计范围的样本）
+    # 按类别统计
     category_stats = defaultdict(lambda: {"correct": 0, "total": 0})
-
-    # Synthesised 门控：仅当对应 Seperated 完全正确，才纳入准确率统计
-    seperated_results_by_file: dict[str, dict] = {}
-    seperated_output_dir: str | None = None
-    if is_synthesised_task(task):
-        seperated_output_dir = derive_seperated_output_dir_from_synthesised(output_dir)
-        seperated_results_by_file = load_outputs_by_filename(seperated_output_dir)
-        logger.info(
-            f"Synthesised task detected; gating accuracy stats by Seperated results in: {seperated_output_dir}"
-        )
-    
-    gated_out_count = 0
 
     # 处理每个结果
     for result in results:
@@ -196,30 +184,6 @@ def main(model: str, type: str, output_dir: str, task: str):
         total_completion_tokens += result.get("completion_tokens", 0)
         total_reasoning_tokens += result.get("reasoning_tokens", 0)
         total_cost += result.get("cost", 0.0)
-
-        include_in_accuracy = True
-        if is_synthesised_task(task):
-            # A: 通过 JSON 文件名来匹配对应 Seperated 结果
-            # 由于 load_all_outputs 返回不含文件名，这里用 Problem_ID 回退构造 "{id}.json"。
-            # 若未来你希望更严格使用文件名匹配，可改为 load_all_outputs 返回 (filename, data)。
-            sep_key = None
-            if isinstance(filename, int):
-                sep_key = f"{filename}.json"
-            elif isinstance(filename, str) and filename.endswith(".json"):
-                sep_key = filename
-
-            sep_result = seperated_results_by_file.get(sep_key) if sep_key else None
-            if not sep_result:
-                include_in_accuracy = False
-            else:
-                sep_correctness = sep_result.get("correctness", [])
-                if not isinstance(sep_correctness, list):
-                    sep_correctness = [sep_correctness] if sep_correctness else [False]
-                include_in_accuracy = calculate_correctness(sep_correctness)
-
-        if not include_in_accuracy:
-            gated_out_count += 1
-            continue
 
         total_count += 1
         if is_correct:
@@ -279,8 +243,6 @@ def main(model: str, type: str, output_dir: str, task: str):
     logger.info(f"Overall accuracy: {overall_accuracy:.2f}% ({correct_count}/{total_count})")
     logger.info(f"Total cost: {total_cost:.4f}")
     logger.info(f"Categories: {len(category_accuracies)}")
-    if is_synthesised_task(task):
-        logger.info(f"Gated out (not counted in accuracy): {gated_out_count}")
 
 
 if __name__ == "__main__":
