@@ -9,6 +9,8 @@ conda activate MPS
 base_path="${DATA_BASE_PATH:-data/SMP_100_Verified}"
 batch="${BATCH:-default}"
 seed="${SEED:-42}"
+use_async="${USE_ASYNC:-0}"
+concurrency="${CONCURRENCY:-5}"
 
 # 构建路径的函数
 # 用法: build_paths <model> <reasoning_param> <level> <class> <task> <task_type>
@@ -60,16 +62,26 @@ run_inference() {
     local class="$4"
     local task="$5"
     
-    echo "Start inference"
-    python expriment/inference.py \
-        "$model" \
-        "$reasoning_param" \
-        "$level" \
-        "$class" \
-        "$task" \
-        "$data_path" \
-        "$output_path" \
-        --seed "$seed"
+    # 构建基础命令
+    local cmd="python expriment/inference.py \
+        \"$model\" \
+        \"$reasoning_param\" \
+        \"$level\" \
+        \"$class\" \
+        \"$task\" \
+        \"$data_path\" \
+        \"$output_path\" \
+        --seed $seed"
+    
+    # 如果启用并发模式，追加 --use_async 和 --concurrency
+    if [[ "$use_async" == "1" ]]; then
+        cmd="$cmd --use_async --concurrency $concurrency"
+        echo "Start inference (async, concurrency=$concurrency)"
+    else
+        echo "Start inference (sync)"
+    fi
+    
+    eval $cmd
     echo "Inference done"
 }
 

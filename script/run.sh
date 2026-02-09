@@ -2,7 +2,7 @@
 
 BASE_DIR="script"
 
-export DATASET_NAME="SMP_MP2_300"
+export DATASET_NAME="SMP_MP2_300_Modified_V2"
 # 数据集基础路径
 export DATA_BASE_PATH="data/$DATASET_NAME"
 
@@ -11,6 +11,10 @@ export BATCH=$DATASET_NAME
 
 # 随机种子（用于模型采样确定性）
 export SEED=42
+
+# 并发模式配置
+export USE_ASYNC=1          # 1=启用并发模式, 0=同步模式
+export CONCURRENCY=5        # 最大并发请求数
 
 SELECTED_MODELS=(
   # "gpt-4o"

@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-02-07T08:12:42.739770+00:00",
+  "model": "qwen-plus",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 108,
+  "math_problem": [
+    {
+      "A3630": "Let $n$ be square with 4 digits, such that all its digits are less than 6. If we add 1 to each digit the resulting number is another square. Find $n$ Instead of identifying the 4-digit perfect square satisfying the digit increment condition, simply find $m = a - 42$, where $a$ is the integer whose square is that number."
+    },
+    {
+      "A1051": "P is a polynomial. When P is divided by $x-1$, the remainder is -4 . When P is divided by $x-2$, the remainder is -1 . When $P$ is divided by $x-3$, the remainder is 4 . Determine the remainder when $P$ is divided by $x^{3}-6 x^{2}+11 x-6$."
+    }
+  ],
+  "reasoning_content": "We are given two problems. Let's solve them step by step.\n\n---\n\n### **Problem 1**\n\n> Let $ n $ be a square with 4 digits, such that all its digits are less than 6. If we add 1 to each digit the resulting number is another square. Find $ n $. Instead of identifying the 4-digit perfect square satisfying the digit increment condition, simply find $ m = a - 42 $, where $ a $ is the integer whose square is that number.\n\nSo:\n\n- $ n = a^2 $, where $ a $ is an integer, and $ n $ is a 4-digit number → $ 1000 \\leq a^2 \\leq 9999 $ ⇒ $ 32 \\leq a \\leq 99 $ (since $ 31^2 = 961 $, $ 32^2 = 1024 $, $ 99^2 = 9801 $, $ 100^2 = 10000 $).\n\n- All digits of $ n $ are less than 6: i.e., each digit ∈ {0,1,2,3,4,5}.\n\n- Adding 1 to each digit yields another square. So if $ n = d_1 d_2 d_3 d_4 $ (decimal digits), then new number $ n' = (d_1+1)(d_2+1)(d_3+1)(d_4+1) $, interpreted as a decimal number — i.e., digit-wise increment, no carry. Since all digits < 6, adding 1 gives digits ≤ 5+1 = 6, so no digit becomes 10; all digits of $ n' $ are in {1,2,3,4,5,6}, so $ n' $ is also a 4-digit number (since leading digit $ d_1 \\ge 1 $, so $ d_1 + 1 \\ge 2 $, so $ n' \\ge 2000 $). So $ n' $ is also a 4-digit number, and must be a perfect square.\n\nSo we need to find $ a \\in [32,99] $ such that:\n\n- $ a^2 $ has all digits in {0,1,2,3,4,5}\n- Define $ n = a^2 = 1000w + 100x + 10y + z $, with $ w,x,y,z \\in \\{0,1,2,3,4,5\\} $, and $ w \\ne 0 $ (since 4-digit).\n- Then $ n' = 1000(w+1) + 100(x+1) + 10(y+1) + (z+1) = n + 1111 $\n    - Because adding 1 to each digit in base-10 positions means adding $ 1000 + 100 + 10 + 1 = 1111 $.\n    - ✅ Yes! Digit-wise addition without carry is same as adding 1111.\n\nSo condition simplifies to:\n\n- $ a^2 $ is 4-digit, digits all < 6 ⇒ $ a^2 \\in [1000, 9999] $, digits ∈ {0–5}\n- $ a^2 + 1111 = b^2 $ for some integer $ b $, i.e., $ b^2 - a^2 = 1111 $\n- So $ (b - a)(b + a) = 1111 $\n\nLet’s factor 1111.\n\nCheck divisibility:\n\n- 1111 ÷ 11 = 101 → because 11 × 101 = 1111. Indeed: 11×100 = 1100, +11 = 1111.\n\nAlso, 1111 is odd, not divisible by 3 (1+1+1+1 = 4), not by 5, 7? 7×158 = 1106, remainder 5. So prime factorization: $ 1111 = 11 \\times 101 $. Both primes.\n\nSo positive factor pairs of 1111:\n\n- $ (1, 1111) $\n- $ (11, 101) $\n\nSince $ b > a > 0 $, both $ b-a $ and $ b+a $ are positive integers, same parity (since $ b-a $ and $ b+a $ sum to $ 2b $, even ⇒ both same parity). Check:\n\n- (1, 1111): sum = 1112 ⇒ $ b = 556 $, difference = 1110 ⇒ $ a = (1111 - 1)/2 = 555 $? Wait: solve:\n\nLet $ d = b - a $, $ s = b + a $, then $ d \\cdot s = 1111 $, and $ a = (s - d)/2 $, $ b = (s + d)/2 $. So need $ s > d $, both same parity.\n\n- Pair (1, 1111): $ s = 1111 $, $ d = 1 $: $ a = (1111 - 1)/2 = 555 $, $ b = (1111 + 1)/2 = 556 $. Then $ a = 555 $, $ a^2 = 555^2 = ? $ That's way bigger than 4-digit: $ 500^2 = 250000 $, so too big. Reject.\n\n- Pair (11, 101): $ d = 11 $, $ s = 101 $ ⇒ $ a = (101 - 11)/2 = 90/2 = 45 $, $ b = (101 + 11)/2 = 112/2 = 56 $. So $ a = 45 $, $ a^2 = 2025 $, $ b = 56 $, $ b^2 = 3136 $. Check: $ 3136 - 2025 = 1111 $. ✅\n\nNow check digits of $ a^2 = 2025 $: digits are 2, 0, 2, 5 — all < 6. Good.\n\nAdd 1 to each digit: 3,1,3,6 → number is 3136, which is $ 56^2 $. ✅\n\nAre there any other factor pairs? Since 1111 is positive, and we consider only positive integer factors (a,b positive), and order matters only in that d < s, those are the only two. Also negative pairs would give negative a, irrelevant.\n\nSo unique solution: $ a = 45 $.\n\nThen $ m = a - 42 = 45 - 42 = 3 $.\n\n✅ So answer to Problem 1 is **3**.\n\nDouble-check: Is there any other $ a $ in 32–99 such that $ a^2 $ has all digits < 6 and $ a^2 + 1111 $ is square? We used the identity $ b^2 - a^2 = 1111 $, which is necessary and sufficient for digit-wise +1 (no carry) to yield square. Since digit-wise +1 equals +1111 only when no digit is 9, but here digits < 6, so definitely no carry, so yes, equivalent. So only solution is $ a = 45 $. Confirmed.\n\n---\n\n### **Problem 2**\n\n> P is a polynomial. When P is divided by $ x-1 $, the remainder is -4. When P is divided by $ x-2 $, the remainder is -1. When P is divided by $ x-3 $, the remainder is 4. Determine the remainder when P is divided by $ x^{3}-6 x^{2}+11 x-6 $.\n\nNote: $ x^3 - 6x^2 + 11x - 6 $. Let's factor it.\n\nTry rational roots: possible roots are factors of 6: ±1,±2,±3,±6.\n\n- $ x = 1 $: $ 1 - 6 + 11 - 6 = 0 $ ⇒ yes.\n- Divide by $ x-1 $: use synthetic division:\n\nCoefficients: 1 | -6 | 11 | -6  \nBring down 1, ×1 = 1, add to -6 → -5  \n×1 = -5, add to 11 → 6  \n×1 = 6, add to -6 → 0.\n\nSo quotient: $ x^2 - 5x + 6 = (x-2)(x-3) $. So full factorization:\n\n$$\nx^3 - 6x^2 + 11x - 6 = (x-1)(x-2)(x-3)\n$$\n\nSo divisor is cubic with distinct linear factors.\n\nWhen dividing polynomial $ P(x) $ by a cubic, remainder $ R(x) $ has degree < 3, i.e., at most quadratic: $ R(x) = ax^2 + bx + c $.\n\nAlso, by Remainder Theorem:\n\n- $ P(1) = -4 $ ⇒ $ R(1) = -4 $\n- $ P(2) = -1 $ ⇒ $ R(2) = -1 $\n- $ P(3) = 4 $ ⇒ $ R(3) = 4 $\n\nSo we need quadratic $ R(x) = ax^2 + bx + c $ satisfying:\n\n- $ a(1)^2 + b(1) + c = a + b + c = -4 $ … (1)  \n- $ a(4) + b(2) + c = 4a + 2b + c = -1 $ … (2)  \n- $ a(9) + b(3) + c = 9a + 3b + c = 4 $ … (3)\n\nSubtract (1) from (2):\n\n(2) − (1): $ (4a - a) + (2b - b) + (c - c) = -1 - (-4) = 3 $ ⇒ $ 3a + b = 3 $ … (4)\n\nSubtract (2) from (3):\n\n(3) − (2): $ (9a - 4a) + (3b - 2b) + (c - c) = 4 - (-1) = 5 $ ⇒ $ 5a + b = 5 $ … (5)\n\nNow subtract (4) from (5): $ (5a - 3a) + (b - b) = 5 - 3 = 2 $ ⇒ $ 2a = 2 $ ⇒ $ a = 1 $\n\nPlug into (4): $ 3(1) + b = 3 $ ⇒ $ b = 0 $\n\nThen from (1): $ 1 + 0 + c = -4 $ ⇒ $ c = -5 $\n\nSo $ R(x) = x^2 + 0x - 5 = x^2 - 5 $\n\nCheck:\n\n- $ R(1) = 1 - 5 = -4 $ ✅  \n- $ R(2) = 4 - 5 = -1 $ ✅  \n- $ R(3) = 9 - 5 = 4 $ ✅\n\nThus remainder is $ x^2 - 5 $.\n\nAnswer to Problem 2 is the polynomial $ x^2 - 5 $. Since the question says \"Determine the remainder\", and remainder is a polynomial, we write it as a string? But instructions say: \"For numerical answers, provide the exact value; for text answers, provide the exact text\". Since it's a polynomial, likely expected as expression string.\n\nBut let’s see the instruction again: “put ONLY the answer value in the quotes (no explanations, no units unless part of the answer, no LaTeX formatting)”. So we should write it plainly, e.g., \"x^2 - 5\".\n\nYes, standard.\n\n---\n\n### Final Answers\n\n- Problem 1: $ m = 3 $\n- Problem 2: remainder is $ x^2 - 5 $\n\n{\n    \"reasoning\": \"Problem 1: We seek a 4-digit perfect square n = a^2 where all digits are < 6, and adding 1 to each digit yields another square. Digit-wise increment without carry equals adding 1111, so b^2 - a^2 = 1111. Factoring 1111 = 11 × 101 gives (b-a, b+a) = (11, 101), leading to a = 45, so m = a - 42 = 3. Verification: 45^2 = 2025 (digits 2,0,2,5 all < 6); 2025 + 1111 = 3136 = 56^2. Problem 2: The cubic divisor factors as (x-1)(x-2)(x-3). The remainder R(x) upon division is quadratic, and matches P at x=1,2,3: R(1) = -4, R(2) = -1, R(3) = 4. Solving the system yields R(x) = x^2 - 5.\",\n    \"answer_1\": \"3\",\n    \"answer_2\": \"x^2 - 5\"\n}",
+  "problem_type": [
+    {
+      "A3630": [
+        "Mathematics -> Number Theory -> Prime Numbers",
+        "Mathematics -> Number Theory -> Congruences"
+      ]
+    },
+    {
+      "A1051": [
+        "Mathematics -> Algebra -> Algebra -> Polynomial Operations"
+      ]
+    }
+  ],
+  "output_answer": [
+    "3",
+    "x^2 - 5"
+  ],
+  "ground_truth": [
+    "3",
+    "x^{2}-5"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 449,
+  "completion_tokens": 3044,
+  "reasoning_tokens": 0,
+  "cost": 0.0247112
+}
