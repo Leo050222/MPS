@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-02-07T04:39:13.824450+00:00",
+  "model": "qwen-plus",
+  "type": "T4_MP2_seperated_Evaluation",
+  "Problem_ID": 1,
+  "math_problem": [
+    {
+      "A11": "Given $30$ students such that each student has at most $5$ friends and for every $5$ students there is a pair of students that are not friends, determine the maximum $k$ such that for all such possible configurations, there exists $k$ students who are all not friends. Instead of determining the maximum such $k$, simply find $d = \\mathrm{ex}(30, K_6) + 1644$, where $\\mathrm{ex}(30, K_6)$ is the maximum number of edges in a graph on $30$ vertices with no clique of $6$ vertices derived from the extremal analysis of the complement of the friendship graph."
+    },
+    {
+      "A1275": "How many real numbers $x$ are solutions to the following equation? $$2003^{x}+2004^{x}=2005^{x}$$"
+    }
+  ],
+  "reasoning_content": "We are given two problems. Let's solve them step by step.\n\n---\n\n### **Problem 1**\n\n> Given 30 students such that each student has at most 5 friends and for every 5 students there is a pair of students that are not friends, determine the maximum $ k $ such that for all such possible configurations, there exists $ k $ students who are all not friends. Instead of determining the maximum such $ k $, simply find  \n> $$ d = \\mathrm{ex}(30, K_6) + 1644, $$  \n> where $ \\mathrm{ex}(30, K_6) $ is the maximum number of edges in a graph on 30 vertices with no clique of 6 vertices derived from the extremal analysis of the complement of the friendship graph.\n\nLet’s unpack this.\n\n- $ \\mathrm{ex}(n, K_r) $ is the Turán number: the maximum number of edges in an $ n $-vertex graph that contains **no** $ K_r $ (i.e., no $ r $-clique).\n\n- So $ \\mathrm{ex}(30, K_6) $ is the maximum number of edges in a $ K_6 $-free graph on 30 vertices.\n\nBy **Turán's theorem**, the extremal graph (the one achieving the maximum edge count without a $ K_{r} $) is the **Turán graph** $ T_{r-1}(n) $: the complete $ (r-1) $-partite graph on $ n $ vertices with parts as equal as possible.\n\nSo for $ r = 6 $, we use $ r-1 = 5 $ parts.\n\nThus, $ \\mathrm{ex}(30, K_6) = e(T_5(30)) $, i.e., the number of edges in the complete 5-partite graph on 30 vertices with parts as equal as possible.\n\nSince $ 30 \\div 5 = 6 $, we can split 30 vertices into **5 parts of size 6 each**.\n\nThe Turán graph $ T_5(30) $ is the complete 5-partite graph with part sizes $ 6,6,6,6,6 $. So it's the complete 5-partite graph $ K_{6,6,6,6,6} $.\n\nNumber of edges in a complete $ t $-partite graph with part sizes $ n_1, n_2, ..., n_t $ is:\n\n$$\n\\text{Total possible edges} - \\text{edges within parts} = \\binom{n}{2} - \\sum_{i=1}^t \\binom{n_i}{2}\n$$\n\nHere, $ n = 30 $, each $ n_i = 6 $, so:\n\n- $ \\binom{30}{2} = \\frac{30 \\cdot 29}{2} = 435 $\n- Each $ \\binom{6}{2} = 15 $, and there are 5 parts → total intra-part edges = $ 5 \\cdot 15 = 75 $\n\nSo:\n\n$$\n\\mathrm{ex}(30, K_6) = 435 - 75 = 360\n$$\n\nTherefore,\n\n$$\nd = \\mathrm{ex}(30, K_6) + 1644 = 360 + 1644 = 2004\n$$\n\n✅ So answer to Problem 1 is **2004**.\n\nNote: The rest of the problem description (\"each student has at most 5 friends...\", \"for every 5 students there is a non-friend pair\", etc.) seems like red herring or context — but the problem explicitly says *instead of determining the maximum such $ k $*, just compute $ \\mathrm{ex}(30,K_6) + 1644 $. So we did exactly that using Turán’s theorem.\n\n---\n\n### **Problem 2**\n\n> How many real numbers $ x $ are solutions to the equation?  \n> $$ 2003^{x} + 2004^{x} = 2005^{x} $$\n\nLet’s define:\n\n$$\nf(x) = 2003^x + 2004^x - 2005^x\n$$\n\nWe want number of real roots of $ f(x) = 0 $.\n\nObserve behavior:\n\n- All bases > 0, so functions are defined and smooth for all real $ x $.\n\nLet’s analyze monotonicity and sign changes.\n\n#### Try integer values:\n\n- $ x = 0 $: $ 2003^0 + 2004^0 = 1 + 1 = 2 $, $ 2005^0 = 1 $ → $ f(0) = 2 - 1 = 1 > 0 $\n\n- $ x = 1 $: $ 2003 + 2004 = 4007 $, $ 2005 $ → $ f(1) = 4007 - 2005 = 2002 > 0 $\n\n- $ x = 2 $: $ 2003^2 + 2004^2 $ vs $ 2005^2 $. Compute approximations:\n\nBut better: note that for large $ x $, the term with largest base dominates. Since $ 2005 > 2004 > 2003 $, as $ x \\to +\\infty $, $ 2005^x $ grows faster than the sum of the other two → $ f(x) \\to -\\infty $.\n\nSo $ f(x) $ goes from positive at $ x = 0,1,2 $ to negative eventually ⇒ at least one root for some large $ x $.\n\nWhat about $ x \\to -\\infty $? Then $ a^x = 1/a^{-x} \\to 0 $, but more precisely:\n\nAs $ x \\to -\\infty $, $ a^x \\to 0 $, but smaller base gives **larger** value when $ x < 0 $, because $ a^x = e^{x \\ln a} $, and smaller $ a $ ⇒ smaller $ \\ln a $ ⇒ less negative exponent ⇒ larger value.\n\nSo as $ x \\to -\\infty $:\n\n- $ 2003^x > 2004^x > 2005^x $, all → 0, but $ 2003^x $ dominates.\n\nSo $ f(x) \\approx 2003^x > 0 $, so $ f(x) \\to 0^+ $. So stays positive? Let's check limit:\n\n$$\n\\lim_{x \\to -\\infty} f(x) = \\lim_{x \\to -\\infty} \\left(2003^x + 2004^x - 2005^x\\right) = 0 + 0 - 0 = 0,\n$$\nbut from positive side? Let's factor out smallest base, say $ 2003^x $:\n\n$$\nf(x) = 2003^x \\left(1 + \\left(\\frac{2004}{2003}\\right)^x - \\left(\\frac{2005}{2003}\\right)^x \\right)\n$$\n\nAs $ x \\to -\\infty $, $ \\left(\\frac{2004}{2003}\\right)^x = \\left(1 + \\frac{1}{2003}\\right)^x \\to 0 $, similarly $ \\left(\\frac{2005}{2003}\\right)^x \\to 0 $, since ratio > 1 raised to large negative power → 0. So inside → $ 1 + 0 - 0 = 1 $, and $ 2003^x \\to 0^+ $, so $ f(x) \\to 0^+ $. So $ f(x) > 0 $ for very negative $ x $.\n\nSo far:\n- $ f(x) > 0 $ for $ x \\ll 0 $\n- $ f(0) = 1 > 0 $\n- $ f(1) = 2002 > 0 $\n- As $ x \\to +\\infty $, $ f(x) \\to -\\infty $, so must cross zero at least once.\n\nNow check if it crosses only once — i.e., is $ f(x) $ strictly decreasing after some point? Let's examine derivative.\n\n$$\nf'(x) = 2003^x \\ln 2003 + 2004^x \\ln 2004 - 2005^x \\ln 2005\n$$\n\nHard to analyze directly, but consider function:\n\nLet’s divide both sides of original equation by $ 2005^x $ (since $ 2005^x > 0 $ always):\n\n$$\n\\left(\\frac{2003}{2005}\\right)^x + \\left(\\frac{2004}{2005}\\right)^x = 1\n$$\n\nDefine:\n\n$$\ng(x) = a^x + b^x, \\quad \\text{where } a = \\frac{2003}{2005} < 1, \\; b = \\frac{2004}{2005} < 1\n$$\n\nSo $ g(x) $ is sum of two decreasing exponential functions (since bases < 1), so $ g(x) $ is **strictly decreasing** over $ \\mathbb{R} $.\n\n- As $ x \\to -\\infty $: $ a^x = (2003/2005)^x = (2005/2003)^{-x} \\to +\\infty $, similarly $ b^x \\to +\\infty $, so $ g(x) \\to +\\infty $\n\n- As $ x \\to +\\infty $: $ a^x \\to 0 $, $ b^x \\to 0 $, so $ g(x) \\to 0^+ $\n\nAnd $ g $ is continuous and strictly decreasing ⇒ equation $ g(x) = 1 $ has **exactly one real solution**.\n\n✅ So answer to Problem 2 is **1**\n\n---\n\n### Final Answers:\n\n- Problem 1: $ d = 2004 $\n- Problem 2: $ 1 $\n\n{\n    \"reasoning\": \"Problem 1: By Turán's theorem, ex(30, K_6) is the number of edges in the complete 5-partite graph on 30 vertices with equal parts of size 6. Total edges in K_30 is C(30,2)=435; subtract intra-part edges: 5*C(6,2)=75, giving 360. Then d = 360 + 1644 = 2004. Problem 2: Divide both sides by 2005^x to get (2003/2005)^x + (2004/2005)^x = 1. Since both bases are less than 1, the left-hand side is a strictly decreasing continuous function from +∞ to 0, so it equals 1 exactly once.\",\n    \"answer_1\": \"2004\",\n    \"answer_2\": \"1\"\n}",
+  "problem_type": [
+    {
+      "A11": [
+        "Mathematics -> Discrete Mathematics -> Graph Theory"
+      ]
+    },
+    {
+      "A1275": [
+        "Mathematics -> Algebra -> Intermediate Algebra -> Exponential Functions"
+      ]
+    }
+  ],
+  "output_answer": [
+    "2004",
+    "1"
+  ],
+  "ground_truth": [
+    "2004",
+    "1"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 469,
+  "completion_tokens": 2556,
+  "reasoning_tokens": 0,
+  "cost": 0.0208232
+}

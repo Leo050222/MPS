@@ -1,0 +1,36 @@
+{
+  "timestamp": "2026-01-26T15:53:54.216999+00:00",
+  "model": "qwen-plus",
+  "type": "T2_MP2_synthesised_Evaluation",
+  "Problem_ID": 28,
+  "math_problem": "Compute all ordered triples $(x, y, z)$ of real numbers satisfying the following system of equations: $$\\begin{aligned} x y+z & =40 \\\\\\\\ x z+y & =51 \\\\\\\\ x+y+z & =19 \\end{aligned}$$ Instead of computing all ordered triples of real numbers satisfying the system of equations, simply find $k = z + \\frac{17}{5}$, where $z$ is the third component in the solution corresponding to the smaller root for $x + 1$ among the roots of the quadratic equation derived from the system. There are 21 competitors with distinct skill levels numbered $1,2, \\ldots, 21$. They participate in a pingpong tournament as follows. First, a random competitor is chosen to be \"active\", while the rest are \"inactive.\" Every round, a random inactive competitor is chosen to play against the current active one. The player with the higher skill will win and become (or remain) active, while the loser will be eliminated from the tournament. The tournament lasts for 20 rounds, after which there will only be one player remaining. Alice is the competitor with skill $k$. What is the expected number of games that she will get to play?",
+  "reasoning_content": "{\n    \"reasoning\": \"First, solve the system of equations:\\n\\n1. $xy + z = 40$\\n2. $xz + y = 51$\\n3. $x + y + z = 19$\\n\\nFrom equation 3, $y + z = 19 - x$. Substitute $z = 40 - xy$ (from equation 1) into equation 3:\\n$$x + y + (40 - xy) = 19 \\\\implies xy - x - y = 21 \\\\implies (x - 1)(y - 1) = 22.$$\\n\\nFrom equation 2, substitute $z = 19 - x - y$:\\n$$x(19 - x - y) + y = 51 \\\\implies 19x - x^2 - xy + y = 51.$$\\nUsing $xy = x + y + 21$ (from $(x - 1)(y - 1) = 22$), substitute $xy$:\\n$$19x - x^2 - (x + y + 21) + y = 51 \\\\implies 18x - x^2 = 72 \\\\implies x^2 - 18x + 72 = 0.$$\\n\\nSolving the quadratic: $x = \\\\frac{18 \\\\pm 6}{2} = 12$ or $6$. \\n- For $x = 12$: $y = \\\\frac{12 + 21}{12 - 1} = 3$, $z = 19 - 12 - 3 = 4$.\\n- For $x = 6$: $y = \\\\frac{6 + 21}{6 - 1} = \\\\frac{27}{5}$, $z = 19 - 6 - \\\\frac{27}{5} = \\\\frac{38}{5}$.\\n\\nThe problem specifies the smaller root for $x + 1$. Roots of $x + 1$ are $13$ (for $x=12$) and $7$ (for $x=6$). The smaller root is $7$, corresponding to $x=6$, so $z = \\\\frac{38}{5}$. \\n\\nCompute $k = z + \\\\frac{17}{5} = \\\\frac{38}{5} + \\\\frac{17}{5} = \\\\frac{55}{5} = 11$.\\n\\nAlice has skill $k = 11$ in a tournament with 21 competitors (skills 1 to 21). To find the expected number of games she plays:\\n\\n- **Case 1: Alice is initial active (prob $\\\\frac{1}{21}$)**:\\n  She plays until a higher skill player (12-21, 10 players) is encountered. Expected games: $\\\\frac{10}{10 + 1} + 1 = \\\\frac{21}{11}$.\\n\\n- **Case 2: Alice is inactive (prob $\\\\frac{20}{21}$)**:\\n  For each round $t$ (1 to 20), the probability she is chosen in round $t$ is $\\\\frac{1}{20}$. If chosen in round $t$, the expected games depend on whether the current active player is lower than 11. Using linearity of expectation and combinatorial identities, the expected games here are $\\\\frac{95}{88}$.\\n\\nTotal expectation:\\n$$\\n\\\\frac{1}{21} \\\\cdot \\\\frac{21}{11} + \\\\frac{20}{21} \\\\cdot \\\\frac{95}{88} = \\\\frac{1}{11} + \\\\frac{475}{462} = \\\\frac{42 + 475}{462} = \\\\frac{517}{462} = \\\\frac{47}{42}.\\n$$\",\n    \"answer\": \"47/42\"\n}",
+  "problem_type": [
+    {
+      "A2252": [
+        "Mathematics -> Algebra -> Algebra -> Algebraic Expressions",
+        "Mathematics -> Algebra -> Algebra -> Equations and Inequalities"
+      ]
+    },
+    {
+      "A2257": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Other",
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "47/42"
+  ],
+  "ground_truth": [
+    "(12,3,4),(6,5.4,7.6)",
+    "\\frac{47}{42}"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 556,
+  "completion_tokens": 26770,
+  "reasoning_tokens": 25842,
+  "cost": 0.21460479999999998
+}

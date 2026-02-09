@@ -1,5 +1,5 @@
 from typing import Optional
-from openai import OpenAI
+from openai import OpenAI, AsyncOpenAI
 import pdb
 import http.client
 import json
@@ -55,6 +55,11 @@ class BaseClient:
         self.api_key = api_key or _resolve_api_key(model)
         self.base_url = base_url or _reslove_base_url(model)
         self.client = OpenAI(
+            api_key=self.api_key,
+            base_url=self.base_url
+        )
+        # 异步客户端，用于并发调用
+        self.async_client = AsyncOpenAI(
             api_key=self.api_key,
             base_url=self.base_url
         )
@@ -306,7 +311,58 @@ class BaseClient:
             import traceback
             logger.error(traceback.format_exc())
             return None
-    
+
+    @staticmethod
+    def _ensure_usage_dict(response: dict) -> dict:
+        usage = response.get("usage")
+        if usage:
+            if not usage.get("completion_tokens_details"):
+                usage["completion_tokens_details"] = {"reasoning_tokens": 0}
+            elif usage["completion_tokens_details"].get("reasoning_tokens") is None:
+                usage["completion_tokens_details"]["reasoning_tokens"] = 0
+        else:
+            response["usage"] = {
+                "prompt_tokens": 0,
+                "completion_tokens": 0,
+                "total_tokens": 0,
+                "completion_tokens_details": {"reasoning_tokens": 0}
+            }
+        return response
+
+    async def get_response_not_stream_async(self, prompt, reasoning: str = "minimal", seed: int = None):
+        """异步非流式调用（用于 judge 等场景），返回格式与同步版 get_response_not_stream 一致。"""
+        try:
+            if isinstance(prompt, list):
+                messages = prompt
+            elif isinstance(prompt, str):
+                messages = [{"role": "user", "content": prompt}]
+            else:
+                raise ValueError(f"Unsupported prompt type: {type(prompt)}")
+
+            kwargs = {
+                "model": self.model,
+                "messages": messages,
+                "top_p": TOP_P,
+            }
+
+            extra_body = {}
+            if reasoning != "minimal":
+                extra_body["reasoning_effort"] = reasoning
+            if seed is not None:
+                kwargs["seed"] = seed
+            if extra_body:
+                kwargs["extra_body"] = extra_body
+
+            completion = await self.async_client.chat.completions.create(**kwargs)
+            response = completion.model_dump()
+            return self._ensure_usage_dict(response)
+
+        except Exception as e:
+            logger.error(f"Error in async non-stream response: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            return None
+
 class gpt51Client(BaseClient):
     def __init__(self, key_model: str = "gpt-5.1"):
         super().__init__(model=key_model)
@@ -351,7 +407,7 @@ class geminiClient(BaseClient):
 class qwenClient(BaseClient):
     def __init__(self, key_model: str = "qwen-plus"):
         super().__init__(model=key_model)
-        
+
     def get_response(self, prompt, reasoning: bool = True, seed: int = None):
         client = self.client
         # 将 reasoning 转换为布尔值（处理字符串 "True"/"False" 的情况）
@@ -461,6 +517,42 @@ class qwenClient(BaseClient):
             }
         
         return response
+
+    async def get_response_async(self, prompt, reasoning: bool = True, seed: int = None):
+        """异步非流式调用（用于并发推理），返回格式与同步版 get_response 完全一致。"""
+        # 将 reasoning 转换为布尔值（处理字符串 "True"/"False" 的情况）
+        if isinstance(reasoning, str):
+            reasoning = reasoning.lower() in ("true", "1", "yes", "on")
+        elif not isinstance(reasoning, bool):
+            reasoning = bool(reasoning)
+
+        if isinstance(prompt, list):
+            messages = prompt
+        elif isinstance(prompt, str):
+            messages = [{"role": "user", "content": prompt}]
+        else:
+            raise ValueError(f"Unsupported prompt type: {type(prompt)}")
+
+        extra_body = {"enable_thinking": reasoning}
+        if seed is not None:
+            extra_body["seed"] = seed
+
+        try:
+            completion = await self.async_client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                extra_body=extra_body,
+                top_p=TOP_P,
+            )
+
+            response = completion.model_dump()
+            return self._ensure_usage_dict(response)
+
+        except Exception as e:
+            logger.error(f"Error in qwen async response: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            return None
 
 class metallamaClient(BaseClient):
     def __init__(self, model: str = ""):

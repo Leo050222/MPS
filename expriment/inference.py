@@ -18,6 +18,8 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 tasks = TASKS
 import time
+import asyncio
+import platform
 
 def parse_task_mode(task: str) -> tuple[str, str]:
     """Return (mp, mode) from a task like 'MP2_Seperated' or 'MP3_Synthesised'."""
@@ -331,6 +333,25 @@ def judge(answer: list[str], truth: list[str], task: str, seed: int = None) -> l
     return correctness
 
 
+async def judge_async(answer: list[str], truth: list[str], task: str, seed: int = None) -> list[bool]:
+    """judge 的异步版本，使用 get_response_not_stream_async 调用 GPT-4o。"""
+    prompt_builder = get_prompt_builder()
+    mp, mode = parse_task_mode(task)
+    if mode == "synthesised":
+        truth = [truth[-1]]
+    prompt = prompt_builder.judge_prompt(answer=answer, truth=truth)
+    client = get_client(model="gpt-4o")
+    response = await client.get_response_not_stream_async(prompt=prompt, seed=seed)
+
+    if response is None:
+        logger.warning("judge_async: response is None, returning empty list")
+        return []
+
+    correctness = extract_correctness(response=response)
+    logger.info(f"judge_async: extracted correctness = {correctness}")
+    return correctness
+
+
 def per_answer_judgements(answer_list: list[str], truth_list: list[str]) -> list[bool]:
     if len(answer_list) != len(truth_list):
         return [False for _ in range(max(len(answer_list), len(truth_list)))]
@@ -466,6 +487,200 @@ def make_per_problem_evaluation_json(ques, extracted_data, truth_list, correctne
         "reasoning_tokens": extracted_data.get("reasoning_token", 0),
         "cost": compute_cost_cny(model=model, input_tokens=extracted_data.get("input_token", 0), completion_tokens=extracted_data.get("total_token", 0) - extracted_data.get("input_token", 0), reasoning_tokens=extracted_data.get("reasoning_token", 0))
     }
+
+async def process_single_problem_async(
+    que: dict,
+    client,
+    judge_client,
+    model: str,
+    model_company: str,
+    reasoning: str,
+    level: str,
+    class_name: str,
+    task: str,
+    output_path: str,
+    seed: int = None,
+    semaphore: asyncio.Semaphore = None,
+) -> dict:
+    """处理单个问题的完整异步流程：推理 → 提取答案 → 评判 → 保存结果。
+    
+    Returns:
+        {"Problem_ID": int, "status": "ok"|"skipped", "correctness": list[bool]} 或出错时返回 skipped。
+    """
+    Problem_ID = que["Problem_ID"]
+    result = {"Problem_ID": Problem_ID, "status": "skipped", "correctness": []}
+
+    async with semaphore:
+        # 1. 构建 prompt
+        C = que.get("Math_Problem", "")
+        parts = get_parts_in_order(que)
+        try:
+            prompt = build_prompt(task=task, C=C, parts=parts, model=model)
+        except Exception as e:
+            logger.error(f"[{Problem_ID}] Error building prompt: {e}")
+            return result
+
+        # 2. 调用模型推理（带重试）
+        response = None
+        max_retry = 10
+        for attempt in range(1, max_retry + 1):
+            try:
+                response = await client.get_response_async(prompt=prompt, reasoning=reasoning, seed=seed)
+            except Exception as e:
+                logger.error(f"[{Problem_ID}] Exception on attempt {attempt}: {e}")
+                response = None
+
+            if response is None:
+                logger.warning(f"[{Problem_ID}] Empty response, retrying... {attempt}/{max_retry}")
+                await asyncio.sleep(3)
+                continue
+
+            status_code = response.get("status_code", 0)
+            if status_code == 429:
+                logger.warning(f"[{Problem_ID}] Rate limited (429), retrying... {attempt}/{max_retry}")
+                await asyncio.sleep(5)
+                continue
+            break  # 成功拿到响应
+
+        if response is None:
+            logger.error(f"[{Problem_ID}] Failed after {max_retry} retries")
+            return result
+
+        # 3. 提取答案
+        try:
+            extracted_data = extract(response=response, task=task, model_company=model_company)
+            if not extracted_data or extracted_data.get("content") is None:
+                logger.error(f"[{Problem_ID}] extracted_data is None or empty")
+                return result
+        except Exception as e:
+            logger.error(f"[{Problem_ID}] Error extracting: {e}")
+            return result
+
+        # 4. 获取标准答案 & 评判
+        try:
+            connecting_point = que.get("Connecting_Point", [])
+            truth_list = get_ground_truth(que=que, task=task, connecting_point=connecting_point)
+
+            answer_list = extracted_data.get("answer", [])
+            if not isinstance(answer_list, list):
+                answer_list = [str(answer_list)]
+
+            correctness = await judge_async(answer=answer_list, truth=truth_list, task=task, seed=seed)
+            if not correctness:
+                logger.error(f"[{Problem_ID}] judge returned empty correctness")
+                return result
+        except Exception as e:
+            logger.error(f"[{Problem_ID}] Error judging: {e}")
+            return result
+
+        # 5. 构建并保存结果
+        try:
+            per_problem_json = make_per_problem_evaluation_json(
+                ques=que, extracted_data=extracted_data, truth_list=truth_list,
+                correctness=correctness, level=level, class_name=class_name,
+                model=model, task=task,
+            )
+            out_file = os.path.join(output_path, f"{Problem_ID}.json")
+            with open(out_file, "w", encoding="utf-8") as f:
+                json.dump(per_problem_json, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            logger.error(f"[{Problem_ID}] Error saving result: {e}")
+            return result
+
+    logger.info(f"[{Problem_ID}] Done for {level}/{class_name}")
+    result["status"] = "ok"
+    result["correctness"] = correctness
+    return result
+
+
+async def main_async(
+    model: str,
+    reasoning: str,
+    level: str,
+    class_name: str,
+    task: str,
+    data_path: str,
+    output_path: str,
+    specific_list,
+    write_run_summary: bool = False,
+    seed: int = None,
+    concurrency: int = 5,
+):
+    """main 的并发版本，使用 asyncio 并发处理问题。"""
+    client = get_client(model=model)
+    judge_client = get_client(model="gpt-4o")
+    model_company = MODELS_COMPANIES_MAP.get(model, "openai")
+
+    try:
+        problem_files = iter_problem_json_files(data_path)
+    except Exception as e:
+        logger.error(f"Error listing json files under {data_path}: {e}")
+        return
+
+    os.makedirs(output_path, exist_ok=True)
+    cached_outputs = load_existing_outputs(output_path)
+    finished_ids = set(cached_outputs.keys())
+
+    specific_ids = None
+    if specific_list is not None and len(specific_list) > 0:
+        specific_ids = set(int(id) for id in specific_list)
+        logger.info(f"Processing only specific Problem_IDs: {sorted(specific_ids)}")
+
+    # 加载所有待处理的问题
+    pending_questions = []
+    for json_path in problem_files:
+        try:
+            with open(json_path, "r", encoding="utf-8") as f:
+                que = json.load(f)
+        except Exception as e:
+            logger.error(f"Error loading {json_path}: {e}")
+            continue
+
+        pid = que.get("Problem_ID")
+        if pid is None:
+            continue
+        if specific_ids is not None and pid not in specific_ids:
+            continue
+        if pid in finished_ids:
+            logger.info(f"Skipping Problem_ID {pid} (already processed).")
+            continue
+        pending_questions.append(que)
+
+    if not pending_questions:
+        logger.info("No pending problems to process.")
+        return
+
+    logger.info(f"Pending: {len(pending_questions)} problems, concurrency: {concurrency}")
+
+    semaphore = asyncio.Semaphore(concurrency)
+
+    tasks_list = [
+        process_single_problem_async(
+            que=que, client=client, judge_client=judge_client,
+            model=model, model_company=model_company,
+            reasoning=reasoning, level=level, class_name=class_name,
+            task=task, output_path=output_path, seed=seed,
+            semaphore=semaphore,
+        )
+        for que in pending_questions
+    ]
+
+    results = await asyncio.gather(*tasks_list, return_exceptions=True)
+
+    # 统计结果
+    ok_count = 0
+    fail_count = 0
+    for r in results:
+        if isinstance(r, Exception):
+            logger.error(f"Task raised exception: {r}")
+            fail_count += 1
+        elif r.get("status") == "ok":
+            ok_count += 1
+        else:
+            fail_count += 1
+
+    logger.info(f"Completed: {ok_count} ok, {fail_count} failed/skipped, total {len(results)}")
+
 
 def main(
     model: str,
@@ -665,6 +880,8 @@ if __name__ == "__main__":
     parser.add_argument("output_path", type=str, help="Path to output directory")
     parser.add_argument("--seed", type=int, default=None, help="Random seed for model sampling")
     parser.add_argument("--specific_list", type=str, default=None, help="JSON list of specific Problem_IDs")
+    parser.add_argument("--use_async", action="store_true", help="Use async concurrent mode")
+    parser.add_argument("--concurrency", type=int, default=5, help="Max concurrent requests (only for async mode)")
     
     args = parser.parse_args()
     
@@ -680,15 +897,32 @@ if __name__ == "__main__":
             logger.warning(f"Failed to parse specific_list as JSON: {e}. Ignoring.")
             specific_list = None
     
-    main(
-        model=args.model,
-        reasoning=args.reasoning,
-        level=args.level,
-        class_name=args.class_name,
-        task=args.task,
-        data_path=args.data_path,
-        output_path=args.output_path,
-        specific_list=specific_list,
-        write_run_summary=False,
-        seed=args.seed,
-    )
+    if args.use_async:
+        if platform.system() == "Windows":
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        asyncio.run(main_async(
+            model=args.model,
+            reasoning=args.reasoning,
+            level=args.level,
+            class_name=args.class_name,
+            task=args.task,
+            data_path=args.data_path,
+            output_path=args.output_path,
+            specific_list=specific_list,
+            write_run_summary=False,
+            seed=args.seed,
+            concurrency=args.concurrency,
+        ))
+    else:
+        main(
+            model=args.model,
+            reasoning=args.reasoning,
+            level=args.level,
+            class_name=args.class_name,
+            task=args.task,
+            data_path=args.data_path,
+            output_path=args.output_path,
+            specific_list=specific_list,
+            write_run_summary=False,
+            seed=args.seed,
+        )

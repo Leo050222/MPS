@@ -150,9 +150,12 @@ class promptGenerator:
         10. Be very careful when you judge the correctness, as there are many ways to express an answer, be sure to consider all possible equivalent expressions.
 
         Special Cases:
-        1. Be careful with the "%". For example, 18%=0.18=18/100=18:100. Moreover, the answer may be directly expressed as 18 without the "%" sign, it is also equivalent to 18%.
-        2. Notice that only pay attention to the key part of the answer, as long as the key part is equivalent, the answer is correct. For example, "2019,1010" is equivalent to "(j,k) = (2019,1010)". Moreover, "7200" is equivalent to "7200\\mathrm{{MB}}".
-        3. Some answers may include units and some may not. For example, "7200" is equivalent to "7200\\mathrm{{MB}}". 
+        1. Some answers may include units and some may not. For examples, "7200" is equivalent to "7200\\mathrm{{MB}}", "60" is equivalent to "60 \\%" and etc.
+2. Be careful with the unit sign "%", for example, the ground truth "18%" may be directly expressed as "18" without the "%" or other equivalent forms, 18%=0.18=18:100=18/100=9/50, either of which should be judged as "true".
+3. Notice that only pay attention to the key part of the answer, as long as the key part is equivalent, the answer is correct. For example, "2019, 1010" is equivalent to "(j,k) = (2019, 1010)".
+4. If an answer is approximately equal to the ground truth, for example, "3/4" is approximately equal to "\\frac{{3-3^{{-999}}}}{{4}}”, this kind of answer should be judged as false.
+
+
 
         IMPORTANT: After your analysis, you MUST provide your judgment in the following JSON format (no additional text before or after the JSON):
 
