@@ -519,7 +519,8 @@ class qwenClient(BaseClient):
         return response
 
     async def get_response_async(self, prompt, reasoning: bool = True, seed: int = None):
-        """异步非流式调用（用于并发推理），返回格式与同步版 get_response 完全一致。"""
+        """异步流式调用（用于并发推理），静默收集 chunks，不打印到终端。
+        返回格式与同步版 get_response 完全一致。"""
         # 将 reasoning 转换为布尔值（处理字符串 "True"/"False" 的情况）
         if isinstance(reasoning, str):
             reasoning = reasoning.lower() in ("true", "1", "yes", "on")
@@ -541,15 +542,84 @@ class qwenClient(BaseClient):
             completion = await self.async_client.chat.completions.create(
                 model=self.model,
                 messages=messages,
+                stream=True,
+                stream_options={"include_usage": True},
                 extra_body=extra_body,
                 top_p=TOP_P,
             )
 
-            response = completion.model_dump()
-            return self._ensure_usage_dict(response)
+            # 静默收集流式 chunks
+            full_content = ""
+            response_id = None
+            finish_reason = None
+            usage_info = None
+
+            async for chunk in completion:
+                # 获取 response ID（通常在第一个 chunk）
+                if chunk.id and not response_id:
+                    response_id = chunk.id
+
+                # 拼接文本内容（不打印）
+                if chunk.choices and len(chunk.choices) > 0:
+                    choice = chunk.choices[0]
+                    if choice.delta and choice.delta.content:
+                        full_content += choice.delta.content
+                    if choice.finish_reason:
+                        finish_reason = choice.finish_reason
+
+                # 最后一个 chunk 携带 usage 信息
+                if chunk.usage:
+                    usage_info = chunk.usage
+
+            # 组装标准 response dict（与同步版 get_response 格式一致）
+            response = {
+                "id": response_id or f"chatcmpl-{hash(str(prompt))}",
+                "object": "chat.completion",
+                "created": int(time.time()),
+                "model": self.model,
+                "choices": [{
+                    "index": 0,
+                    "message": {
+                        "role": "assistant",
+                        "content": full_content
+                    },
+                    "finish_reason": finish_reason or "stop"
+                }]
+            }
+
+            # 添加 usage 信息
+            if usage_info:
+                usage_dict = {
+                    "prompt_tokens": usage_info.prompt_tokens,
+                    "completion_tokens": usage_info.completion_tokens,
+                    "total_tokens": getattr(usage_info, 'total_tokens',
+                                            usage_info.prompt_tokens + usage_info.completion_tokens)
+                }
+                completion_tokens_details = {}
+                if hasattr(usage_info, 'completion_tokens_details') and usage_info.completion_tokens_details:
+                    details = usage_info.completion_tokens_details
+                    reasoning_tokens = getattr(details, 'reasoning_tokens', 0)
+                    completion_tokens_details["reasoning_tokens"] = reasoning_tokens
+                    if hasattr(details, 'accepted_prediction_tokens'):
+                        completion_tokens_details["accepted_prediction_tokens"] = details.accepted_prediction_tokens
+                    if hasattr(details, 'rejected_prediction_tokens'):
+                        completion_tokens_details["rejected_prediction_tokens"] = details.rejected_prediction_tokens
+                    if hasattr(details, 'audio_tokens'):
+                        completion_tokens_details["audio_tokens"] = details.audio_tokens
+                usage_dict["completion_tokens_details"] = completion_tokens_details
+                response["usage"] = usage_dict
+            else:
+                response["usage"] = {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0,
+                    "completion_tokens_details": {"reasoning_tokens": 0}
+                }
+
+            return response
 
         except Exception as e:
-            logger.error(f"Error in qwen async response: {e}")
+            logger.error(f"Error in qwen async stream response: {e}")
             import traceback
             logger.error(traceback.format_exc())
             return None
