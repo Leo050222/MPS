@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-02-09T10:53:35.279728+00:00",
+  "model": "qwen-plus",
+  "type": "T2_MP2_synthesised_Evaluation",
+  "Problem_ID": 33,
+  "math_problem": "Squares $A B C D$ and $D E F G$ have side lengths 1 and $\\frac{1}{3}$, respectively, where $E$ is on $\\overline{C D}$ and points $A, D, G$ lie on a line in that order. Line $C F$ meets line $A G$ at $X$. The length $A X$ can be written as $\\frac{m}{n}$, where $m, n$ are positive integers and $\\operatorname{gcd}(m, n)=1$. Find $100 m+n$. Instead of computing the hundredfold numerator plus the denominator of the intersection length in reduced terms, simply find $k = AX + \\frac{29}{2}$, where $AX$ is the distance from $A$ to the intersection point $X$. Compute the number of sets $S$ such that every element of $S$ is a nonnegative integer less than $k$, and if $x \\in S$ then $(2 x \\bmod k) \\in S$.",
+  "reasoning_content": "{\n    \"reasoning\": \"First, we determine the coordinates of the squares. Place square $ABCD$ with $A(0,0)$, $B(1,0)$, $C(1,1)$, $D(0,1)$. Square $DEFG$ has side length $\\\\frac{1}{3}$, with $E$ on $\\\\overline{CD}$. Since $DE = \\\\frac{1}{3}$, $E$ is at $(\\\\frac{1}{3}, 1)$. Points $A, D, G$ are colinear on the $y$-axis, so $G$ must be above $D$. The square $DEFG$ has $F(\\\\frac{1}{3}, \\\\frac{4}{3})$ and $G(0, \\\\frac{4}{3})$.\\n\\nLine $CF$ connects $C(1,1)$ and $F(\\\\frac{1}{3}, \\\\frac{4}{3})$. Its slope is $-\\\\frac{1}{2}$, so its equation is $y = -\\\\frac{1}{2}x + \\\\frac{3}{2}$. Line $AG$ is the $y$-axis ($x=0$), so their intersection $X$ is at $(0, \\\\frac{3}{2})$. Thus, $AX = \\\\frac{3}{2}$.\\n\\nNext, compute $k = AX + \\\\frac{29}{2} = \\\\frac{3}{2} + \\\\frac{29}{2} = 16$. We need the number of sets $S \\\\subseteq \\\\{0, 1, \\\\ldots, 15\\\\}$ such that if $x \\\\in S$, then $2x \\\\mod 16 \\\\in S$.\\n\\nThis is equivalent to counting upper sets in the poset where $x \\\\leq y$ if $y$ is reachable from $x$ via $f(x) = 2x \\\\mod 16$. The poset forms a tree with root $0$, and branches:\\n- $0$ has child $8$,\\n- $8$ has children $4$ and $12$,\\n- $4$ has children $2$ and $10$,\\n- $12$ has children $6$ and $14$,\\n- $2, 6, 10, 14$ each have two leaf children (odd numbers).\\n\\nUsing recursive counting for upper sets:\\n- Leaves (8 elements): $g(x) = 1$,\\n- Level 1 (4 elements): $g = (1+1)^2 = 4$,\\n- Level 2 (2 elements): $g = (1+4)^2 = 25$,\\n- Level 3 (1 element): $g = (1+25)^2 = 676$,\\n- Root $0$: $g(0) = 1 + 676 = 677$,\\n- Total upper sets: $1 + 677 = 678$ (including the empty set).\",\n    \"answer\": \"678\"\n}",
+  "problem_type": [
+    {
+      "A2498": [
+        "Mathematics -> Geometry -> Plane Geometry -> Polygons",
+        "Mathematics -> Precalculus -> Trigonometric Functions"
+      ]
+    },
+    {
+      "A2512": [
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "678"
+  ],
+  "ground_truth": [
+    "302",
+    "678"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 518,
+  "completion_tokens": 27263,
+  "reasoning_tokens": 26560,
+  "cost": 0.2185184
+}

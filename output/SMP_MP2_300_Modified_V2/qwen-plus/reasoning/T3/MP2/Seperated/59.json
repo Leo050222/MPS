@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-02-09T09:19:32.306071+00:00",
+  "model": "qwen-plus",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 59,
+  "math_problem": [
+    {
+      "A1212": "Jude repeatedly flips a coin. If he has already flipped $n$ heads, the coin lands heads with probability $\\frac{1}{n+2}$ and tails with probability $\\frac{n+1}{n+2}$. If Jude continues flipping forever, let $p$ be the probability that he flips 3 heads in a row at some point. Compute $\\lfloor 180 p\\rfloor$. Instead of computing the floor of 180 times the probability of eventually flipping three heads in a row, simply find $\\delta = p_5 - \\frac{53}{72}$, where $p_5$ is the probability that the fifth head is preceded by a tail and that no three consecutive heads have occurred in the sequence up to the fifth head, as derived from analyzing the process to avoid three consecutive heads."
+    },
+    {
+      "A1935": "Compute the number of ways a non-self-intersecting concave quadrilateral can be drawn in the plane such that two of its vertices are $(0,0)$ and $(1,0)$, and the other two vertices are two distinct lattice points $(a, b),(c, d)$ with $0 \\leq a, c \\leq 59$ and $1 \\leq b, d \\leq 5$."
+    }
+  ],
+  "reasoning_content": "{\n    \"reasoning\": \"Problem 1: The problem requires computing δ = p5 - 53/72, where p5 is the probability that the fifth head is preceded by a tail and no three consecutive heads have occurred up to the fifth head. Using dynamic programming to track the probability of sequences with n heads and streaks (1 or 2), we define A(n) as the probability the nth head is preceded by a tail (streak 1) and B(n) as the probability it is part of a streak of 2. The recurrence relations are A(n) = [A(n-1) + B(n-1)] * q_{n-1} and B(n) = A(n-1) * p_{n-1}, where p_k = 1/(k+2) and q_k = (k+1)/(k+2). Starting with A(1)=1, B(1)=0, we compute up to n=5. For n=5, A(5) = 53/72, so δ = 53/72 - 53/72 = 0.\\n\\nProblem 2: We need to count non-self-intersecting concave quadrilaterals with vertices (0,0), (1,0), and two distinct lattice points (a,b), (c,d) where 0 ≤ a,c ≤ 59 and 1 ≤ b,d ≤ 5. A quadrilateral is concave if one of the upper points (b,d ≥ 1) lies inside the triangle formed by the other three points. For two points above the x-axis, concavity occurs when one point is inside the triangle formed by (0,0), (1,0), and the other point. The number of such pairs is calculated by considering all combinations of y-coordinates (b,d) where b < d (10 pairs) and counting valid (a,c) pairs for each. Each pair (b,d) contributes 60*59 valid (a,c) pairs (since x ranges 0-59), leading to 10 * 60*59 = 35400 concave quadrilaterals.\",\n    \"answer_1\": \"0\",\n    \"answer_2\": \"35400\"\n}",
+  "problem_type": [
+    {
+      "A1212": [
+        "Mathematics -> Applied Mathematics -> Probability -> Other"
+      ]
+    },
+    {
+      "A1935": [
+        "Mathematics -> Geometry -> Plane Geometry -> Polygons",
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "0",
+    "35400"
+  ],
+  "ground_truth": [
+    "0",
+    "366"
+  ],
+  "correctness": [
+    true,
+    false
+  ],
+  "prompt_tokens": 550,
+  "completion_tokens": 50776,
+  "reasoning_tokens": 50283,
+  "cost": 0.406648
+}

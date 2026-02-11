@@ -2,27 +2,22 @@
 
 BASE_DIR="script"
 
-export DATASET_NAME="SMP_MP2_300_Modified_V2"
-# 数据集基础路径
-export DATA_BASE_PATH="data/$DATASET_NAME"
-
-# 输出批次名称
-export BATCH=$DATASET_NAME
-
-# 随机种子（用于模型采样确定性）
-export SEED=42
-
-# 并发模式配置
-export USE_ASYNC=1          # 1=启用并发模式, 0=同步模式
-export CONCURRENCY=5        # 最大并发请求数
-
-SELECTED_MODELS=(
-  # "gpt-4o"
-  # "gpt-4o-2024-08-06"
-  # "gpt-5.1"
-  # "meta-llama"
-  "qwen-plus"
-)
+# ===== 从 config.py 读取所有运行配置 =====
+eval "$(python3 -c "
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath('$(dirname \"${BASH_SOURCE[0]}\")')))
+from config import (DATASET_NAME, DATA_BASE_PATH, BATCH, SEED,
+                     USE_ASYNC, CONCURRENCY, SELECTED_MODELS)
+print(f'export DATASET_NAME=\"{DATASET_NAME}\"')
+print(f'export DATA_BASE_PATH=\"{DATA_BASE_PATH}\"')
+print(f'export BATCH=\"{BATCH}\"')
+print(f'export SEED={SEED}')
+print(f'export USE_ASYNC={1 if USE_ASYNC else 0}')
+print(f'export CONCURRENCY={CONCURRENCY}')
+# 输出 bash 数组格式
+models_str = ' '.join(f'\"{m}\"' for m in SELECTED_MODELS)
+print(f'SELECTED_MODELS=({models_str})')
+")"
 
 # 用下划线连接模型名作为 session 名，去掉点号
 session_suffix=$(IFS=_; echo "${SELECTED_MODELS[*]}")

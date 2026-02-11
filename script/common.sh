@@ -1,16 +1,33 @@
 #!/bin/bash
 # 公共配置和函数 - 被所有脚本 source
 
-# Conda 环境
-source /home/leo/miniconda3/etc/profile.d/conda.sh
-conda activate MPS
+# 从 config.py 读取所有运行配置（一次 python 调用，避免多次启动解释器）
+eval "$(python3 -c "
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath('${BASH_SOURCE[0]}')), '..'))
+from config import (CONDA_SH_PATH, CONDA_ENV_NAME, DATA_BASE_PATH,
+                     BATCH, SEED, USE_ASYNC, CONCURRENCY)
+print(f'_CONDA_SH_PATH=\"{CONDA_SH_PATH}\"')
+print(f'_CONDA_ENV=\"{CONDA_ENV_NAME}\"')
+print(f'base_path=\"{DATA_BASE_PATH}\"')
+print(f'batch=\"{BATCH}\"')
+print(f'seed={SEED}')
+print(f'use_async={1 if USE_ASYNC else 0}')
+print(f'concurrency={CONCURRENCY}')
+")"
 
-# 默认配置（可被 run.sh 覆盖）
-base_path="${DATA_BASE_PATH:-data/SMP_100_Verified}"
-batch="${BATCH:-default}"
-seed="${SEED:-42}"
-use_async="${USE_ASYNC:-0}"
-concurrency="${CONCURRENCY:-5}"
+# Conda 环境（可被 run.sh 的环境变量覆盖）
+_CONDA_SH_PATH="${CONDA_SH_PATH_OVERRIDE:-$_CONDA_SH_PATH}"
+_CONDA_ENV="${CONDA_ENV_OVERRIDE:-$_CONDA_ENV}"
+source "$_CONDA_SH_PATH"
+conda activate "$_CONDA_ENV"
+
+# 允许 run.sh 通过环境变量覆盖 config.py 的值
+base_path="${DATA_BASE_PATH:-$base_path}"
+batch="${BATCH:-$batch}"
+seed="${SEED:-$seed}"
+use_async="${USE_ASYNC:-$use_async}"
+concurrency="${CONCURRENCY:-$concurrency}"
 
 # 构建路径的函数
 # 用法: build_paths <model> <reasoning_param> <level> <class> <task> <task_type>
