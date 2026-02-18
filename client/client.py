@@ -1,5 +1,6 @@
 from typing import Optional
 from openai import OpenAI, AsyncOpenAI
+import httpx
 import pdb
 import http.client
 import json
@@ -8,6 +9,9 @@ import time
 import ssl
 
 from config import API_KEYS, AVAILABLE_MODEL, BASE_URL, TOP_P
+
+# 全局超时配置：连接超时30秒，读/写/连接池超时20分钟
+_TIMEOUT = httpx.Timeout(connect=30.0, read=1200.0, write=1200.0, pool=1200.0)
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
@@ -56,12 +60,14 @@ class BaseClient:
         self.base_url = base_url or _reslove_base_url(model)
         self.client = OpenAI(
             api_key=self.api_key,
-            base_url=self.base_url
+            base_url=self.base_url,
+            timeout=_TIMEOUT
         )
         # 异步客户端，用于并发调用
         self.async_client = AsyncOpenAI(
             api_key=self.api_key,
-            base_url=self.base_url
+            base_url=self.base_url,
+            timeout=_TIMEOUT
         )
 
     def get_models(self):
@@ -363,6 +369,117 @@ class BaseClient:
             logger.error(traceback.format_exc())
             return None
 
+    async def get_response_async(self, prompt, reasoning: str = "medium", seed: int = None):
+        """异步流式调用（用于并发推理），静默收集 chunks，不打印到终端。
+        返回格式与同步版 get_response 完全一致。
+        适用于 gpt 系列、gemini 等走代理的模型。"""
+        try:
+            if isinstance(prompt, list):
+                messages = prompt
+            elif isinstance(prompt, str):
+                messages = [{"role": "user", "content": prompt}]
+            else:
+                raise ValueError(f"Unsupported prompt type: {type(prompt)}")
+
+            extra_body = {}
+            if reasoning != "minimal":
+                extra_body["reasoning_effort"] = reasoning
+            if seed is not None:
+                extra_body["seed"] = seed
+
+            kwargs = {
+                "model": self.model,
+                "messages": messages,
+                "stream": True,
+                "stream_options": {"include_usage": True},
+                "top_p": TOP_P,
+            }
+            if extra_body:
+                kwargs["extra_body"] = extra_body
+
+            completion = await self.async_client.chat.completions.create(**kwargs)
+
+            # 静默收集流式 chunks
+            full_content = ""
+            response_id = None
+            finish_reason = None
+            usage_info = None
+            model_name_from_response = self.model
+
+            async for chunk in completion:
+                if chunk.id and not response_id:
+                    response_id = chunk.id
+                if chunk.model:
+                    model_name_from_response = chunk.model
+
+                if chunk.choices and len(chunk.choices) > 0:
+                    choice = chunk.choices[0]
+                    if choice.delta and choice.delta.content:
+                        full_content += choice.delta.content
+                    if choice.finish_reason:
+                        finish_reason = choice.finish_reason
+
+                if chunk.usage:
+                    usage_info = chunk.usage
+
+            # 检查是否收集到内容
+            if not full_content and not usage_info:
+                logger.error("No content or usage information received from async stream")
+                return None
+
+            # 组装标准 response dict（与同步版 get_response 格式一致）
+            response = {
+                "id": response_id or f"chatcmpl-{hash(str(prompt))}",
+                "object": "chat.completion",
+                "created": int(time.time()),
+                "model": model_name_from_response,
+                "choices": [{
+                    "index": 0,
+                    "message": {
+                        "role": "assistant",
+                        "content": full_content
+                    },
+                    "finish_reason": finish_reason or "stop"
+                }]
+            }
+
+            # 添加 usage 信息
+            if usage_info:
+                usage_dict = {
+                    "prompt_tokens": usage_info.prompt_tokens,
+                    "completion_tokens": usage_info.completion_tokens,
+                    "total_tokens": getattr(usage_info, 'total_tokens',
+                                            usage_info.prompt_tokens + usage_info.completion_tokens)
+                }
+                completion_tokens_details = {}
+                if hasattr(usage_info, 'completion_tokens_details') and usage_info.completion_tokens_details:
+                    details = usage_info.completion_tokens_details
+                    reasoning_tokens = getattr(details, 'reasoning_tokens', 0)
+                    completion_tokens_details["reasoning_tokens"] = reasoning_tokens
+                    if hasattr(details, 'accepted_prediction_tokens'):
+                        completion_tokens_details["accepted_prediction_tokens"] = details.accepted_prediction_tokens
+                    if hasattr(details, 'rejected_prediction_tokens'):
+                        completion_tokens_details["rejected_prediction_tokens"] = details.rejected_prediction_tokens
+                    if hasattr(details, 'audio_tokens'):
+                        completion_tokens_details["audio_tokens"] = details.audio_tokens
+                usage_dict["completion_tokens_details"] = completion_tokens_details
+                response["usage"] = usage_dict
+            else:
+                response["usage"] = {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0,
+                    "completion_tokens_details": {"reasoning_tokens": 0}
+                }
+
+            return response
+
+        except Exception as e:
+            logger.error(f"Error in async stream response: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            return None
+
 class gpt51Client(BaseClient):
     def __init__(self, key_model: str = "gpt-5.1"):
         super().__init__(model=key_model)
@@ -624,9 +741,225 @@ class qwenClient(BaseClient):
             logger.error(traceback.format_exc())
             return None
 
+
+
+
+class gemini25flashClient(BaseClient):
+    def __init__(self, model: str = "gemini-2.5-flash"):
+        super().__init__(model=model)
+
+    async def get_response_async(self, prompt, reasoning: str = "medium", seed: int = None):
+        """gemini 异步流式调用，强制 JSON 输出格式，non-thinking 变体关闭思考。"""
+        try:
+            if isinstance(prompt, list):
+                messages = prompt
+            elif isinstance(prompt, str):
+                messages = [{"role": "user", "content": prompt}]
+            else:
+                raise ValueError(f"Unsupported prompt type: {type(prompt)}")
+
+            extra_body = {}
+            if reasoning != "minimal":
+                extra_body["reasoning_effort"] = reasoning
+            if seed is not None:
+                extra_body["seed"] = seed
+
+            # 非 thinking 变体：关闭思考
+            if "thinking" not in self.model:
+                extra_body["thinkingConfig"] = {
+                    "includeThoughts": False,
+                    "thinkingBudget": 0
+                }
+
+            kwargs = {
+                "model": self.model,
+                "messages": messages,
+                "stream": True,
+                "stream_options": {"include_usage": True},
+                "top_p": TOP_P,
+                # 强制 JSON 输出格式
+                "response_format": {"type": "json_object"},
+                # 提高 max_tokens 上限，默认 65536 会导致 thinking 用完额度后内容被截断
+                "max_tokens": 1000000,
+            }
+            if extra_body:
+                kwargs["extra_body"] = extra_body
+
+            completion = await self.async_client.chat.completions.create(**kwargs)
+
+            # 静默收集流式 chunks
+            full_content = ""
+            response_id = None
+            finish_reason = None
+            usage_info = None
+            model_name_from_response = self.model
+
+            async for chunk in completion:
+                if chunk.id and not response_id:
+                    response_id = chunk.id
+                if chunk.model:
+                    model_name_from_response = chunk.model
+
+                if chunk.choices and len(chunk.choices) > 0:
+                    choice = chunk.choices[0]
+                    if choice.delta and choice.delta.content:
+                        full_content += choice.delta.content
+                    if choice.finish_reason:
+                        finish_reason = choice.finish_reason
+
+                if chunk.usage:
+                    usage_info = chunk.usage
+
+            if not full_content and not usage_info:
+                logger.error("No content or usage from gemini async stream")
+                return None
+
+            response = {
+                "id": response_id or f"chatcmpl-{hash(str(prompt))}",
+                "object": "chat.completion",
+                "created": int(time.time()),
+                "model": model_name_from_response,
+                "choices": [{
+                    "index": 0,
+                    "message": {
+                        "role": "assistant",
+                        "content": full_content
+                    },
+                    "finish_reason": finish_reason or "stop"
+                }]
+            }
+
+            if usage_info:
+                usage_dict = {
+                    "prompt_tokens": usage_info.prompt_tokens,
+                    "completion_tokens": usage_info.completion_tokens,
+                    "total_tokens": getattr(usage_info, 'total_tokens',
+                                            usage_info.prompt_tokens + usage_info.completion_tokens)
+                }
+                completion_tokens_details = {}
+                if hasattr(usage_info, 'completion_tokens_details') and usage_info.completion_tokens_details:
+                    details = usage_info.completion_tokens_details
+                    reasoning_tokens = getattr(details, 'reasoning_tokens', 0)
+                    completion_tokens_details["reasoning_tokens"] = reasoning_tokens
+                usage_dict["completion_tokens_details"] = completion_tokens_details
+                response["usage"] = usage_dict
+            else:
+                response["usage"] = {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0,
+                    "completion_tokens_details": {"reasoning_tokens": 0}
+                }
+
+            return response
+
+        except Exception as e:
+            logger.error(f"Error in gemini async stream response: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            return None
+
+
 class metallamaClient(BaseClient):
     def __init__(self, model: str = ""):
         super().__init__(model=model)
+
+
+class grokClient(BaseClient):
+    """Grok 模型客户端，不发送 reasoning_effort 参数（代理不支持）。"""
+    def __init__(self, model: str = ""):
+        super().__init__(model=model)
+
+    async def get_response_async(self, prompt, reasoning: str = "medium", seed: int = None):
+        """异步流式调用，不传 reasoning_effort，其余逻辑与 BaseClient 一致。"""
+        try:
+            if isinstance(prompt, list):
+                messages = prompt
+            elif isinstance(prompt, str):
+                messages = [{"role": "user", "content": prompt}]
+            else:
+                raise ValueError(f"Unsupported prompt type: {type(prompt)}")
+
+            extra_body = {}
+            # grok 不支持 reasoning_effort，不发送该参数
+            if seed is not None:
+                extra_body["seed"] = seed
+
+            kwargs = {
+                "model": self.model,
+                "messages": messages,
+                "stream": True,
+                "stream_options": {"include_usage": True},
+                "top_p": TOP_P,
+            }
+            if extra_body:
+                kwargs["extra_body"] = extra_body
+
+            completion = await self.async_client.chat.completions.create(**kwargs)
+
+            full_content = ""
+            response_id = None
+            finish_reason = None
+            usage_info = None
+            model_name_from_response = self.model
+
+            async for chunk in completion:
+                if chunk.id and not response_id:
+                    response_id = chunk.id
+                if chunk.model:
+                    model_name_from_response = chunk.model
+                if chunk.choices and len(chunk.choices) > 0:
+                    choice = chunk.choices[0]
+                    if choice.delta and choice.delta.content:
+                        full_content += choice.delta.content
+                    if choice.finish_reason:
+                        finish_reason = choice.finish_reason
+                if chunk.usage:
+                    usage_info = chunk.usage
+
+            if not full_content and not usage_info:
+                logger.error("No content or usage from grok async stream")
+                return None
+
+            response = {
+                "id": response_id or f"chatcmpl-{hash(str(prompt))}",
+                "object": "chat.completion",
+                "created": int(time.time()),
+                "model": model_name_from_response,
+                "choices": [{
+                    "index": 0,
+                    "message": {"role": "assistant", "content": full_content},
+                    "finish_reason": finish_reason or "stop"
+                }]
+            }
+
+            if usage_info:
+                usage_dict = {
+                    "prompt_tokens": usage_info.prompt_tokens,
+                    "completion_tokens": usage_info.completion_tokens,
+                    "total_tokens": getattr(usage_info, 'total_tokens',
+                                            usage_info.prompt_tokens + usage_info.completion_tokens)
+                }
+                completion_tokens_details = {}
+                if hasattr(usage_info, 'completion_tokens_details') and usage_info.completion_tokens_details:
+                    details = usage_info.completion_tokens_details
+                    completion_tokens_details["reasoning_tokens"] = getattr(details, 'reasoning_tokens', 0)
+                usage_dict["completion_tokens_details"] = completion_tokens_details
+                response["usage"] = usage_dict
+            else:
+                response["usage"] = {
+                    "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0,
+                    "completion_tokens_details": {"reasoning_tokens": 0}
+                }
+
+            return response
+
+        except Exception as e:
+            logger.error(f"Error in grok async stream response: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            return None
+
 
 def get_client(model: str = ""):
     if model in {"gpt-4o", "gpt-4o-2024-08-06"}:
@@ -635,14 +968,14 @@ def get_client(model: str = ""):
         return gpt5Client(key_model=model)
     elif model in["gpt-5.1", "gpt-5.1-medium"]:
         return gpt51Client(key_model=model)
-    elif model == "gemini-2.5-flash":
-        return geminiClient(model = model)
-    elif model == "gemini-2.5-pro":
-        return geminiClient(model = model)
+    elif model in {"gemini-2.5-flash", "gemini-2.5-flash-thinking", "gemini-2.5-pro"}:
+        return gemini25flashClient(model=model)
     elif model == "qwen-plus":
         return qwenClient(key_model=model)
     elif model == "meta-llama/llama-3.1-70b-instruct":
         return metallamaClient(model=model)
+    elif model in {"grok-4-1-fast-reasoning", "grok-4-1-fast-non-reasoning"}:
+        return grokClient(model=model)
     else:   
         raise ValueError(f"Model {model} is not supported.")
     

@@ -5,7 +5,7 @@ import time
 
 conn = http.client.HTTPConnection("152.53.208.62", 9000)
 payload = json.dumps({
-   "model": "gpt-5.1",
+   "model": "grok-4-1-fast-reasoning",
    "messages": [
       {
          "role": "system",
@@ -13,7 +13,7 @@ payload = json.dumps({
       },
       {
          "role": "user",
-         "content": "帮我推导一下正整数n的阶乘的公式"
+         "content": "Let $ (a_{n}) $ be the sequence of reals defined by $ a_{1}=\\frac{1}{4} $ and the recurrence $ a_{n}= \\frac{1}{4}(1+a_{n-1})^{2}, n\\geq 2 $. Find the minimum real $ \\lambda $ such that for any non-negative reals $ x_{1},x_{2},\\dots,x_{2002} $, it holds\n\\[ \\sum_{k=1}^{2002}A_{k}\\leq \\lambda a_{2002}, \\]\nwhere $  A_{k}= \\frac{x_{k}-k}{(x_{k}+\\cdots+x_{2002}+\\frac{k(k-1)}{2}+1)^{2}}, k\\geq 1 $. Instead of determining the infimal constant that majorizes the aggregate of the deviation terms normalized by cumulative sums plus quadratic offsets in terms of the terminal sequence value for all non-negative inputs, simply find $\\delta = t - \\frac{4003}{2}$, where $t$ is the cardinality of the collection of non-negative real variables. Determine all functions $f: \\mathbb{Q} \\to \\mathbb{Q}$ such that\n$$f(2xy + \\delta) + f(x-y) = 4f(x)f(y) + \\delta$$\nfor all $x,y \\in \\mathbb{Q}$."
       }
    ]
 })
@@ -21,7 +21,7 @@ payload = json.dumps({
 
 headers = {
    'Content-Type': 'application/json',
-   'Authorization': 'Bearer sk-2XZ7ioYdwHQslVr8hUf1NO4RC15JYy3O6d9gIwX8fFNo7aWT'
+   'Authorization': 'Bearer sk-D1RZX1sf3oIhkqCN3ac0Tibws1a1RzK5FyiVtl2Xd2a5GlXe'
 }
 
 try:

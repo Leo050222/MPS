@@ -348,6 +348,8 @@ async def judge_async(answer: list[str], truth: list[str], task: str, seed: int 
         return []
 
     correctness = extract_correctness(response=response)
+    if correctness == []:
+        pdb.set_trace()
     logger.info(f"judge_async: extracted correctness = {correctness}")
     return correctness
 
@@ -520,9 +522,10 @@ async def process_single_problem_async(
             logger.error(f"[{Problem_ID}] Error building prompt: {e}")
             return result
 
-        # 2. 调用模型推理（带重试）
+        # 2. 调用模型推理（带重试，含 answer 为空时的重试）
         response = None
-        max_retry = 10
+        extracted_data = None
+        max_retry = 20
         for attempt in range(1, max_retry + 1):
             try:
                 response = await client.get_response_async(prompt=prompt, reasoning=reasoning, seed=seed)
@@ -540,22 +543,36 @@ async def process_single_problem_async(
                 logger.warning(f"[{Problem_ID}] Rate limited (429), retrying... {attempt}/{max_retry}")
                 await asyncio.sleep(5)
                 continue
-            break  # 成功拿到响应
 
-        if response is None:
+            # 3. 提取答案，如果 answer 为空则重试
+            try:
+                extracted_data = extract(response=response, task=task, model_company=model_company)
+                if not extracted_data or extracted_data.get("content") is None:
+                    logger.warning(f"[{Problem_ID}] extracted_data is None or empty, retrying... {attempt}/{max_retry}")
+                    await asyncio.sleep(2)
+                    continue
+                # 检查 answer 是否为空（空列表、或列表中只有空字符串）
+                answer = extracted_data.get("answer", [])
+                if not answer or answer == [""] or answer == []:
+                    logger.warning(f"[{Problem_ID}] answer is empty after extraction, retrying... {attempt}/{max_retry}")
+                    await asyncio.sleep(2)
+                    continue
+            except Exception as e:
+                logger.error(f"[{Problem_ID}] Error extracting on attempt {attempt}: {e}")
+                await asyncio.sleep(2)
+                continue
+
+            break  # 成功拿到响应且 answer 非空
+
+        if response is None or extracted_data is None:
             logger.error(f"[{Problem_ID}] Failed after {max_retry} retries")
             return result
 
-        # 3. 提取答案
-        try:
-            extracted_data = extract(response=response, task=task, model_company=model_company)
-            if not extracted_data or extracted_data.get("content") is None:
-                logger.error(f"[{Problem_ID}] extracted_data is None or empty")
-                return result
-        except Exception as e:
-            logger.error(f"[{Problem_ID}] Error extracting: {e}")
+        # 再次确认 answer
+        answer_check = extracted_data.get("answer", [])
+        if not answer_check or answer_check == [""] or answer_check == []:
+            logger.error(f"[{Problem_ID}] answer still empty after {max_retry} retries")
             return result
-
         # 4. 获取标准答案 & 评判
         try:
             connecting_point = que.get("Connecting_Point", [])
@@ -757,9 +774,9 @@ def main(
             continue
         
         try:
-            # pdb.set_trace()
-            max_retry = 10
+            max_retry = 20
             i = 1
+            extracted_data = None
             while i <= max_retry:
                 response = client.get_response(prompt=prompt, reasoning=reasoning, seed=seed)
                 # 检查 response 是否为 None（可能是 429 或其他错误）
@@ -775,29 +792,44 @@ def main(
                     logger.warning(f"Rate limit exceeded for Problem_ID {Problem_ID}, retrying... {i}/{max_retry}")
                     time.sleep(5)
                     i += 1
-                else:
-                    break
+                    continue
+
+                # 提取答案，如果 answer 为空则重试
+                try:
+                    extracted_data = extract(response=response, task=task, model_company=model_company)
+                    if not extracted_data or extracted_data.get("content") is None:
+                        logger.warning(f"extracted_data is None for Problem_ID {Problem_ID}, retrying... {i}/{max_retry}")
+                        time.sleep(3)
+                        i += 1
+                        continue
+                    answer_tmp = extracted_data.get("answer", [])
+                    if not answer_tmp or answer_tmp == [""] or answer_tmp == []:
+                        logger.warning(f"answer is empty for Problem_ID {Problem_ID}, retrying... {i}/{max_retry}")
+                        time.sleep(3)
+                        i += 1
+                        continue
+                except Exception as e:
+                    logger.error(f"Error extracting for Problem_ID {Problem_ID}: {e}")
+                    time.sleep(3)
+                    i += 1
+                    continue
+
+                break  # 成功拿到响应且 answer 非空
 
         except Exception as e:
             logger.error(f"Error getting response for Problem_ID {Problem_ID}: {e}")
             skipped_id.append(Problem_ID)
             continue
 
-        if response is None:
-            logger.error(f"Empty response for Problem_ID {Problem_ID}")
+        if response is None or extracted_data is None:
+            logger.error(f"Failed for Problem_ID {Problem_ID} after retries")
             skipped_id.append(Problem_ID)
             continue
         
-        try:
-            # pdb.set_trace()
-            extracted_data = extract(response=response, task=task, model_company=model_company)
-            if not extracted_data or extracted_data.get("content") is None:
-                logger.error(f"Error processing Problem_ID {Problem_ID}: extracted_data is None")
-                skipped_id.append(Problem_ID)
-                continue
-            
-        except Exception as e:
-            logger.error(f"Error processing Problem_ID {Problem_ID}: {e}")
+        # 再次确认 answer
+        answer_final_check = extracted_data.get("answer", [])
+        if not answer_final_check or answer_final_check == [""] or answer_final_check == []:
+            logger.error(f"answer still empty for Problem_ID {Problem_ID} after {max_retry} retries")
             skipped_id.append(Problem_ID)
             continue
         
