@@ -65,8 +65,8 @@ build_paths() {
         fi
     fi
     
-    # 构建路径
-    data_path="$base_path/$model_dir/$reasoning_subdir/$level/$class"
+    # 构建路径（data_path 不再拼接模型名和 reasoning，仅保留 level/class）
+    data_path="$base_path/$level/$class"
     output_path="output/$batch/$model/$reasoning_subdir/$level/$class/$task_type"
     type="${level}_${task}_Evaluation_Summary"
 }
