@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-02-23T15:24:49.931161+00:00",
+  "model": "claude-sonnet-4-5-20250929-thinking",
+  "type": "T2_MP2_synthesised_Evaluation",
+  "Problem_ID": 31,
+  "math_problem": "Let $n$ be the answer to this problem. An urn contains white and black balls. There are $n$ white balls and at least two balls of each color in the urn. Two balls are randomly drawn from the urn without replacement. Find the probability, in percent, that the first ball drawn is white and the second is black. Instead of determining the percentage probability of drawing a white ball followed by a black ball without replacement, simply find $d = m - 74$, where $m$ is the total number of balls in the urn derived from the condition that this probability is an integer percentage. Find $x_{2012}$ given that $x_{n+1}=2x_{n}-x_{n-1}+d^{n}$ and $x_{1}=(d - 1)$, $x_{2}=d$.",
+  "reasoning_content": "Looking at this problem, I need to work through several steps.\n\n## Step 1: Find n from the urn problem\n\nLet's say there are $n$ white balls and $b$ black balls, with total $m = n + b$ balls.\n\nThe probability of drawing white then black is:\n$$P = \\frac{n}{m} \\cdot \\frac{b}{m-1} = \\frac{nb}{m(m-1)}$$\n\nSince this probability as a percentage equals $n$:\n$$100 \\cdot \\frac{nb}{m(m-1)} = n$$\n$$100b = m(m-1)$$\n\nSubstituting $m = n + b$:\n$$100b = (n+b)(n+b-1)$$\n$$100b = n^2 + 2nb - n + b^2 - b$$\n\nRearranging as a quadratic in $b$:\n$$b^2 + (2n-101)b + (n^2-n) = 0$$\n\nUsing the quadratic formula:\n$$b = \\frac{101-2n \\pm \\sqrt{(2n-101)^2 - 4(n^2-n)}}{2}$$\n$$b = \\frac{101-2n \\pm \\sqrt{10201 - 400n}}{2}$$\n\nFor integer solutions, $10201 - 400n$ must be a perfect square.\n\nSince $10201 = 101^2$, we need $101^2 - k^2 \\equiv 0 \\pmod{400}$ for some $k$.\n\nTesting values, when $k = 51$:\n$$n = \\frac{10201 - 2601}{400} = \\frac{7600}{400} = 19$$\n$$b = \\frac{101 - 38 + 51}{2} = 57$$\n\nVerification: $m = 76$, and $100 \\cdot 57 = 5700 = 76 \\cdot 75$ ✓\n\nThe probability is $\\frac{19 \\cdot 57}{76 \\cdot 75} = \\frac{19}{100} = 19\\%$ ✓\n\n## Step 2: Calculate d\n\n$$d = m - 74 = 76 - 74 = 2$$\n\n## Step 3: Solve the recurrence relation\n\nGiven:\n- $x_{n+1} = 2x_n - x_{n-1} + d^n$\n- $x_1 = d - 1 = 1$\n- $x_2 = d = 2$\n\nWith $d = 2$, the recurrence becomes:\n$$x_{n+1} - 2x_n + x_{n-1} = 2^n$$\n\nThe characteristic equation for the homogeneous part is:\n$$r^2 - 2r + 1 = 0 \\implies (r-1)^2 = 0$$\n\nThis gives a double root $r = 1$, so the homogeneous solution is:\n$$x_n^{(h)} = A + Bn$$\n\nFor the particular solution, try $x_n^{(p)} = C \\cdot 2^n$:\n$$C \\cdot 2^{n+1} - 2C \\cdot 2^n + C \\cdot 2^{n-1} = 2^n$$\n$$C \\cdot 2^{n-1}(4 - 4 + 1) = 2^n$$\n$$C = 2$$\n\nThe general solution is:\n$$x_n = A + Bn + 2^{n+1}$$\n\nUsing initial conditions:\n- $x_1 = A + B + 4 = 1 \\implies A + B = -3$\n- $x_2 = A + 2B + 8 = 2 \\implies A + 2B = -6$\n\nSolving: $B = -3$ and $A = 0$\n\nTherefore:\n$$x_n = 2^{n+1} - 3n$$\n\n## Step 4: Find $x_{2012}$\n\n$$x_{2012} = 2^{2013} - 3(2012) = 2^{2013} - 6036$$\n\n{  \n    \"reasoning\": \"Starting with the urn problem where the probability of drawing white then black equals n%, I found that n=19 white balls with 57 black balls gives m=76 total balls. This yields d=m-74=2. Solving the recurrence relation x_{n+1}=2x_n-x_{n-1}+d^n with initial conditions x_1=1 and x_2=2, I found the general formula x_n=2^{n+1}-3n. Therefore x_{2012}=2^{2013}-6036.\",\n    \"answer\": \"2^2013 - 6036\"\n}",
+  "problem_type": [
+    {
+      "A2332": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations"
+      ]
+    },
+    {
+      "A2375": [
+        "Mathematics -> Algebra -> Intermediate Algebra -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "2^2013 - 6036"
+  ],
+  "ground_truth": [
+    "19",
+    "2^{2013}-6036"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 521,
+  "completion_tokens": 9625,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

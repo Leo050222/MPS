@@ -9,7 +9,8 @@ class promptGenerator:
 
         for i, part in enumerate(parts, start=1):
             Problems += f"Problem {i}: {part}\n"
-        company = MODELS_COMPANIES_MAP.get(model, "unknown")
+        # Default to OpenAI-compatible messages unless explicitly configured.
+        company = MODELS_COMPANIES_MAP.get(model, "openai")
         system_role = """You are an expert in Mathematical Problem Solving. Your task is to solve mathematical problems step by step and provide accurate answers."""
         
         user_role = f"""Please solve the following two problems step by step. After your reasoning, provide your final answers in the exact JSON format specified below.
@@ -59,7 +60,11 @@ class promptGenerator:
                 {"role": "user", "content": user_role}
             ]
         else:
-            raise ValueError(f"Unknown company for model {model}")
+            # Treat unknown as openai-compatible by default.
+            prompt = [
+                {"role": "system", "content": system_role},
+                {"role": "user", "content": user_role}
+            ]
         return prompt
 
     def synthesised_prompt(self, problem: str, model: str):
@@ -67,7 +72,7 @@ class promptGenerator:
         生成合成式问题的提示词（完整合成问题）
         extract函数期望的JSON格式: {{"answer": "..."}}
         """
-        company = MODELS_COMPANIES_MAP.get(model, "unknown")
+        company = MODELS_COMPANIES_MAP.get(model, "openai")
         
         system_role = """You are an expert in Mathematical Problem Solving. Your task is to solve mathematical problems step by step and provide accurate answers."""
         
@@ -123,7 +128,10 @@ class promptGenerator:
                 {"role": "user", "content": user_role}
             ]
         else:
-            raise ValueError(f"Unknown company for model {model}")
+            prompt = [
+                {"role": "system", "content": system_role},
+                {"role": "user", "content": user_role}
+            ]
         return prompt
 
     def judge_prompt(self, answer: list[str], truth: list[str]):

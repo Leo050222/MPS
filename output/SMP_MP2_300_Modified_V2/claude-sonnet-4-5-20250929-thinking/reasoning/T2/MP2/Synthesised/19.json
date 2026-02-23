@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-02-23T14:55:37.460433+00:00",
+  "model": "claude-sonnet-4-5-20250929-thinking",
+  "type": "T2_MP2_synthesised_Evaluation",
+  "Problem_ID": 19,
+  "math_problem": "Suppose $a$ and $b$ be positive integers not exceeding 100 such that $$a b=\\left(\\frac{\\operatorname{lcm}(a, b)}{\\operatorname{gcd}(a, b)}\\right)^{2}$$ Compute the largest possible value of $a+b$. Instead of computing the maximum possible sum of two positive integers not exceeding 100 that satisfy the given equation relating their product to the square of the ratio of their least common multiple to their greatest common divisor, simply find $m = s - 77$, where $s$ is that maximum possible sum. Consider a $(m + 4) \\times (m + 4)$ grid of squares. Vladimir colors some of these squares red, such that the centers of any four red squares do not form an axis-parallel rectangle (i.e. a rectangle whose sides are parallel to those of the squares). What is the maximum number of squares he could have colored red?",
+  "reasoning_content": "Looking at this problem, I need to solve two parts:\n\n## Part 1: Finding the maximum value of $a+b$\n\nGiven: $ab = \\left(\\frac{\\text{lcm}(a,b)}{\\gcd(a,b)}\\right)^2$ where $a, b \\leq 100$\n\nLet $d = \\gcd(a,b)$, so $a = dm$ and $b = dn$ where $\\gcd(m,n) = 1$.\n\nThen:\n- $\\text{lcm}(a,b) = dmn$\n- $\\gcd(a,b) = d$\n\nSubstituting into the equation:\n$$dm \\cdot dn = \\left(\\frac{dmn}{d}\\right)^2$$\n$$d^2mn = (mn)^2$$\n$$d^2 = mn$$\n\nSince $\\gcd(m,n) = 1$ and $mn = d^2$, both $m$ and $n$ must be perfect squares.\n\nLet $m = p^2$ and $n = q^2$ where $\\gcd(p,q) = 1$.\n\nThen $d = pq$, giving us:\n- $a = dm = pq \\cdot p^2 = p^3q$\n- $b = dn = pq \\cdot q^2 = pq^3$\n\nWe need $p^3q \\leq 100$ and $pq^3 \\leq 100$.\n\nTesting values with $\\gcd(p,q) = 1$:\n- $(p,q) = (1,4)$: $a=4, b=64$, sum = $68$\n- $(p,q) = (2,3)$: $a=24, b=54$, sum = $78$ ✓\n- $(p,q) = (3,2)$: $a=54, b=24$, sum = $78$ ✓\n- $(p,q) = (4,1)$: $a=64, b=4$, sum = $68$\n\nVerification for $(a,b) = (24,54)$:\n- $\\gcd(24,54) = 6$\n- $\\text{lcm}(24,54) = 216$\n- $\\left(\\frac{216}{6}\\right)^2 = 36^2 = 1296 = 24 \\times 54$ ✓\n\nTherefore, $s = 78$ and $m = s - 77 = 1$.\n\n## Part 2: Maximum red squares in a $(m+4) \\times (m+4) = 5 \\times 5$ grid\n\nWe need to color squares red such that no four red squares form an axis-parallel rectangle. This means no two rows can have red squares in the same two columns.\n\n**Construction:**\n```\nRow 1: columns {1, 2}\nRow 2: columns {1, 3}\nRow 3: columns {2, 4}\nRow 4: columns {3, 5}\nRow 5: columns {4, 5}\n```\n\nThis gives us 2 red squares per row, for a total of $5 \\times 2 = 10$ red squares.\n\n**Why this is maximum:**\n- Each row has exactly 2 red squares\n- All 5 pairs of columns are distinct\n- No two rows share the same two columns, so no rectangles can be formed\n- If we try to add an 11th square, by pigeonhole principle, some row must have 3 red squares\n- But having 3 squares in one row severely limits options for other rows (they can have at most 1 square from those 3 columns to avoid rectangles)\n- This actually reduces the total count below 10\n\nThe maximum number of squares that can be colored red is **10**.\n\n{  \n    \"reasoning\": \"First, I solved for the maximum sum s of two positive integers a and b not exceeding 100 satisfying ab = (lcm(a,b)/gcd(a,b))^2. By setting d = gcd(a,b) and writing a = dm, b = dn with gcd(m,n) = 1, I found that m and n must be perfect squares. This leads to a = p^3*q and b = p*q^3 where gcd(p,q) = 1. Testing values, the maximum sum is s = 78 (achieved with p=2, q=3 giving a=24, b=54). Thus m = s - 77 = 1, and the grid is (m+4) × (m+4) = 5 × 5. For the rectangle-free coloring problem, I can color exactly 2 squares in each row, choosing 5 distinct pairs of columns. This gives 10 red squares with no four forming a rectangle. This is maximal because having more squares would require at least one row with 3+ squares, which limits other rows and reduces the total.\",\n    \"answer\": \"10\"\n}",
+  "problem_type": [
+    {
+      "A2041": [
+        "Mathematics -> Number Theory -> Prime Numbers",
+        "Mathematics -> Algebra -> Prealgebra -> Integers"
+      ]
+    },
+    {
+      "A2090": [
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "10"
+  ],
+  "ground_truth": [
+    "78",
+    "12"
+  ],
+  "correctness": [
+    false
+  ],
+  "prompt_tokens": 553,
+  "completion_tokens": 6788,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

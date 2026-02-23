@@ -1,14 +1,14 @@
 from typing import Optional
-from openai import OpenAI, AsyncOpenAI
-import httpx
-import pdb
+
 import http.client
 import json
 import logging
 import time
-import ssl
 
-from config import API_KEYS, AVAILABLE_MODEL, BASE_URL, TOP_P
+import httpx
+from openai import AsyncOpenAI, OpenAI
+
+from config import API_KEYS, AVAILABLE_MODEL, BASE_URL, DEFAULT_BASE_URL, TOP_P
 
 # 全局超时配置：连接超时30秒，读/写/连接池超时20分钟
 _TIMEOUT = httpx.Timeout(connect=30.0, read=1200.0, write=1200.0, pool=1200.0)
@@ -16,11 +16,20 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-def _reslove_base_url(model: str) -> str:
-    if model in BASE_URL and BASE_URL.get(model):
+def _resolve_base_url(model: str) -> str:
+    """Resolve base_url with a safe default.
+
+    - If config.BASE_URL provides a non-empty override for the model, use it.
+    - Otherwise fall back to config.DEFAULT_BASE_URL.
+    """
+
+    if isinstance(BASE_URL, dict) and BASE_URL.get(model):
         return BASE_URL[model]
-    else:
-        raise ValueError(f"Base URL for model {model} not found in config.BASE_URL.")
+    return DEFAULT_BASE_URL
+
+
+# Backwards-compatible alias (typo kept for older code paths)
+_reslove_base_url = _resolve_base_url
 
 def _resolve_api_key(model: str) -> str:
     """Resolve API key strictly from config.API_KEYS.
@@ -57,7 +66,7 @@ class BaseClient:
             raise ValueError(f"Model {model} is not available.")
         # Only read API keys from config.py (no env var fallback)
         self.api_key = api_key or _resolve_api_key(model)
-        self.base_url = base_url or _reslove_base_url(model)
+        self.base_url = base_url or _resolve_base_url(model)
         self.client = OpenAI(
             api_key=self.api_key,
             base_url=self.base_url,
@@ -98,7 +107,10 @@ class BaseClient:
                 "top_p": TOP_P
             }
 
-            if reasoning != "minimal":
+            # Some model proxies may not support reasoning parameters.
+            # - grok: do not send reasoning_effort
+            # - others: send reasoning_effort unless minimal
+            if "grok-" not in model_name and reasoning != "minimal":
                 payload["reasoning_effort"] = reasoning
             
             # 添加 seed 参数（如果提供）
@@ -281,7 +293,7 @@ class BaseClient:
                 "top_p": TOP_P
             }
 
-            if reasoning != "minimal":
+            if "grok-" not in model_name and reasoning != "minimal" or "false" or False:
                 payload["reasoning_effort"] = reasoning
             
             # 添加 seed 参数（如果提供）
@@ -480,47 +492,6 @@ class BaseClient:
             logger.error(traceback.format_exc())
             return None
 
-class gpt51Client(BaseClient):
-    def __init__(self, key_model: str = "gpt-5.1"):
-        super().__init__(model=key_model)
-    
-
-class gpt4oClient(BaseClient):
-    def __init__(self, api_key = None, base_url = None, model = ""):
-        super().__init__(api_key, base_url, model)
-        
-class gpt5Client(BaseClient):
-    def __init__(self, key_model: str = "gpt-5"):
-        # key_model can be gpt-5-thinking / gpt-5-non-thinking / gpt-5
-        super().__init__(model=key_model)
-
-class geminiClient(BaseClient):
-    def __init__(self, model: str = "gemini-2.5-flash") -> None:
-        self.api_key = 'sk-83BacHuBgJAcd5GJX5GxDLOctAD52jRxrAZKRmf3GbtrMMLW'
-        self.model = model
-    def get_response(self, prompt, reasoning_effort: str = "medium"):
-        model = self.model
-        if reasoning_effort == "minimal":
-            prompt["generationConfig"] = {
-                "thinkingConfig": {
-                    "includeThoughts": False,
-                    "thinkingBudget": 0
-                }
-            }
-        prompt_json = json.dumps(prompt)
-        headers = {
-            'Authorization': 'sk-83BacHuBgJAcd5GJX5GxDLOctAD52jRxrAZKRmf3GbtrMMLW',
-            'Content-Type': 'application/json'
-        }
-        
-        # Create a new connection for each request to avoid connection reuse issues
-        client = http.client.HTTPConnection("152.53.208.62", 9000)
-        client.request("POST", f"/v1beta/models/{model}:generateContent", prompt_json, headers)
-        res = client.getresponse()
-        data = res.read()
-        client.close()
-        return data.decode("utf-8")
-        
 class qwenClient(BaseClient):
     def __init__(self, key_model: str = "qwen-plus"):
         super().__init__(model=key_model)
@@ -860,11 +831,6 @@ class gemini25flashClient(BaseClient):
             return None
 
 
-class metallamaClient(BaseClient):
-    def __init__(self, model: str = ""):
-        super().__init__(model=model)
-
-
 class grokClient(BaseClient):
     """Grok 模型客户端，不发送 reasoning_effort 参数（代理不支持）。"""
     def __init__(self, model: str = ""):
@@ -962,22 +928,26 @@ class grokClient(BaseClient):
 
 
 def get_client(model: str = ""):
-    if model in {"gpt-4o", "gpt-4o-2024-08-06"}:
-        return gpt4oClient(model=model)
-    if model in {"gpt-5", "gpt-5-thinking", "gpt-5-non-thinking"}:
-        return gpt5Client(key_model=model)
-    elif model in["gpt-5.1", "gpt-5.1-medium"]:
-        return gpt51Client(key_model=model)
-    elif model in {"gemini-2.5-flash", "gemini-2.5-flash-thinking", "gemini-2.5-pro"}:
-        return gemini25flashClient(model=model)
-    elif model == "qwen-plus":
+    """Factory returning a client with model-specific behavior.
+
+    Most models are fully compatible with `BaseClient`.
+    Only a few require different request parameters:
+    - qwen-plus: uses `enable_thinking` (bool)
+    - gemini-2.5-*: forces JSON output / thinkingConfig tweaks (async path)
+    - grok-*: does not support reasoning_effort
+    """
+
+    if model == "qwen-plus":
         return qwenClient(key_model=model)
-    elif model == "meta-llama/llama-3.1-70b-instruct":
-        return metallamaClient(model=model)
-    elif model in {"grok-4-1-fast-reasoning", "grok-4-1-fast-non-reasoning"}:
+
+    if model in {"grok-4-1-fast-reasoning", "grok-4-1-fast-non-reasoning"}:
         return grokClient(model=model)
-    else:   
-        raise ValueError(f"Model {model} is not supported.")
+
+    if model in {"gemini-2.5-flash", "gemini-2.5-flash-thinking", "gemini-2.5-pro"}:
+        return gemini25flashClient(model=model)
+
+    # Everything else: plain OpenAI-compatible chat completions.
+    return BaseClient(model=model)
     
     
     

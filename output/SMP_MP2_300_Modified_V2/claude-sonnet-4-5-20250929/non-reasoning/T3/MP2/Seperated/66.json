@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-02-23T14:45:04.494775+00:00",
+  "model": "claude-sonnet-4-5-20250929",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 66,
+  "math_problem": [
+    {
+      "A2103": "For how many positive integers $a$ does the polynomial $x^{2}-a x+a$ have an integer root? Instead of counting the positive integers $a$ such that the given quadratic polynomial has an integer root, simply find $k = a + 7$, where $a$ is a positive integer such that $x^{2} - a x + a$ has an integer root."
+    },
+    {
+      "A2096": "Marisa has two identical cubical dice labeled with the numbers \\(\\{1,2,3,4,5,6\\}\\). However, the two dice are not fair, meaning that they can land on each face with different probability. Marisa rolls the two dice and calculates their sum. Given that the sum is 2 with probability 0.04, and 12 with probability 0.01, the maximum possible probability of the sum being 7 is $p$. Compute $\\lfloor 100 p\\rfloor$."
+    }
+  ],
+  "reasoning_content": "I'll solve both problems step by step.\n\n## Problem 1\n\nWe need to find positive integers $a$ such that $x^2 - ax + a$ has an integer root.\n\nLet $r$ be an integer root. Then:\n$$r^2 - ar + a = 0$$\n$$r^2 = ar - a = a(r-1)$$\n$$a = \\frac{r^2}{r-1}$$\n\nFor $a$ to be a positive integer, we need:\n1. $r \\neq 1$ (to avoid division by zero)\n2. $(r-1) | r^2$\n\nLet me rewrite: $r^2 = r \\cdot r = (r-1+1) \\cdot r = r(r-1) + r$\n\nSo: $a = \\frac{r^2}{r-1} = \\frac{r(r-1) + r}{r-1} = r + \\frac{r}{r-1}$\n\nFor $a$ to be an integer, we need $(r-1) | r$.\n\nSince $r = (r-1) + 1$, we have $(r-1) | r$ if and only if $(r-1) | 1$.\n\nThis means $r-1 \\in \\{-1, 1\\}$, so $r \\in \\{0, 2\\}$.\n\nLet me check:\n- If $r = 0$: $a = \\frac{0}{-1} = 0$ (not positive)\n- If $r = 2$: $a = \\frac{4}{1} = 4$ (positive!)\n\nLet me verify: $x^2 - 4x + 4 = (x-2)^2$, which has root $x = 2$. ✓\n\nWait, let me reconsider. I should check negative values of $r$ too.\n\nIf $r < 0$, then for $a > 0$, we need $r^2 > 0$ and $r - 1 < 0$, so $a = \\frac{r^2}{r-1} < 0$. This won't work.\n\nIf $r > 1$, then both $r^2 > 0$ and $r-1 > 0$, so $a > 0$. We need $(r-1) | r^2$.\n\nActually, let me be more systematic. We have $r^2 = a(r-1)$, which gives us:\n$$r^2 = ar - a$$\n$$r^2 - r = ar - a - r = a(r-1) - r$$\n$$r(r-1) = a(r-1) - r$$\n\nIf $r = 1$: undefined.\nIf $r \\neq 1$: $a = \\frac{r^2}{r-1} = \\frac{r^2 - r + r}{r-1} = r + \\frac{r}{r-1}$\n\nFor integer $a$, we need $(r-1) | r$. Since $\\gcd(r, r-1) = 1$, we need $(r-1) | 1$, giving $r \\in \\{0, 2\\}$.\n\nOnly $r = 2$ gives positive $a = 4$.\n\nSo there's only **one** positive integer $a = 4$.\n\nTherefore, $k = a + 7 = 4 + 7 = 11$.\n\n## Problem 2\n\nLet $p_i$ be the probability that a die shows $i$ (for $i = 1, 2, ..., 6$).\n\nGiven:\n- $P(\\text{sum} = 2) = p_1 \\cdot p_1 = p_1^2 = 0.04$, so $p_1 = 0.2$\n- $P(\\text{sum} = 12) = p_6 \\cdot p_6 = p_6^2 = 0.01$, so $p_6 = 0.1$\n\nThe sum equals 7 when: $(1,6), (2,5), (3,4), (4,3), (5,2), (6,1)$\n\n$$P(\\text{sum} = 7) = 2(p_1p_6 + p_2p_5 + p_3p_4)$$\n$$= 2(0.2 \\cdot 0.1 + p_2p_5 + p_3p_4)$$\n$$= 2(0.02 + p_2p_5 + p_3p_4)$$\n$$= 0.04 + 2(p_2p_5 + p_3p_4)$$\n\nWe have the constraint: $p_1 + p_2 + p_3 + p_4 + p_5 + p_6 = 1$\n$$0.2 + p_2 + p_3 + p_4 + p_5 + 0.1 = 1$$\n$$p_2 + p_3 + p_4 + p_5 = 0.7$$\n\nTo maximize $p_2p_5 + p_3p_4$ subject to $p_2 + p_3 + p_4 + p_5 = 0.7$, by AM-GM inequality:\n$$p_2p_5 \\leq \\frac{(p_2 + p_5)^2}{4}$$\n$$p_3p_4 \\leq \\frac{(p_3 + p_4)^2}{4}$$\n\nLet $s = p_2 + p_5$ and $t = p_3 + p_4$. Then $s + t = 0.7$.\n\nWe want to maximize $f(s,t) = \\frac{s^2}{4} + \\frac{t^2}{4} = \\frac{s^2 + t^2}{4}$.\n\nGiven $s + t = 0.7$, we have $s^2 + t^2 = s^2 + (0.7-s)^2 = 2s^2 - 1.4s + 0.49$.\n\nThis is maximized when $s = 0$ or $s = 0.7$ (at the boundary).\n\nMaximum: $\\frac{0.49}{4} = 0.1225$\n\nTherefore: $P(\\text{sum} = 7) \\leq 0.04 + 2(0.1225) = 0.04 + 0.245 = 0.285$\n\nSo $\\lfloor 100p \\rfloor = \\lfloor 28.5 \\rfloor = 28$.\n\n{\n            \"reasoning\": \"For Problem 1, I found that x^2 - ax + a has an integer root r when a = r^2/(r-1). For a to be a positive integer, (r-1) must divide r, which only happens when r = 2, giving a = 4. Thus k = a + 7 = 11. For Problem 2, with p_1 = 0.2 and p_6 = 0.1, I maximized P(sum=7) = 0.04 + 2(p_2*p_5 + p_3*p_4) subject to p_2 + p_3 + p_4 + p_5 = 0.7. The maximum occurs at the boundary, giving p = 0.285, so floor(100p) = 28.\",\n            \"answer_1\": \"11\",\n            \"answer_2\": \"28\"\n        }",
+  "problem_type": [
+    {
+      "A2103": [
+        "Mathematics -> Algebra -> Intermediate Algebra -> Quadratic Functions"
+      ]
+    },
+    {
+      "A2096": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "11",
+    "28"
+  ],
+  "ground_truth": [
+    "7",
+    "28"
+  ],
+  "correctness": [
+    false,
+    true
+  ],
+  "prompt_tokens": 505,
+  "completion_tokens": 1876,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

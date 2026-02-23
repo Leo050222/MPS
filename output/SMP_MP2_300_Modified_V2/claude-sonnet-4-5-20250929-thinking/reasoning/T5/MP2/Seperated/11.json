@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-02-23T14:54:44.562661+00:00",
+  "model": "claude-sonnet-4-5-20250929-thinking",
+  "type": "T5_MP2_seperated_Evaluation",
+  "Problem_ID": 11,
+  "math_problem": [
+    {
+      "A3234": "Find the smallest constant $C$ such that for every real polynomial $P(x)$ of degree 3 that has a root in the interval $[0,1]$, \\[ \\int_0^1 \\left| P(x) \\right|\\,dx \\leq C \\max_{x \\in [0,1]} \\left| P(x) \\right|. \\] Instead of determining the smallest constant guaranteeing the stated integral inequality for all such cubic polynomials, simply find $\\alpha = P(1)$, where $P(1)$ is the value at $x=1$ of the extremal cubic polynomial, normalized so that its maximum absolute value on $[0,1]$ is $1$ and having a root in $[0,1]$, that achieves the supremum of $\\int_0^1 |P(x)| \\, dx$ among all qualifying polynomials."
+    },
+    {
+      "A3243": "Let $n$ be an even positive integer. Let $p$ be a monic, real polynomial of degree $2n$; that is to say, $p(x) = x^{2n} + a_{2n-1} x^{2n-1} + \\cdots + a_1 x + a_0$ for some real coefficients $a_0, \\dots, a_{2n-1}$. Suppose that $p(1/k) = k^2$ for all integers $k$ such that $1 \\leq |k| \\leq n$. Find all other real numbers $x$ for which $p(1/x) = x^2$."
+    }
+  ],
+  "reasoning_content": "Looking at these two problems, I'll solve them step by step.\n\n## Problem 1: Finding α = P(1) for the extremal cubic\n\nFor this problem, I need to find the extremal cubic polynomial with:\n- A root in [0,1]\n- Maximum absolute value of 1 on [0,1]\n- That maximizes ∫₀¹ |P(x)| dx\n\nThe extremal polynomial is related to the Chebyshev polynomial. Consider:\n**P(x) = 4x³ - 3x**\n\nLet me verify this satisfies our conditions:\n- P(0) = 0 ✓ (root at x = 0, which is in [0,1])\n- P'(x) = 12x² - 3 = 0 when x = 1/2\n- P(1/2) = 4(1/8) - 3(1/2) = 1/2 - 3/2 = -1\n- P(1) = 4 - 3 = 1\n- The polynomial has roots at x = 0 and x = ±√(3/4) = ±√3/2\n\nOn [0,1], P achieves its minimum of -1 at x = 1/2 and its maximum of 1 at x = 1, so max|P(x)| = 1 ✓\n\nThis polynomial is optimal because:\n1. It's derived from the Chebyshev polynomial T₃(x) = 4x³ - 3x\n2. It oscillates between ±1, maximizing the area under |P(x)|\n3. It has the required root at x = 0\n\nTherefore: **α = P(1) = 1**\n\n## Problem 2: Finding additional roots of p(1/x) = x²\n\nGiven:\n- p(x) is monic of degree 2n (n even)\n- p(1/k) = k² for all integers k with 1 ≤ |k| ≤ n\n\nI need to find all other x where p(1/x) = x².\n\nDefine s(x) = x^(2n) · p(1/x) - x^(2n+2). Then s(x) = 0 ⟺ p(1/x) = x².\n\nWe know s(k) = 0 for k ∈ {±1, ±2, ..., ±n}, giving 2n roots.\n\nSince p is monic of degree 2n:\n- s(x) = x^(2n) · p(1/x) - x^(2n+2) has degree 2n+2\n- The leading coefficient is -1\n- The constant term is s(0) = 1\n\nSince the roots come in pairs ±k, we can write:\n**s(x) = (x² - 1)(x² - 4)···(x² - n²) · h(x)**\n\nwhere h(x) has degree 2.\n\nSince s has leading coefficient -1 and (x² - 1)(x² - 4)···(x² - n²) has leading coefficient 1:\n**h(x) = -x² + bx + c**\n\nFor the constant term:\ns(0) = (-1)(-4)···(-n²) · c = (-1)^n · (n!)² · c = 1\n\nSince n is even: (n!)² · c = 1, so **c = 1/(n!)²**\n\nChecking if s is even: Since the given roots ±k are symmetric and both p(1/k) = k² and p(-1/k) = k² hold, s(x) must be even. Since (x² - 1)···(x² - n²) is even, h(x) must also be even, so **b = 0**.\n\nTherefore:\n**h(x) = -x² + 1/(n!)² = 0**\n\nThis gives **x = ±1/n!**\n\nThe other real numbers (beyond ±1, ±2, ..., ±n) for which p(1/x) = x² are:\n\n**x = 1/n! and x = -1/n!**\n\n```json\n{\n    \"reasoning\": \"For Problem 1: The extremal cubic is P(x) = 4x³ - 3x, which is related to the Chebyshev polynomial T₃. It has a root at 0, achieves ±1 on [0,1], and P(1) = 1. For Problem 2: Setting up s(x) = x^(2n)p(1/x) - x^(2n+2), we find it has 2n known roots at ±1,...,±n. Factoring as s(x) = (x²-1)···(x²-n²)h(x) where h(x) has degree 2, using the constant term condition and evenness of s, we get h(x) = -x² + 1/(n!)², giving additional roots at x = ±1/n!.\",\n    \"answer_1\": \"1\",\n    \"answer_2\": \"1/n! and -1/n!\"\n}\n```",
+  "problem_type": [
+    {
+      "A3234": [
+        "Mathematics -> Calculus -> Integral Calculus -> Applications of Integrals",
+        "Mathematics -> Algebra -> Algebra -> Polynomial Operations"
+      ]
+    },
+    {
+      "A3243": [
+        "Mathematics -> Algebra -> Algebra -> Polynomial Operations"
+      ]
+    }
+  ],
+  "output_answer": [
+    "1",
+    "1/n! and -1/n!"
+  ],
+  "ground_truth": [
+    "1",
+    "\\pm 1/n!"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 693,
+  "completion_tokens": 7143,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

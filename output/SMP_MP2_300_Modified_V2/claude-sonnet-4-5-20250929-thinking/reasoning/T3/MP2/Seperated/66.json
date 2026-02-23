@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-02-23T15:28:02.599826+00:00",
+  "model": "claude-sonnet-4-5-20250929-thinking",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 66,
+  "math_problem": [
+    {
+      "A2103": "For how many positive integers $a$ does the polynomial $x^{2}-a x+a$ have an integer root? Instead of counting the positive integers $a$ such that the given quadratic polynomial has an integer root, simply find $k = a + 7$, where $a$ is a positive integer such that $x^{2} - a x + a$ has an integer root."
+    },
+    {
+      "A2096": "Marisa has two identical cubical dice labeled with the numbers \\(\\{1,2,3,4,5,6\\}\\). However, the two dice are not fair, meaning that they can land on each face with different probability. Marisa rolls the two dice and calculates their sum. Given that the sum is 2 with probability 0.04, and 12 with probability 0.01, the maximum possible probability of the sum being 7 is $p$. Compute $\\lfloor 100 p\\rfloor$."
+    }
+  ],
+  "reasoning_content": "Looking at these two problems:\n\n## Problem 1: Integer roots of $x^2 - ax + a$\n\nIf $r$ is an integer root of $x^2 - ax + a = 0$, then:\n$$r^2 - ar + a = 0$$\n$$r^2 = a(r - 1)$$\n\nFor $r \\neq 1$, we can solve for $a$:\n$$a = \\frac{r^2}{r - 1}$$\n\nLet me rewrite this:\n$$a = \\frac{r^2}{r - 1} = \\frac{r^2 - 1 + 1}{r - 1} = \\frac{(r-1)(r+1) + 1}{r - 1} = r + 1 + \\frac{1}{r - 1}$$\n\nFor $a$ to be an integer, we need $(r - 1) | 1$, so $r - 1 \\in \\{-1, 1\\}$, giving $r \\in \\{0, 2\\}$.\n\n- If $r = 0$: $a = \\frac{0}{-1} = 0$ (not positive)\n- If $r = 2$: $a = \\frac{4}{1} = 4$ (positive!)\n\nLet me verify: $x^2 - 4x + 4 = (x-2)^2$, so $x = 2$ is indeed a root.\n\nFor $a$ to be positive, we need $\\frac{r^2}{r-1} > 0$. This requires $r > 1$, so only $r = 2$ gives a positive $a$.\n\nTherefore, $a = 4$ is the only positive integer for which the polynomial has an integer root.\n\nThus, $k = a + 7 = 4 + 7 = 11$.\n\n## Problem 2: Maximum probability of sum being 7\n\nLet $p_i$ be the probability of rolling $i$ on a single die.\n\nGiven information:\n- $P(\\text{sum} = 2) = p_1^2 = 0.04 \\Rightarrow p_1 = 0.2$\n- $P(\\text{sum} = 12) = p_6^2 = 0.01 \\Rightarrow p_6 = 0.1$\n- $\\sum_{i=1}^{6} p_i = 1$\n\nThe probability of sum being 7:\n$$P(\\text{sum} = 7) = 2(p_1p_6 + p_2p_5 + p_3p_4)$$\n\nThe factor of 2 accounts for both orderings of the dice.\n\nSubstituting known values:\n$$P(\\text{sum} = 7) = 2(0.2 \\cdot 0.1 + p_2p_5 + p_3p_4) = 0.04 + 2(p_2p_5 + p_3p_4)$$\n\nWe need to maximize $p_2p_5 + p_3p_4$ subject to:\n$$p_2 + p_3 + p_4 + p_5 = 1 - 0.2 - 0.1 = 0.7$$\n\nTo maximize $p_2p_5 + p_3p_4$, I'll check boundary cases.\n\n**Case 1:** Set $p_3 = p_4 = 0$. Then $p_2 + p_5 = 0.7$.\nBy AM-GM, $p_2p_5$ is maximized when $p_2 = p_5 = 0.35$.\nThis gives $p_2p_5 + p_3p_4 = 0.35^2 + 0 = 0.1225$.\n\n**Case 2:** Set $p_2 = p_5 = 0$. Then $p_3 + p_4 = 0.7$.\nBy AM-GM, $p_3p_4$ is maximized when $p_3 = p_4 = 0.35$.\nThis gives $p_2p_5 + p_3p_4 = 0 + 0.35^2 = 0.1225$.\n\nThe interior critical point (using Lagrange multipliers) gives $p_2 = p_3 = p_4 = p_5 = 0.175$, yielding $2(0.175)^2 = 0.06125 < 0.1225$.\n\nTherefore, the maximum is:\n$$P(\\text{sum} = 7) = 0.04 + 2(0.1225) = 0.04 + 0.245 = 0.285$$\n\nThus, $p = 0.285$ and $\\lfloor 100p \\rfloor = \\lfloor 28.5 \\rfloor = 28$.\n\n```json\n{\n    \"reasoning\": \"For Problem 1: Finding integer roots of x^2 - ax + a, we get a = r^2/(r-1) which must be a positive integer. This forces r-1 to divide 1, giving only r=2 and a=4. Thus k = a+7 = 11. For Problem 2: With p_1=0.2 and p_6=0.1, we maximize P(sum=7) = 0.04 + 2(p_2*p_5 + p_3*p_4) subject to p_2+p_3+p_4+p_5=0.7. The maximum occurs at boundary cases where either {p_2=p_5=0.35, p_3=p_4=0} or {p_2=p_5=0, p_3=p_4=0.35}, giving p=0.285 and floor(100p)=28.\",\n    \"answer_1\": \"11\",\n    \"answer_2\": \"28\"\n}\n```",
+  "problem_type": [
+    {
+      "A2103": [
+        "Mathematics -> Algebra -> Intermediate Algebra -> Quadratic Functions"
+      ]
+    },
+    {
+      "A2096": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "11",
+    "28"
+  ],
+  "ground_truth": [
+    "7",
+    "28"
+  ],
+  "correctness": [
+    false,
+    true
+  ],
+  "prompt_tokens": 535,
+  "completion_tokens": 7152,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}
