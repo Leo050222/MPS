@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-02-23T15:24:18.998620+00:00",
+  "model": "claude-sonnet-4-5-20250929-thinking",
+  "type": "T3_MP2_synthesised_Evaluation",
+  "Problem_ID": 31,
+  "math_problem": "The game of Penta is played with teams of five players each, and there are five roles the players can play. Each of the five players chooses two of five roles they wish to play. If each player chooses their roles randomly, what is the probability that each role will have exactly two players? Instead of computing the probability that every role is selected by precisely two players, simply find T(favorable), the total number of favorable outcomes where each role receives exactly two choices. Given a positive integer $k$, let $\\|k\\|$ denote the absolute difference between $k$ and the nearest perfect square. For example, $\\|13\\|=3$ since the nearest perfect square to 13 is 16. Compute the smallest positive integer $n$ such that $\\frac{\\|1\\|+\\|2\\|+\\cdots+\\|n\\|}{n}=(T(favorable)-1940)$.",
+  "reasoning_content": "Looking at this problem, I need to find T(favorable) first, then solve for n.\n\n## Finding T(favorable)\n\nThe problem asks for the number of ways 5 players can each choose 2 roles from 5 roles such that each role is chosen exactly twice.\n\nThis is equivalent to counting 5×5 binary matrices where:\n- Each row sum = 2 (each player chooses 2 roles)\n- Each column sum = 2 (each role is chosen by 2 players)\n\nThis counts 2-regular bipartite graphs on K₅,₅. The number of such matrices is **2040**.\n\nSo **T(favorable) = 2040**.\n\n## Setting up the equation\n\nI need to find n such that:\n$$\\frac{\\|1\\|+\\|2\\|+\\cdots+\\|n\\|}{n} = 2040 - 1940 = 100$$\n\nThis means: $\\|1\\|+\\|2\\|+\\cdots+\\|n\\| = 100n$\n\n## Computing the sum of ||k||\n\nLet me understand the pattern. For integers between consecutive perfect squares m² and (m+1)²:\n- At m²: ||m²|| = 0\n- From m²+1 to m²+m: ||k|| = k - m² (values 1, 2, ..., m)\n- From m²+m+1 to (m+1)²-1: ||k|| = (m+1)² - k (values m, m-1, ..., 1)\n- At (m+1)²: ||(m+1)²|| = 0\n\nThe sum between m² and (m+1)² (exclusive of endpoints) is:\n$$\\sum_{j=1}^{m} j + \\sum_{j=1}^{m} j = m(m+1)$$\n\nFor n = M²:\n$$\\sum_{k=1}^{M^2} \\|k\\| = \\sum_{m=1}^{M-1} m(m+1) = \\frac{M(M-1)(M+1)}{3}$$\n\n## Finding n = M² + j\n\nSince we need the average to be exactly 100, let me try n = M² + j where M = 300.\n\nFor n = M² + j (where 1 ≤ j ≤ M):\n$$\\sum_{k=1}^{M^2+j} \\|k\\| = \\frac{M(M-1)(M+1)}{3} + \\sum_{i=1}^{j} i = \\frac{M(M^2-1)}{3} + \\frac{j(j+1)}{2}$$\n\nSetting this equal to 100(M² + j):\n$$\\frac{M(M^2-1)}{3} + \\frac{j(j+1)}{2} = 100(M^2 + j)$$\n\nFor M = 300:\n$$\\frac{300(89999)}{3} + \\frac{j(j+1)}{2} = 100(90000 + j)$$\n$$8999900 + \\frac{j(j+1)}{2} = 9000000 + 100j$$\n$$\\frac{j(j+1)}{2} = 100 + 100j$$\n$$j(j+1) = 200 + 200j$$\n$$j² + j = 200 + 200j$$\n$$j² - 199j - 200 = 0$$\n\nUsing the quadratic formula:\n$$j = \\frac{199 \\pm \\sqrt{39601 + 800}}{2} = \\frac{199 \\pm \\sqrt{40401}}{2} = \\frac{199 \\pm 201}{2}$$\n\nSo j = 200 (taking the positive root).\n\nTherefore: **n = 300² + 200 = 90000 + 200 = 90200**\n\n## Verification\n\nFor n = 90200:\n- Sum from 1 to 90000: $\\frac{300 \\cdot 299 \\cdot 301}{3} = 8,999,900$\n- Sum from 90001 to 90200: $\\frac{200 \\cdot 201}{2} = 20,100$\n- Total: 9,020,000\n- Average: $\\frac{9,020,000}{90,200} = 100$ ✓\n\n{  \n    \"reasoning\": \"First, I found T(favorable) = 2040 by counting 5×5 binary matrices with all row and column sums equal to 2. Then I needed to solve for n where the average of ||k|| from 1 to n equals 100. Using the pattern that between consecutive perfect squares m² and (m+1)², the sum of ||k|| values is m(m+1), and testing n = M² + j with M = 300, I got the equation j² - 199j - 200 = 0, which gives j = 200. Therefore n = 300² + 200 = 90200.\",\n    \"answer\": \"90200\"\n}",
+  "problem_type": [
+    {
+      "A682": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations",
+        "Mathematics -> Discrete Mathematics -> Graph Theory"
+      ]
+    },
+    {
+      "A1519": [
+        "Mathematics -> Number Theory -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "90200"
+  ],
+  "ground_truth": [
+    "\\frac{51}{2500}",
+    "89800"
+  ],
+  "correctness": [
+    false
+  ],
+  "prompt_tokens": 537,
+  "completion_tokens": 6955,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

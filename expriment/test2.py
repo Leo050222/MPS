@@ -2,10 +2,12 @@ import http.client
 import json
 import ssl
 import time
+import os
 
 conn = http.client.HTTPConnection("152.53.208.62", 9000)
-payload = json.dumps({
-   "model": "grok-4-1-fast-reasoning",
+
+payload_dict = {
+   "model": "claude-sonnet-4-5-20250929",
    "messages": [
       {
          "role": "system",
@@ -13,15 +15,17 @@ payload = json.dumps({
       },
       {
          "role": "user",
-         "content": "Let $ (a_{n}) $ be the sequence of reals defined by $ a_{1}=\\frac{1}{4} $ and the recurrence $ a_{n}= \\frac{1}{4}(1+a_{n-1})^{2}, n\\geq 2 $. Find the minimum real $ \\lambda $ such that for any non-negative reals $ x_{1},x_{2},\\dots,x_{2002} $, it holds\n\\[ \\sum_{k=1}^{2002}A_{k}\\leq \\lambda a_{2002}, \\]\nwhere $  A_{k}= \\frac{x_{k}-k}{(x_{k}+\\cdots+x_{2002}+\\frac{k(k-1)}{2}+1)^{2}}, k\\geq 1 $. Instead of determining the infimal constant that majorizes the aggregate of the deviation terms normalized by cumulative sums plus quadratic offsets in terms of the terminal sequence value for all non-negative inputs, simply find $\\delta = t - \\frac{4003}{2}$, where $t$ is the cardinality of the collection of non-negative real variables. Determine all functions $f: \\mathbb{Q} \\to \\mathbb{Q}$ such that\n$$f(2xy + \\delta) + f(x-y) = 4f(x)f(y) + \\delta$$\nfor all $x,y \\in \\mathbb{Q}$."
+         "content": "A sequence of functions $\\\\{ f_n(x) \\\\} $ is defined recursively as follows: \\begin{align*} f_1(x) &= \\sqrt {x^2 + 48}, \\quad \\text{and} \\\\ f_{n + 1}(x) &= \\sqrt {x^2 + 6f_n(x)} \\quad \\text{for } n \\geq 1. \\end{align*} (Recall that $\\sqrt {\\makebox[5mm]{}}$ is understood to represent the positive square root .) For each positive integer $n$ , find all real solutions of the equation $ f_n(x) = 2x $ . Instead of finding all real solutions of the equation $f_n(x) = 2x$ for each positive integer $n$, simply find $k$, where $k$ is the constant satisfying $f_1(x) = \\sqrt{x^2 + 6k}$ derived from the given definition. One day, there is a Street Art Show at somewhere, and there are some spectators around. We consider this place as an Euclidean plane. Let $K$ be the center of the show. And name the spectators by $A_{1}, A_{2}, \\ldots, A_{n}, \\ldots$ They pick their positions $P_{1}, P_{2}, \\ldots, P_{n}, \\ldots$ one by one. The positions need to satisfy the following three conditions simultaneously. (i) The distance between $K$ and $A_{n}$ is no less than 10 meters, that is, $K P_{n} \\geq 10 \\mathrm{~m}$ holds for any positive integer $n$. (ii) The distance between $A_{n}$ and any previous spectator is no less than $(k - 7)$ meters, that is, $P_{m} P_{n} \\geq (k - 7) \\mathrm{~m}$ holds for any $n \\geq 2$ and any $1 \\leq m \\leq n-1$. (iii) $A_{n}$ always choose the position closest to $K$ that satisfies (i) and (ii), that is, $K P_{n}$ reaches its minimum possible value. If there are more than one point that satisfy (i) and (ii) and have the minimum distance to $K, A_{n}$ may choose any one of them. For example, $A_{1}$ is not restricted by (ii), so he may choose any point on the circle $C$ which is centered at $K$ with radius $(k + 2)$ meters. For $A_{2}$, since there are lots of points on $C$ which are at least $(k - 7)$ meters apart from $P_{1}$, he may choose anyone of them. (1) Which of the following statement is true? (A) There exist positive real numbers $c_{1}, c_{2}$ such that for any positive integer $n$, no matter how $A_{1}, A_{2}, \\ldots, A_{n}$ choose their positions, $c_{1} \\leq K P_{n} \\leq c_{2}$ always hold (unit: meter); (B) There exist positive real numbers $c_{1}, c_{2}$ such that for any positive integer $n$, no matter how $A_{1}, A_{2}, \\ldots, A_{n}$ choose their positions, $c_{1} \\sqrt{n} \\leq K P_{n} \\leq c_{2} \\sqrt{n}$ always hold (unit: meter); (C) There exist positive real numbers $c_{1}, c_{2}$ such that for any positive integer $n$, no matter how $A_{1}, A_{2}, \\ldots, A_{n}$ choose their positions, $c_{1} n \\leq K P_{n} \\leq c_{2} n$ always hold (unit: meter); (D) There exist positive real numbers $c_{1}, c_{2}$ such that for any positive integer $n$, no matter how $A_{1}, A_{2}, \\ldots, A_{n}$ choose their positions, $c_{1} n^{2} \\leq K P_{n} \\leq c_{2} n^{2}$ always hold (unit: meter)."
       }
    ]
-})
+}
+
+payload = json.dumps(payload_dict)
 
 
 headers = {
    'Content-Type': 'application/json',
-   'Authorization': 'Bearer sk-D1RZX1sf3oIhkqCN3ac0Tibws1a1RzK5FyiVtl2Xd2a5GlXe'
+   'Authorization': f"Bearer sk-FaUSeCcEsbNHsi64pOxKrLVvKlLLZSNGRwHTgEZFmtbd2LSm" 
 }
 
 try:
@@ -36,4 +40,8 @@ except Exception as e:
    print(f"Error: {e}")
    import traceback
    traceback.print_exc()
-   conn.close()
+finally:
+   try:
+      conn.close()
+   except Exception:
+      pass

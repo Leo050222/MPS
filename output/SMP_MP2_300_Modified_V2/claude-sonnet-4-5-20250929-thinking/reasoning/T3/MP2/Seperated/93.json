@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-02-23T16:00:37.663784+00:00",
+  "model": "claude-sonnet-4-5-20250929-thinking",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 93,
+  "math_problem": [
+    {
+      "A2610": "Given complex number $z$, define sequence $z_{0}, z_{1}, z_{2}, \\ldots$ as $z_{0}=z$ and $z_{n+1}=2 z_{n}^{2}+2 z_{n}$ for $n \\geq 0$. Given that $z_{10}=2017$, find the minimum possible value of $|z|$. Instead of determining the minimal modulus of the initial complex number that generates the given terminal sequence value, simply find $k = w_{10} + \\frac{1965}{2}$, where $w_{10}$ is the tenth term of the auxiliary sequence obtained by adding $\\frac{1}{2}$ to each term of the original sequence."
+    },
+    {
+      "A721": "Compute the sum of all positive integers $n$ such that $n^{2}-3000$ is a perfect square."
+    }
+  ],
+  "reasoning_content": "## Problem 1 Solution\n\nGiven the recurrence $z_{n+1} = 2z_n^2 + 2z_n$ with $z_0 = z$ and $z_{10} = 2017$.\n\nLet me define the auxiliary sequence $w_n = z_n + \\frac{1}{2}$ for all $n$.\n\nThen:\n$$w_{n+1} = z_{n+1} + \\frac{1}{2} = 2z_n^2 + 2z_n + \\frac{1}{2}$$\n\nSubstituting $z_n = w_n - \\frac{1}{2}$:\n$$w_{n+1} = 2\\left(w_n - \\frac{1}{2}\\right)^2 + 2\\left(w_n - \\frac{1}{2}\\right) + \\frac{1}{2}$$\n\nExpanding:\n$$w_{n+1} = 2\\left(w_n^2 - w_n + \\frac{1}{4}\\right) + 2w_n - 1 + \\frac{1}{2}$$\n$$= 2w_n^2 - 2w_n + \\frac{1}{2} + 2w_n - 1 + \\frac{1}{2}$$\n$$= 2w_n^2$$\n\nSo the auxiliary sequence satisfies the simpler recurrence $w_{n+1} = 2w_n^2$.\n\nSince $z_{10} = 2017$, we have:\n$$w_{10} = z_{10} + \\frac{1}{2} = 2017 + \\frac{1}{2} = \\frac{4035}{2}$$\n\nTherefore:\n$$k = w_{10} + \\frac{1965}{2} = \\frac{4035}{2} + \\frac{1965}{2} = \\frac{6000}{2} = 3000$$\n\n## Problem 2 Solution\n\nWe need to find all positive integers $n$ such that $n^2 - 3000$ is a perfect square.\n\nLet $n^2 - 3000 = m^2$ for some non-negative integer $m$.\n\nThen: $(n-m)(n+m) = 3000$\n\nLet $a = n-m$ and $b = n+m$. Then:\n- $ab = 3000$\n- $n = \\frac{a+b}{2}$\n- $m = \\frac{b-a}{2}$\n\nFor $n$ and $m$ to be integers, $a$ and $b$ must have the same parity.\n\nSince $3000 = 2^3 \\times 3 \\times 5^3$, for both divisors to be even, we need $a = 2^i \\times 3^j \\times 5^k$ where $1 \\leq i \\leq 2$ (to ensure $\\frac{3000}{a}$ is also even).\n\nThe pairs $(a,b)$ with $a \\leq b$ and both even are (where $a \\leq \\sqrt{3000} \\approx 54.77$):\n- $(2, 1500)$: $n = \\frac{2+1500}{2} = 751$\n- $(4, 750)$: $n = \\frac{4+750}{2} = 377$\n- $(6, 500)$: $n = \\frac{6+500}{2} = 253$\n- $(10, 300)$: $n = \\frac{10+300}{2} = 155$\n- $(12, 250)$: $n = \\frac{12+250}{2} = 131$\n- $(20, 150)$: $n = \\frac{20+150}{2} = 85$\n- $(30, 100)$: $n = \\frac{30+100}{2} = 65$\n- $(50, 60)$: $n = \\frac{50+60}{2} = 55$\n\nVerification for $n=55$: $55^2 = 3025$, $3025 - 3000 = 25 = 5^2$ ✓\n\nThe sum of all valid values:\n$$751 + 377 + 253 + 155 + 131 + 85 + 65 + 55 = 1872$$\n\n```json\n{\n    \"reasoning\": \"For Problem 1, I transformed the recurrence by defining w_n = z_n + 1/2, which simplifies to w_{n+1} = 2w_n^2. Since z_10 = 2017, w_10 = 2017.5, and k = w_10 + 1965/2 = 3000. For Problem 2, I used the factorization (n-m)(n+m) = 3000 and found all divisor pairs with the same parity, yielding 8 valid values of n that sum to 1872.\",\n    \"answer_1\": \"3000\",\n    \"answer_2\": \"1872\"\n}\n```",
+  "problem_type": [
+    {
+      "A2610": [
+        "Mathematics -> Algebra -> Intermediate Algebra -> Complex Numbers",
+        "Mathematics -> Algebra -> Sequences and Series -> Other"
+      ]
+    },
+    {
+      "A721": [
+        "Mathematics -> Number Theory -> Factorization"
+      ]
+    }
+  ],
+  "output_answer": [
+    "3000",
+    "1872"
+  ],
+  "ground_truth": [
+    "3000",
+    "1872"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 527,
+  "completion_tokens": 7017,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

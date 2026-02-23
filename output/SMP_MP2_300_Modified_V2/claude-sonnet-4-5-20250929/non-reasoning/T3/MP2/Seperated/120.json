@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-02-23T14:47:07.819511+00:00",
+  "model": "claude-sonnet-4-5-20250929",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 120,
+  "math_problem": [
+    {
+      "A4009": "Find the smallest value that the expression takes $x^4 + y^4 - x^2y - xy^2$, for positive numbers $x$ and $y$ satisfying $x + y \\le 1$. Instead of determining the minimal value attained by the given quartic expression over the region of positive variables summing to at most one, simply find $k$ equal to that minimal value plus $\\frac{401}{8}$."
+    },
+    {
+      "A1824": "An integer $n$ is chosen uniformly at random from the set $\\{1,2,3, \\ldots, 2023!\\}$. Compute the probability that $$\\operatorname{gcd}\\left(n^{n}+50, n+1\\right)=1$$"
+    }
+  ],
+  "reasoning_content": "I'll solve both problems step by step.\n\n## Problem 1: Find the minimum of $x^4 + y^4 - x^2y - xy^2$ for positive $x, y$ with $x + y \\le 1$\n\nLet me denote $f(x,y) = x^4 + y^4 - x^2y - xy^2$.\n\nFirst, I'll rewrite this:\n$$f(x,y) = x^4 + y^4 - xy(x+y)$$\n\nTo find critical points, I'll compute partial derivatives:\n$$\\frac{\\partial f}{\\partial x} = 4x^3 - y(2x+y) = 4x^3 - 2xy - y^2$$\n$$\\frac{\\partial f}{\\partial y} = 4y^3 - x(x+2y) = 4y^3 - x^2 - 2xy$$\n\nSetting these to zero:\n- $4x^3 - 2xy - y^2 = 0$\n- $4y^3 - x^2 - 2xy = 0$\n\nBy symmetry, let me try $x = y$:\n- $4x^3 - 2x^2 - x^2 = 4x^3 - 3x^2 = x^2(4x - 3) = 0$\n\nSo $x = 0$ (boundary) or $x = \\frac{3}{4}$.\n\nIf $x = y = \\frac{3}{4}$, then $x + y = \\frac{3}{2} > 1$, which violates the constraint.\n\nLet me check the boundary where $x + y = 1$. Substituting $y = 1-x$:\n$$g(x) = x^4 + (1-x)^4 - x(1-x)[x + (1-x)] = x^4 + (1-x)^4 - x(1-x)$$\n\nExpanding:\n$$g(x) = x^4 + 1 - 4x + 6x^2 - 4x^3 + x^4 - x + x^2$$\n$$= 2x^4 - 4x^3 + 7x^2 - 5x + 1$$\n\nTaking the derivative:\n$$g'(x) = 8x^3 - 12x^2 + 14x - 5$$\n\nBy symmetry, the minimum should be at $x = \\frac{1}{2}$:\n$$g'(\\frac{1}{2}) = 8(\\frac{1}{8}) - 12(\\frac{1}{4}) + 14(\\frac{1}{2}) - 5 = 1 - 3 + 7 - 5 = 0$$ ✓\n\nSo at $x = y = \\frac{1}{2}$:\n$$f(\\frac{1}{2}, \\frac{1}{2}) = 2(\\frac{1}{16}) - \\frac{1}{4} \\cdot 1 = \\frac{1}{8} - \\frac{1}{4} = -\\frac{1}{8}$$\n\nLet me verify this is indeed a minimum by checking the second derivative or boundary values.\n\nAt corners: $f(1,0) = 1$, $f(0,1) = 1$, $f(0,0) = 0$.\n\nSo the minimum value is $-\\frac{1}{8}$.\n\nTherefore: $k = -\\frac{1}{8} + \\frac{401}{8} = \\frac{400}{8} = 50$\n\n## Problem 2: Probability that $\\gcd(n^n + 50, n+1) = 1$\n\nLet $d = \\gcd(n^n + 50, n+1)$.\n\nSince $n \\equiv -1 \\pmod{n+1}$, we have:\n$$n^n \\equiv (-1)^n \\pmod{n+1}$$\n\nSo:\n$$n^n + 50 \\equiv (-1)^n + 50 \\pmod{n+1}$$\n\nFor $d | (n+1)$ and $d | (n^n + 50)$:\n$$d | ((-1)^n + 50)$$\n\nIf $n$ is even: $d | 51 = 3 \\cdot 17$\nIf $n$ is odd: $d | 49 = 7^2$\n\nSo $\\gcd(n^n + 50, n+1) > 1$ iff:\n- $n$ is even and $(n+1)$ is divisible by 3 or 17, OR\n- $n$ is odd and $(n+1)$ is divisible by 7\n\nThis means:\n- $n \\equiv 2 \\pmod{3}$ (even and $n+1 \\equiv 0 \\pmod{3}$)\n- $n \\equiv 16 \\pmod{17}$ (even and $n+1 \\equiv 0 \\pmod{17}$)\n- $n \\equiv 6 \\pmod{7}$ (odd and $n+1 \\equiv 0 \\pmod{7}$)\n\nUsing inclusion-exclusion, the probability that $\\gcd = 1$ is:\n$$P = 1 - P(\\text{bad})$$\n\nwhere bad means one of the above conditions holds.\n\nBy inclusion-exclusion:\n$$P(\\text{bad}) = \\frac{1}{3} + \\frac{1}{17} + \\frac{1}{7} - \\frac{1}{3 \\cdot 17} - \\frac{1}{3 \\cdot 7} - \\frac{1}{17 \\cdot 7} + \\frac{1}{3 \\cdot 17 \\cdot 7}$$\n\n$$= \\frac{1}{3} + \\frac{1}{17} + \\frac{1}{7} - \\frac{1}{51} - \\frac{1}{21} - \\frac{1}{119} + \\frac{1}{357}$$\n\nComputing with common denominator 357:\n$$= \\frac{119 + 21 + 51 - 7 - 17 - 3 + 1}{357} = \\frac{165}{357} = \\frac{55}{119}$$\n\nTherefore:\n$$P(\\gcd = 1) = 1 - \\frac{55}{119} = \\frac{64}{119}$$\n\n{\n            \"reasoning\": \"For Problem 1, I found the minimum of the quartic expression occurs at x=y=1/2 on the boundary x+y=1, giving minimum value -1/8. Adding 401/8 gives k=50. For Problem 2, I used modular arithmetic to find that gcd(n^n+50, n+1)>1 when n satisfies certain congruence conditions related to primes 3, 7, and 17. Using inclusion-exclusion, the probability that gcd=1 is 64/119.\",\n            \"answer_1\": \"50\",\n            \"answer_2\": \"64/119\"\n        }",
+  "problem_type": [
+    {
+      "A4009": [
+        "Mathematics -> Algebra -> Algebra -> Polynomial Operations"
+      ]
+    },
+    {
+      "A1824": [
+        "Mathematics -> Number Theory -> Greatest Common Divisors (GCD)",
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "50",
+    "64/119"
+  ],
+  "ground_truth": [
+    "50",
+    "\\frac{265}{357}"
+  ],
+  "correctness": [
+    true,
+    false
+  ],
+  "prompt_tokens": 464,
+  "completion_tokens": 1773,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

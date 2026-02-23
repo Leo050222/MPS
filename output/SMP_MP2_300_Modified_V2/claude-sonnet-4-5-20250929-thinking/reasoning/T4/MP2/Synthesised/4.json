@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-02-23T14:53:19.387052+00:00",
+  "model": "claude-sonnet-4-5-20250929-thinking",
+  "type": "T4_MP2_synthesised_Evaluation",
+  "Problem_ID": 4,
+  "math_problem": "Determine the form of $n$ such that $2^n + 2$ is divisible by $n$ where $n$ is less than 100. Instead of determining the possible values of $n$ less than 100 for which $n$ divides $2^n + 2$, simply find $n$, where $n$ is the largest positive integer less than 100 satisfying this divisibility condition. Determine all pairs $(h, s)$ of positive integers with the following property: If one draws $h$ horizontal lines and another $s$ lines which satisfy (i) they are not horizontal, (ii) no two of them are parallel, (iii) no three of the $h+s$ lines are concurrent, then the number of regions formed by these $h+s$ lines is $n + 1926$.",
+  "reasoning_content": "Looking at this problem, I need to solve two parts:\n\n## Part 1: Find the largest n < 100 such that n divides 2^n + 2\n\nI need to check when $n | 2^n + 2$, which means $2^n \\equiv -2 \\pmod{n}$.\n\nLet me check some values systematically:\n- $n = 2$: $2^2 + 2 = 6 = 3 \\times 2$ ✓\n- $n = 6$: $2^6 + 2 = 66 = 11 \\times 6$ ✓\n\nFor $n = 66 = 2 \\times 3 \\times 11$, I'll use the Chinese Remainder Theorem:\n- $2^{66} + 2 \\equiv 0 + 0 \\equiv 0 \\pmod{2}$ ✓\n- $2^{66} + 2 \\equiv 1 + 2 \\equiv 0 \\pmod{3}$ ✓\n- For mod 11: By Fermat's Little Theorem, $2^{10} \\equiv 1 \\pmod{11}$, so $2^{66} \\equiv 2^6 \\equiv 64 \\equiv 9 \\pmod{11}$\n  Thus $2^{66} + 2 \\equiv 9 + 2 \\equiv 0 \\pmod{11}$ ✓\n\nChecking larger values like 70, 78, 82, 86, 90, 94 shows they don't work.\n\nTherefore, **n = 66** is the largest value less than 100.\n\n## Part 2: Find all pairs (h, s) where the number of regions equals n + 1926 = 1992\n\nThe number of regions formed by h horizontal lines and s non-horizontal, mutually non-parallel lines (with no three concurrent) is:\n\n$$R = 1 + (h+s) + \\text{(intersection points)}$$\n\nThe intersection points are:\n- Between s non-horizontal lines: $\\binom{s}{2} = \\frac{s(s-1)}{2}$\n- Between h horizontal and s non-horizontal: $hs$\n\nSo:\n$$R = 1 + h + s + \\frac{s(s-1)}{2} + hs = 1 + h + \\frac{s(2h + s + 1)}{2}$$\n\nSetting $R = 1992$:\n$$1 + h + \\frac{s(2h + s + 1)}{2} = 1992$$\n$$2h + s(2h + s + 1) = 3982$$\n$$(s+1)(2h+s) = 3982$$\n\nFactoring: $3982 = 2 \\times 11 \\times 181$\n\nThe factor pairs $(a,b)$ where $s+1 = a$ and $2h+s = b$ are:\n- $(2, 1991)$: $s = 1$, $h = \\frac{1991-2+1}{2} = 995$ → **(995, 1)** ✓\n- $(11, 362)$: $s = 10$, $h = \\frac{362-11+1}{2} = 176$ → **(176, 10)** ✓\n- $(22, 181)$: $s = 21$, $h = \\frac{181-22+1}{2} = 80$ → **(80, 21)** ✓\n\nVerification for $(80, 21)$:\n$$R = 1 + 80 + \\frac{21(160 + 21 + 1)}{2} = 81 + \\frac{21 \\times 182}{2} = 81 + 1911 = 1992$$ ✓\n\n{\n    \"reasoning\": \"First, I found that n = 66 is the largest positive integer less than 100 such that n divides 2^n + 2. Then, I calculated that the number of regions equals 1992 = 66 + 1926. Using the formula for regions and solving (s+1)(2h+s) = 3982, where 3982 = 2 × 11 × 181, I found three valid pairs of positive integers.\",\n    \"answer\": \"(995, 1), (176, 10), (80, 21)\"\n}",
+  "problem_type": [
+    {
+      "A1595": [
+        "Mathematics -> Number Theory -> Congruences",
+        "Mathematics -> Number Theory -> Prime Numbers"
+      ]
+    },
+    {
+      "A1598": [
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "(995, 1), (176, 10), (80, 21)"
+  ],
+  "ground_truth": [
+    "n=6, 66, 946",
+    "(995,1),(176,10),(80,21)"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 519,
+  "completion_tokens": 5997,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

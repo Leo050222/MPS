@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-02-23T16:02:14.567705+00:00",
+  "model": "claude-sonnet-4-5-20250929-thinking",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 103,
+  "math_problem": [
+    {
+      "A3379": "In terms of $k$, for $k>0$ how likely is he to be back where he started after $2 k$ minutes? Instead of determining the return probability as a function of $k$, simply find $m = q_0 + 9/4$, where $q_0$ is the initial deviation of the return probability from its limiting value derived from the recurrence relation for returns to the origin."
+    },
+    {
+      "A953": "Compute $\\int_{0}^{\\pi} \\frac{2 \\sin \\theta+3 \\cos \\theta-3}{13 \\cos \\theta-5} \\mathrm{d} \\theta$"
+    }
+  ],
+  "reasoning_content": "Looking at these two problems, I'll solve them step by step.\n\n## Problem 1: Random Walk Return Probability\n\nThis problem concerns a symmetric random walk and the probability of returning to the origin after $2k$ steps.\n\nFor a simple symmetric random walk, the exact return probability is:\n$$P_{2k} = \\binom{2k}{k} \\left(\\frac{1}{2}\\right)^{2k} = \\frac{1}{4^k}\\binom{2k}{k}$$\n\nUsing the refined Stirling approximation with first-order correction:\n$$n! = \\sqrt{2\\pi n}\\left(\\frac{n}{e}\\right)^n \\left(1 + \\frac{1}{12n} + O(1/n^2)\\right)$$\n\nApplying this to the binomial coefficient:\n$$(2k)! = \\sqrt{4\\pi k}(2k/e)^{2k}\\left(1 + \\frac{1}{24k} + ...\\right)$$\n$$k! = \\sqrt{2\\pi k}(k/e)^k\\left(1 + \\frac{1}{12k} + ...\\right)$$\n\nTherefore:\n$$\\binom{2k}{k} = \\frac{4^k}{\\sqrt{\\pi k}} \\cdot \\frac{1 + \\frac{1}{24k}}{(1 + \\frac{1}{12k})^2}$$\n\nExpanding the denominator: $(1 + \\frac{1}{12k})^2 \\approx 1 + \\frac{1}{6k}$\n\nSo:\n$$\\binom{2k}{k} = \\frac{4^k}{\\sqrt{\\pi k}}\\left(1 + \\frac{1}{24k} - \\frac{1}{6k}\\right) = \\frac{4^k}{\\sqrt{\\pi k}}\\left(1 - \\frac{1}{8k}\\right)$$\n\nThus:\n$$P_{2k} = \\frac{1}{\\sqrt{\\pi k}}\\left(1 - \\frac{1}{8k}\\right)$$\n\nFrom this expansion, we can identify $q_0 = -\\frac{1}{8}$.\n\nTherefore:\n$$m = q_0 + \\frac{9}{4} = -\\frac{1}{8} + \\frac{18}{8} = \\frac{17}{8}$$\n\n## Problem 2: Definite Integral\n\n$$I = \\int_{0}^{\\pi} \\frac{2 \\sin \\theta+3 \\cos \\theta-3}{13 \\cos \\theta-5} \\, d\\theta$$\n\nUsing the Weierstrass substitution $t = \\tan(\\theta/2)$:\n- $\\sin\\theta = \\frac{2t}{1+t^2}$\n- $\\cos\\theta = \\frac{1-t^2}{1+t^2}$  \n- $d\\theta = \\frac{2dt}{1+t^2}$\n\nThe numerator becomes:\n$$\\frac{4t + 3(1-t^2) - 3(1+t^2)}{1+t^2} = \\frac{4t - 6t^2}{1+t^2}$$\n\nThe denominator becomes:\n$$\\frac{13(1-t^2) - 5(1+t^2)}{1+t^2} = \\frac{8 - 18t^2}{1+t^2}$$\n\nNoting that $8 - 18t^2 = -18(t-\\frac{2}{3})(t+\\frac{2}{3})$ and $4t - 6t^2 = -12t(t-\\frac{2}{3})$:\n\n$$\\frac{4t - 6t^2}{8 - 18t^2} = \\frac{2t}{3(t + 2/3)}$$\n\nSo:\n$$I = \\frac{2}{3}\\int_{0}^{\\infty} \\frac{t}{(t + 2/3)(1+t^2)} dt$$\n\nUsing partial fractions with $\\frac{t}{(t + 2/3)(1+t^2)} = -\\frac{6/13}{t + 2/3} + \\frac{6t/13 + 9/13}{1+t^2}$:\n\n$$I = \\frac{2}{39}\\left[-6\\ln(t + 2/3) + 3\\ln(1+t^2) + 9\\arctan t\\right]_0^{\\infty}$$\n\nThe divergent terms cancel in the limit, giving:\n$$I = \\frac{2}{39}\\left[6\\ln(2/3) + \\frac{9\\pi}{2}\\right] = \\frac{3\\pi + 4\\ln(2/3)}{13}$$\n\nThis can also be written as:\n$$I = \\frac{3\\pi - 4\\ln(3/2)}{13}$$\n\n```json\n{\n    \"reasoning\": \"For Problem 1: Used Stirling's approximation with first-order correction to find the asymptotic expansion of the return probability, identifying q_0 = -1/8. For Problem 2: Applied Weierstrass substitution, simplified the integrand, used partial fractions, and carefully handled the limit as divergent terms canceled.\",\n    \"answer_1\": \"17/8\",\n    \"answer_2\": \"(3π - 4ln(3/2))/13\"\n}\n```",
+  "problem_type": [
+    {
+      "A3379": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations"
+      ]
+    },
+    {
+      "A953": [
+        "Mathematics -> Calculus -> Integral Calculus -> Techniques of Integration -> Single-variable"
+      ]
+    }
+  ],
+  "output_answer": [
+    "17/8",
+    "(3π - 4ln(3/2))/13"
+  ],
+  "ground_truth": [
+    "3",
+    "\\frac{3 \\pi}{13}-\\frac{4}{13} \\log \\frac{3}{2}"
+  ],
+  "correctness": [
+    false,
+    true
+  ],
+  "prompt_tokens": 469,
+  "completion_tokens": 8531,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

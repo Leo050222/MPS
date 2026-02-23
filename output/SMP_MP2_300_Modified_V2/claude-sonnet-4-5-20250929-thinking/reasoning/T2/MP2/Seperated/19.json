@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-02-23T15:23:27.136329+00:00",
+  "model": "claude-sonnet-4-5-20250929-thinking",
+  "type": "T2_MP2_seperated_Evaluation",
+  "Problem_ID": 19,
+  "math_problem": [
+    {
+      "A2041": "Suppose $a$ and $b$ be positive integers not exceeding 100 such that $$a b=\\left(\\frac{\\operatorname{lcm}(a, b)}{\\operatorname{gcd}(a, b)}\\right)^{2}$$ Compute the largest possible value of $a+b$. Instead of computing the maximum possible sum of two positive integers not exceeding 100 that satisfy the given equation relating their product to the square of the ratio of their least common multiple to their greatest common divisor, simply find $m = s - 77$, where $s$ is that maximum possible sum."
+    },
+    {
+      "A2090": "Consider a $5 \\times 5$ grid of squares. Vladimir colors some of these squares red, such that the centers of any four red squares do not form an axis-parallel rectangle (i.e. a rectangle whose sides are parallel to those of the squares). What is the maximum number of squares he could have colored red?"
+    }
+  ],
+  "reasoning_content": "## Problem 1 Solution\n\nGiven: $ab = \\left(\\frac{\\text{lcm}(a,b)}{\\gcd(a,b)}\\right)^2$\n\nLet $d = \\gcd(a,b)$ and write $a = dm$, $b = dn$ where $\\gcd(m,n) = 1$.\n\nThen $\\text{lcm}(a,b) = dmn$.\n\nSubstituting into the equation:\n$$dm \\cdot dn = \\left(\\frac{dmn}{d}\\right)^2$$\n$$d^2mn = (mn)^2$$\n$$d^2 = mn$$\n\nSince $\\gcd(m,n) = 1$ and $mn = d^2$, both $m$ and $n$ must be perfect squares.\n\nLet $m = p^2$ and $n = q^2$ where $\\gcd(p,q) = 1$.\n\nThen $d = pq$, giving us:\n- $a = dm = pq \\cdot p^2 = p^3q$\n- $b = dn = pq \\cdot q^2 = pq^3$\n\nWe need $a, b \\leq 100$ and want to maximize $a + b = pq(p^2 + q^2)$.\n\nTesting values:\n\n**For $p = 2, q = 3$ (coprime):**\n- $a = 2^3 \\cdot 3 = 24$\n- $b = 2 \\cdot 3^3 = 54$\n- $a + b = 78$ ✓\n\n**For $p = 3, q = 2$:**\n- $a = 3^3 \\cdot 2 = 54$\n- $b = 3 \\cdot 2^3 = 24$\n- $a + b = 78$ ✓\n\n**For $p = 1, q = 4$:**\n- $a = 4, b = 64$\n- $a + b = 68$\n\n**For $p = 4, q = 1$:**\n- Same sum: 68\n\nHigher values of $p$ or $q$ violate the constraint $\\leq 100$.\n\n**Verification:** For $a = 24, b = 54$:\n- $\\gcd(24, 54) = 6$\n- $\\text{lcm}(24, 54) = 216$\n- $ab = 1296$\n- $\\left(\\frac{216}{6}\\right)^2 = 36^2 = 1296$ ✓\n\nSo $s = 78$, and $m = s - 77 = 1$.\n\n## Problem 2 Solution\n\nWe need to color squares such that no four red squares form an axis-parallel rectangle. This means no two rows can share the same pair of columns with red squares.\n\nLet $r_i$ be the number of red squares in row $i$. Row $i$ covers $\\binom{r_i}{2}$ column pairs.\n\nSince there are $\\binom{5}{2} = 10$ column pairs total, and each can appear in at most one row:\n$$\\sum_{i=1}^{5} \\binom{r_i}{2} \\leq 10$$\n\nFor $\\sum r_i = n$ red squares:\n$$\\sum \\binom{r_i}{2} = \\frac{1}{2}\\left(\\sum r_i^2 - n\\right)$$\n\nBy Cauchy-Schwarz: $\\sum r_i^2 \\geq \\frac{n^2}{5}$\n\nFor $n = 13$: $\\sum r_i^2 \\geq 33.8$, so $\\sum r_i^2 \\geq 34$.\nThus $\\sum \\binom{r_i}{2} \\geq \\frac{34-13}{2} = 10.5$, meaning $\\geq 11 > 10$. Impossible.\n\nFor $n = 12$: We can try configuration $(3,3,2,2,2)$ which uses $3+3+1+1+1 = 9$ pairs.\n\n**Construction:**\n- Row 1: columns {1, 2, 3}\n- Row 2: columns {1, 4, 5}\n- Row 3: columns {2, 4}\n- Row 4: columns {2, 5}\n- Row 5: columns {3, 4}\n\nChecking all pairs: Each pair of rows shares at most 1 column. ✓\n\nThis gives us **12 red squares** with no rectangles.\n\n{\n    \"reasoning\": \"Problem 1: Using the relation between gcd and lcm, I derived that a = p³q and b = pq³ where gcd(p,q)=1. Testing values with constraints a,b ≤ 100, the maximum sum is 78 (for p=2, q=3 giving a=24, b=54). Thus m = 78 - 77 = 1. Problem 2: The constraint that no four red squares form a rectangle means no two rows can share the same pair of columns. With 5 columns giving 10 possible column pairs, and each row with r_i red squares using C(r_i,2) pairs, we need Σ C(r_i,2) ≤ 10. For 12 red squares with distribution (3,3,2,2,2), we use exactly 9 pairs, which is achievable. For 13 squares, we'd need at least 11 pairs, which exceeds the limit. Therefore the maximum is 12.\",\n    \"answer_1\": \"1\",\n    \"answer_2\": \"12\"\n}",
+  "problem_type": [
+    {
+      "A2041": [
+        "Mathematics -> Number Theory -> Prime Numbers",
+        "Mathematics -> Algebra -> Prealgebra -> Integers"
+      ]
+    },
+    {
+      "A2090": [
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "1",
+    "12"
+  ],
+  "ground_truth": [
+    "1",
+    "12"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 538,
+  "completion_tokens": 7339,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

@@ -1,0 +1,45 @@
+{
+  "timestamp": "2026-02-23T14:43:32.670286+00:00",
+  "model": "claude-sonnet-4-5-20250929",
+  "type": "T2_MP2_seperated_Evaluation",
+  "Problem_ID": 28,
+  "math_problem": [
+    {
+      "A2252": "Compute all ordered triples $(x, y, z)$ of real numbers satisfying the following system of equations: $$\\begin{aligned} x y+z & =40 \\\\ x z+y & =51 \\\\ x+y+z & =19 \\end{aligned}$$ Instead of computing all ordered triples of real numbers satisfying the system of equations, simply find $k = z + \\frac{17}{5}$, where $z$ is the third component in the solution corresponding to the smaller root for $x + 1$ among the roots of the quadratic equation derived from the system."
+    },
+    {
+      "A2257": "There are 21 competitors with distinct skill levels numbered $1,2, \\ldots, 21$. They participate in a pingpong tournament as follows. First, a random competitor is chosen to be \"active\", while the rest are \"inactive.\" Every round, a random inactive competitor is chosen to play against the current active one. The player with the higher skill will win and become (or remain) active, while the loser will be eliminated from the tournament. The tournament lasts for 20 rounds, after which there will only be one player remaining. Alice is the competitor with skill 11. What is the expected number of games that she will get to play?"
+    }
+  ],
+  "reasoning_content": "I'll solve both problems step by step.\n\n## Problem 1\n\nGiven system:\n- $xy + z = 40$ ... (1)\n- $xz + y = 51$ ... (2)\n- $x + y + z = 19$ ... (3)\n\nFrom equation (3): $y + z = 19 - x$\n\nFrom equation (1): $z = 40 - xy$\n\nSubstituting into $y + z = 19 - x$:\n$$y + 40 - xy = 19 - x$$\n$$y(1 - x) = -21 - x$$\n$$y = \\frac{-21 - x}{1 - x} = \\frac{21 + x}{x - 1}$$ (for $x \\neq 1$)\n\nFrom equation (2): $xz + y = 51$\n\nSubstituting $z = 40 - xy$:\n$$x(40 - xy) + y = 51$$\n$$40x - x^2y + y = 51$$\n$$y(1 - x^2) = 51 - 40x$$\n$$y = \\frac{51 - 40x}{1 - x^2} = \\frac{51 - 40x}{(1-x)(1+x)}$$\n\nSetting the two expressions for $y$ equal:\n$$\\frac{21 + x}{x - 1} = \\frac{51 - 40x}{(1-x)(1+x)}$$\n\n$$\\frac{-(21 + x)}{1 - x} = \\frac{51 - 40x}{(1-x)(1+x)}$$\n\n$$-(21 + x)(1 + x) = 51 - 40x$$\n$$-(21 + 21x + x + x^2) = 51 - 40x$$\n$$-21 - 22x - x^2 = 51 - 40x$$\n$$-x^2 - 22x + 40x = 51 + 21$$\n$$-x^2 + 18x = 72$$\n$$x^2 - 18x + 72 = 0$$\n\nUsing the quadratic formula:\n$$x = \\frac{18 \\pm \\sqrt{324 - 288}}{2} = \\frac{18 \\pm \\sqrt{36}}{2} = \\frac{18 \\pm 6}{2}$$\n\nSo $x = 12$ or $x = 6$.\n\nFor $x = 6$:\n$$y = \\frac{21 + 6}{6 - 1} = \\frac{27}{5}$$\n$$z = 19 - x - y = 19 - 6 - \\frac{27}{5} = 13 - \\frac{27}{5} = \\frac{65 - 27}{5} = \\frac{38}{5}$$\n\nFor $x = 12$:\n$$y = \\frac{21 + 12}{12 - 1} = \\frac{33}{11} = 3$$\n$$z = 19 - 12 - 3 = 4$$\n\nThe problem asks for $k = z + \\frac{17}{5}$ where $z$ corresponds to the smaller root for $x + 1$.\n\nThe roots for $x + 1$ are: $6 + 1 = 7$ and $12 + 1 = 13$.\n\nThe smaller root for $x + 1$ is 7, which corresponds to $x = 6$ and $z = \\frac{38}{5}$.\n\nTherefore:\n$$k = \\frac{38}{5} + \\frac{17}{5} = \\frac{55}{5} = 11$$\n\n## Problem 2\n\nAlice has skill level 11. She plays a game if and only if she is either:\n1. Chosen as the initial active player, OR\n2. Chosen to challenge the active player while she's inactive\n\nKey insight: Alice plays against competitor $i$ if and only if all competitors between Alice (11) and $i$ are eliminated before both Alice and $i$ are chosen.\n\nFor competitors with skill $< 11$ (competitors 1-10):\nAlice beats them, so she plays against competitor $i$ (where $i < 11$) with probability $\\frac{1}{12-i+1} = \\frac{1}{13-i}$.\n\nFor competitors with skill $> 11$ (competitors 12-21):\nThey beat Alice, so she plays against competitor $i$ (where $i > 11$) with probability $\\frac{1}{i-11+1} = \\frac{1}{i-10}$.\n\nExpected number of games:\n$$E = \\sum_{i=1}^{10} \\frac{1}{13-i} + \\sum_{i=12}^{21} \\frac{1}{i-10}$$\n\n$$E = \\sum_{j=3}^{12} \\frac{1}{j} + \\sum_{j=2}^{11} \\frac{1}{j}$$\n\n$$E = \\left(\\frac{1}{3} + \\frac{1}{4} + \\cdots + \\frac{1}{12}\\right) + \\left(\\frac{1}{2} + \\frac{1}{3} + \\cdots + \\frac{1}{11}\\right)$$\n\n$$E = \\frac{1}{2} + 2\\left(\\frac{1}{3} + \\frac{1}{4} + \\cdots + \\frac{1}{11}\\right) + \\frac{1}{12}$$\n\nComputing: $\\frac{1}{3} + \\frac{1}{4} + \\cdots + \\frac{1}{11} = H_{11} - H_2 = H_{11} - \\frac{3}{2}$\n\nWhere $H_{11} = 1 + \\frac{1}{2} + \\cdots + \\frac{1}{11} = \\frac{83711}{27720}$\n\n$$E = \\frac{1}{2} + 2\\left(\\frac{83711}{27720} - \\frac{3}{2}\\right) + \\frac{1}{12}$$\n$$E = \\frac{1}{2} + \\frac{167422}{27720} - 3 + \\frac{1}{12}$$\n$$E = \\frac{167422}{27720} - \\frac{5}{2} + \\frac{1}{12} = \\frac{167422 - 69300 + 2310}{27720} = \\frac{100432}{27720} = \\frac{12554}{3465}$$\n\nSimplifying: $\\gcd(12554, 3465) = 11$, so $\\frac{12554}{3465} = \\frac{1141.27...}{315} \\approx 3.622$\n\nActually, let me recalculate more carefully: $E = \\frac{12554}{3465} = \\frac{1141.27}{315}$... Let me verify: $12554/3465 = 3.6226...$\n\nThe exact answer is $\\frac{12554}{3465}$.\n\n{\n            \"reasoning\": \"For Problem 1, I derived a quadratic equation x^2 - 18x + 72 = 0 with roots x=6 and x=12. The smaller value of x+1 is 7 (when x=6), giving z=38/5, so k = 38/5 + 17/5 = 11. For Problem 2, I calculated the expected number of games Alice plays by summing probabilities that she faces each other competitor, which equals the sum of reciprocals giving 12554/3465.\",\n            \"answer_1\": \"11\",\n            \"answer_2\": \"12554/3465\"\n        }",
+  "problem_type": [
+    {
+      "A2252": [
+        "Mathematics -> Algebra -> Algebra -> Algebraic Expressions",
+        "Mathematics -> Algebra -> Algebra -> Equations and Inequalities"
+      ]
+    },
+    {
+      "A2257": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Other",
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "11",
+    "12554/3465"
+  ],
+  "ground_truth": [
+    "11",
+    "\\frac{47}{42}"
+  ],
+  "correctness": [
+    true,
+    false
+  ],
+  "prompt_tokens": 576,
+  "completion_tokens": 1923,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

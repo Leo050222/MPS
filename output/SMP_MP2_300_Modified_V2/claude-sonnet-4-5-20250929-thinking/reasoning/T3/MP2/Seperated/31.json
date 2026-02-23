@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-02-23T15:23:29.473057+00:00",
+  "model": "claude-sonnet-4-5-20250929-thinking",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 31,
+  "math_problem": [
+    {
+      "A682": "The game of Penta is played with teams of five players each, and there are five roles the players can play. Each of the five players chooses two of five roles they wish to play. If each player chooses their roles randomly, what is the probability that each role will have exactly two players? Instead of computing the probability that every role is selected by precisely two players, simply find $e = T(favorable) - 1940$, where $T(favorable)$ is the total number of favorable outcomes where each role receives exactly two choices."
+    },
+    {
+      "A1519": "Given a positive integer $k$, let \\|k\\| denote the absolute difference between $k$ and the nearest perfect square. For example, \\|13\\|=3 since the nearest perfect square to 13 is 16. Compute the smallest positive integer $n$ such that $\\frac{\\|1\\|+\\|2\\|+\\cdots+\\|n\\|}{n}=100$."
+    }
+  ],
+  "reasoning_content": "Looking at these two problems, I'll solve them step by step.\n\n## Problem 1: Penta Game Probability\n\nWe have 5 players, each choosing 2 roles from 5 available roles. We need to find the total number of favorable outcomes where each role is chosen by exactly 2 players.\n\n**Setup verification:**\n- Total choices made: 5 players × 2 roles = 10 choices\n- For each role to have exactly 2 players: 5 roles × 2 players = 10 choices ✓\n\n**Counting favorable outcomes:**\n\nThis problem is equivalent to counting 5×5 binary matrices where:\n- Each row sum equals 2 (each player chooses 2 roles)\n- Each column sum equals 2 (each role is chosen by 2 players)\n\nThis is the same as counting 2-regular bipartite graphs on K₅,₅.\n\nFor an n×n binary matrix with all row sums and column sums equal to r, this is a well-studied problem. For n=5 and r=2, the count is:\n\n**T(favorable) = 2040**\n\nTherefore:\n**e = T(favorable) - 1940 = 2040 - 1940 = 100**\n\n## Problem 2: Finding n with average ||k|| = 100\n\nFirst, let me understand the pattern of ||k||:\n\nFor integers between m² and (m+1)²:\n- When k = m² + j where 0 ≤ j ≤ m: ||k|| = j (closer to m²)\n- When k = m² + j where m < j < 2m+1: ||k|| = 2m+1-j (closer to (m+1)²)\n\n**Sum pattern for each segment:**\n\nFor k from m² to (m+1)² - 1, the sum is:\n$$\\sum_{j=0}^{m} j + \\sum_{j=1}^{m} j = \\frac{m(m+1)}{2} + \\frac{m(m+1)}{2} = m(m+1)$$\n\nFor n = M², the cumulative sum is:\n$$S(M²) = \\sum_{m=1}^{M-1} m(m+1) = \\frac{(M-1)M(M+1)}{3}$$\n\n**Finding n where S(n)/n = 100:**\n\nFor n ≈ M², we have:\n$$\\frac{S(M²)}{M²} = \\frac{(M-1)(M+1)}{3M} \\approx \\frac{M}{3}$$\n\nFor this to equal 100, we need M ≈ 300.\n\n**Precise calculation for M = 300:**\n\n$$S(90000) = \\frac{299 \\cdot 300 \\cdot 301}{3} = 8,999,900$$\n\nWe need S(n) = 100n. For n = 90000:\n- S(90000) = 8,999,900\n- 100n = 9,000,000\n\nSo we need to add more terms. For n = 90000 + k where k ≤ 300:\n\nThe partial sum for the next k terms is: k(k+1)/2\n\nSetting up the equation:\n$$8,999,900 + \\frac{k(k+1)}{2} = 100(90000 + k)$$\n$$\\frac{k(k+1)}{2} = 100 + 100k$$\n$$k² + k = 200 + 200k$$\n$$k² - 199k - 200 = 0$$\n\nUsing the quadratic formula:\n$$k = \\frac{199 \\pm \\sqrt{39601 + 800}}{2} = \\frac{199 \\pm 201}{2}$$\n\nSo k = 200 (taking the positive root).\n\n**Verification:**\nn = 90000 + 200 = 90200\nS(90200) = 8,999,900 + 200(201)/2 = 8,999,900 + 20,100 = 9,020,000\nS(90200)/90200 = 9,020,000/90,200 = 100 ✓\n\n```json\n{\n    \"reasoning\": \"Problem 1: Counting 5×5 binary matrices with row and column sums equal to 2 gives T(favorable) = 2040, so e = 2040 - 1940 = 100. Problem 2: Using the pattern that ||k|| creates a sum of m(m+1) for each segment from m² to (m+1)²-1, and solving for when S(n)/n = 100, we find n = 90200 = 300² + 200.\",\n    \"answer_1\": \"100\",\n    \"answer_2\": \"90200\"\n}\n```",
+  "problem_type": [
+    {
+      "A682": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations",
+        "Mathematics -> Discrete Mathematics -> Graph Theory"
+      ]
+    },
+    {
+      "A1519": [
+        "Mathematics -> Number Theory -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "100",
+    "90200"
+  ],
+  "ground_truth": [
+    "100",
+    "89800"
+  ],
+  "correctness": [
+    true,
+    false
+  ],
+  "prompt_tokens": 537,
+  "completion_tokens": 6534,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

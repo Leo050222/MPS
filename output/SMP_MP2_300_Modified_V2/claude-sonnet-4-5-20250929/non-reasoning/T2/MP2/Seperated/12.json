@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-02-23T14:42:58.351237+00:00",
+  "model": "claude-sonnet-4-5-20250929",
+  "type": "T2_MP2_seperated_Evaluation",
+  "Problem_ID": 12,
+  "math_problem": [
+    {
+      "A1457": "Pyramid $E A R L Y$ is placed in $(x, y, z)$ coordinates so that $E=(10,10,0), A=(10,-10,0), R=(-10,-10,0), L=(-10,10,0)$, and $Y=(0,0,10)$. Tunnels are drilled through the pyramid in such a way that one can move from $(x, y, z)$ to any of the 9 points $(x, y, z-1),(x \\pm 1, y, z-1)$, $(x, y \\pm 1, z-1),(x \\pm 1, y \\pm 1, z-1)$. Sean starts at $Y$ and moves randomly down to the base of the pyramid, choosing each of the possible paths with probability $\\frac{1}{9}$ each time. What is the probability that he ends up at the point $(8,9,0)$? Instead of computing the probability of reaching the specified base point, simply find $e = \\left(p_y - \\frac{25}{3}\\right)$, where $p_y$ is the number of steps with positive y-displacement required to achieve the net y-displacement to that point, derived from the total step count and net displacement equations in the y-direction."
+    },
+    {
+      "A1537": "In a game, \\(N\\) people are in a room. Each of them simultaneously writes down an integer between 0 and 100 inclusive. A person wins the game if their number is exactly two-thirds of the average of all the numbers written down. There can be multiple winners or no winners in this game. Let \\(m\\) be the maximum possible number such that it is possible to win the game by writing down \\(m\\). Find the smallest possible value of \\(N\\) for which it is possible to win the game by writing down \\(m\\) in a room of \\(N\\) people."
+    }
+  ],
+  "reasoning_content": "I'll solve both problems step by step.\n\n## Problem 1: Pyramid Random Walk\n\nStarting at Y = (0, 0, 10), Sean needs to reach (8, 9, 0).\n\nAt each step, Sean moves from (x, y, z) to one of 9 positions:\n- (x, y, z-1)\n- (x±1, y, z-1)\n- (x, y±1, z-1)\n- (x±1, y±1, z-1)\n\nThis means:\n- z always decreases by 1 (10 steps total to reach z=0)\n- x displacement: Δx ∈ {-1, 0, 1}\n- y displacement: Δy ∈ {-1, 0, 1}\n\nNet displacements needed:\n- x: from 0 to 8, so net Δx = 8\n- y: from 0 to 9, so net Δy = 9\n- z: from 10 to 0, so 10 steps\n\nFor the y-direction over 10 steps:\nLet p_y = number of steps with +1 y-displacement\nLet n_y = number of steps with -1 y-displacement\nLet z_y = number of steps with 0 y-displacement\n\nWe have:\n- p_y + n_y + z_y = 10 (total steps)\n- p_y - n_y = 9 (net displacement)\n\nFrom the second equation: p_y = n_y + 9\n\nSubstituting into the first:\n(n_y + 9) + n_y + z_y = 10\n2n_y + z_y = 1\n\nSince n_y, z_y ≥ 0 and must be integers:\n- If n_y = 0: z_y = 1, so p_y = 9\n- If n_y ≥ 1: z_y would be negative (impossible)\n\nTherefore: p_y = 9, n_y = 0, z_y = 1\n\nNow we need to find e = p_y - 25/3 = 9 - 25/3 = 27/3 - 25/3 = 2/3\n\n## Problem 2: Two-Thirds Average Game\n\nA person wins if their number equals 2/3 of the average of all N numbers.\n\nLet the winning number be m, and let the other N-1 numbers sum to S.\n\nThen: m = (2/3) × (m + S)/N\n\nSolving for S:\n3Nm = 2(m + S)\n3Nm = 2m + 2S\n3Nm - 2m = 2S\nm(3N - 2) = 2S\nS = m(3N - 2)/2\n\nFor S to be achievable with N-1 numbers (each between 0 and 100):\n- Minimum S: 0 (all zeros)\n- Maximum S: 100(N-1)\n\nWe need: 0 ≤ m(3N - 2)/2 ≤ 100(N-1)\n\nFor maximum m, we want the largest m ≤ 100 that satisfies these constraints.\n\nFrom the upper bound:\nm(3N - 2)/2 ≤ 100(N-1)\nm(3N - 2) ≤ 200(N-1)\nm ≤ 200(N-1)/(3N-2)\n\nAs N → ∞, this ratio approaches 200/3 ≈ 66.67\n\nFor m = 67 (trying the maximum):\n67(3N - 2) ≤ 200(N-1)\n201N - 134 ≤ 200N - 200\nN ≤ -66 (impossible)\n\nFor m = 66:\n66(3N - 2) ≤ 200(N-1)\n198N - 132 ≤ 200N - 200\n-132 ≤ 2N - 200\n68 ≤ 2N\nN ≥ 34\n\nLet's verify N = 34, m = 66:\nS = 66(3×34 - 2)/2 = 66(102 - 2)/2 = 66 × 50 = 3300\nMaximum possible S with 33 people: 33 × 100 = 3300 ✓\n\nCheck the winning condition:\nAverage = (66 + 3300)/34 = 3366/34 = 99\n2/3 × 99 = 66 ✓\n\nTherefore, m = 66 and the smallest N = 34.\n\n{\n            \"reasoning\": \"For Problem 1: Sean takes 10 steps from z=10 to z=0. To reach (8,9,0) from (0,0,10), he needs net y-displacement of 9. With p_y positive steps, n_y negative steps, and z_y zero steps in y-direction: p_y + n_y + z_y = 10 and p_y - n_y = 9. Solving gives p_y = 9, n_y = 0, z_y = 1. Thus e = p_y - 25/3 = 9 - 25/3 = 2/3. For Problem 2: A person wins if their number m equals 2/3 of the average. This gives S = m(3N-2)/2 where S is the sum of other N-1 numbers. For maximum m, we need m(3N-2)/2 ≤ 100(N-1). Testing m=66: we need N ≥ 34. At N=34, S = 3300 which equals the maximum possible sum of 33 numbers at 100 each. The average is 99 and 2/3 × 99 = 66, confirming m=66 is achievable at N=34.\",\n            \"answer_1\": \"2/3\",\n            \"answer_2\": \"34\"\n        }",
+  "problem_type": [
+    {
+      "A1457": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Other"
+      ]
+    },
+    {
+      "A1537": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Mathematical Statistics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "2/3",
+    "34"
+  ],
+  "ground_truth": [
+    "2/3",
+    "34"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 730,
+  "completion_tokens": 1493,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

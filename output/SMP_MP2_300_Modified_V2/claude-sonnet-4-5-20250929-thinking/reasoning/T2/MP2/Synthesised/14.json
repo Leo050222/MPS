@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-02-23T14:55:14.621649+00:00",
+  "model": "claude-sonnet-4-5-20250929-thinking",
+  "type": "T2_MP2_synthesised_Evaluation",
+  "Problem_ID": 14,
+  "math_problem": "Victoria wants to order at least 550 donuts from Dunkin' Donuts for the HMMT 2014 November contest. However, donuts only come in multiples of twelve. Assuming every twelve donuts cost $7.49, what is the minimum amount Victoria needs to pay, in dollars? Instead of computing the minimum cost to acquire at least the required number of units when purchases are constrained to multiples of the base quantity, simply find $e = \\left\\lfloor 550 / 12 \\right\\rfloor - 43$. There are two prime numbers $p$ so that $5 p$ can be expressed in the form $\\left\\lfloor\\frac{n^{e}}{5}\\right\\rfloor$ for some positive integer $n$. What is the sum of these two prime numbers?",
+  "reasoning_content": "Looking at this problem, I need to first find $e$, then determine which primes $p$ satisfy the given condition.\n\n## Step 1: Calculate $e$\n\n$e = \\lfloor 550/12 \\rfloor - 43$\n\n$550/12 = 45.833...$\n\n$\\lfloor 550/12 \\rfloor = 45$\n\n$e = 45 - 43 = 2$\n\n## Step 2: Find primes $p$ where $5p = \\lfloor n^2/5 \\rfloor$\n\nThe condition $5p = \\lfloor n^2/5 \\rfloor$ means:\n$$5p \\leq \\frac{n^2}{5} < 5p + 1$$\n\nMultiplying by 5:\n$$25p \\leq n^2 < 25p + 5$$\n\nSo I need a perfect square $n^2$ in the interval $[25p, 25p+5)$.\n\nSince $25p \\equiv 0 \\pmod{5}$, the possible values $n^2$ can take are:\n- $25p$ (when $n^2 \\equiv 0 \\pmod{5}$)\n- $25p + 1$ (when $n^2 \\equiv 1 \\pmod{5}$)  \n- $25p + 4$ (when $n^2 \\equiv 4 \\pmod{5}$)\n\nNote: Squares mod 5 can only be 0, 1, or 4.\n\n### Case 1: $n^2 = 25p + 1$\n\nThis gives $(n-1)(n+1) = 25p$.\n\nSince $n-1$ and $n+1$ differ by 2, they must be coprime. For $n$ even (say $n=2m$):\n$$4m^2 - 1 = 25p$$\n$$(2m-1)(2m+1) = 25p$$\n\nSince $2m-1$ and $2m+1$ are coprime and differ by 2, the factorizations of $25p$ give:\n- $(2m-1, 2m+1) = (p, 25)$: Then $2m+1 = 25$, so $m = 12$ and $p = 2(12)-1 = 23$ ✓\n\nChecking: $n = 24$, $n^2 = 576 = 25(23) + 1$, and $\\lfloor 576/5 \\rfloor = \\lfloor 115.2 \\rfloor = 115 = 5(23)$ ✓\n\n### Case 2: $n^2 = 25p + 4$\n\nThis gives $(n-2)(n+2) = 25p$.\n\nFor $n$ odd, $n-2$ and $n+2$ are coprime. The factorizations give:\n- $(n-2, n+2) = (25, p)$: Then $n-2 = 25$, so $n = 27$ and $p = 29$ ✓\n\nChecking: $n = 27$, $n^2 = 729 = 25(29) + 4$, and $\\lfloor 729/5 \\rfloor = \\lfloor 145.8 \\rfloor = 145 = 5(29)$ ✓\n\n### Case 3: $n^2 = 25p$\n\nThis requires $n = 5\\sqrt{p}$, so $p$ must be a perfect square. Since no prime is a perfect square, this case yields no solutions.\n\n## Verification\n\nLet me verify no other small primes work by checking a few:\n- $p=2$: Need $50 \\leq n^2 < 55$. No perfect square in range.\n- $p=3$: Need $75 \\leq n^2 < 80$. No perfect square in range.\n- $p=5$: Need $125 \\leq n^2 < 130$. No perfect square in range.\n\nThe two primes are $p = 23$ and $p = 29$.\n\nTheir sum is $23 + 29 = 52$.\n\n{  \n    \"reasoning\": \"First, I calculated e = floor(550/12) - 43 = 45 - 43 = 2. Then I needed to find primes p where 5p = floor(n²/5). This means 25p ≤ n² < 25p + 5. Since squares mod 5 can only be 0, 1, or 4, I checked three cases: n² = 25p (no solutions), n² = 25p + 1 (gives p = 23 with n = 24), and n² = 25p + 4 (gives p = 29 with n = 27). I verified both work and found no other prime solutions.\",\n    \"answer\": \"52\"\n}",
+  "problem_type": [
+    {
+      "A1694": [
+        "Mathematics -> Applied Mathematics -> Math Word Problems"
+      ]
+    },
+    {
+      "A1695": [
+        "Mathematics -> Number Theory -> Prime Numbers"
+      ]
+    }
+  ],
+  "output_answer": [
+    "52"
+  ],
+  "ground_truth": [
+    "344.54",
+    "52"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 524,
+  "completion_tokens": 7399,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}
