@@ -7,7 +7,7 @@ import os
 conn = http.client.HTTPConnection("152.53.208.62", 9000)
 
 payload_dict = {
-   "model": "claude-sonnet-4-5-20250929",
+   "model": "claude-sonnet-4-5-20250929-thinking",
    "messages": [
       {
          "role": "system",
@@ -25,7 +25,7 @@ payload = json.dumps(payload_dict)
 
 headers = {
    'Content-Type': 'application/json',
-   'Authorization': f"Bearer sk-FaUSeCcEsbNHsi64pOxKrLVvKlLLZSNGRwHTgEZFmtbd2LSm" 
+   'Authorization': f"Bearer sk-OOE1HmqCFOJ7IibUVlP7dDOHMmB7SHVNdINEoCHi2xIlf3dl" 
 }
 
 try:
