@@ -13,7 +13,7 @@ import logging
 from tqdm import tqdm
 from pathlib import Path
 from datetime import datetime, timezone
-from config import AVAILABLE_MODEL, TASKS, MODELS_COMPANIES_MAP
+from config import AVAILABLE_MODEL, TASKS, MODELS_COMPANIES_MAP, MAX_RETRY
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 tasks = TASKS
@@ -525,7 +525,7 @@ async def process_single_problem_async(
         # 2. 调用模型推理（带重试，含 answer 为空时的重试）
         response = None
         extracted_data = None
-        max_retry = 20
+        max_retry = MAX_RETRY
         for attempt in range(1, max_retry + 1):
             try:
                 response = await client.get_response_async(prompt=prompt, reasoning=reasoning, seed=seed)

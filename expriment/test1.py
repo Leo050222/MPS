@@ -7,7 +7,7 @@ import os
 conn = http.client.HTTPSConnection("yunwu.ai")
 
 payload_dict = {
-   "model": "claude-sonnet-4-5-20250929-thinking",
+   "model": "gemini-3-pro-preview-thinking",
    "messages": [
       {
          "role": "system",
@@ -29,7 +29,7 @@ payload = json.dumps(payload_dict)
 
 headers = {
    'Content-Type': 'application/json',
-   'Authorization': f"Bearer sk-qzdMKpiMSg7ued5SujXQkzB8Mqnli2T8HyMI6MjAfTCmrP6q"  
+   'Authorization': f"Bearer sk-Ayw5kVPyT06A1AcODsyDUL3AlW4pIJMJtzHI1GGm1Czn00XB"  
 }
 
 try:
