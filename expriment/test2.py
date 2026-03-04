@@ -7,7 +7,9 @@ import os
 conn = http.client.HTTPConnection("152.53.208.62", 9000)
 
 payload_dict = {
-   "model": "claude-sonnet-4-5-20250929",
+   "model": "gemini-3-pro-preview-thinking",
+   "stream": True,
+   "stream_options": {"include_usage": True},
    "messages": [
       {
          "role": "system",
@@ -15,7 +17,7 @@ payload_dict = {
       },
       {
          "role": "user",
-         "content": "A sequence of functions $\\\\{ f_n(x) \\\\} $ is defined recursively as follows: \\begin{align*} f_1(x) &= \\sqrt {x^2 + 48}, \\quad \\text{and} \\\\ f_{n + 1}(x) &= \\sqrt {x^2 + 6f_n(x)} \\quad \\text{for } n \\geq 1. \\end{align*} (Recall that $\\sqrt {\\makebox[5mm]{}}$ is understood to represent the positive square root .) For each positive integer $n$ , find all real solutions of the equation $ f_n(x) = 2x $ . Instead of finding all real solutions of the equation $f_n(x) = 2x$ for each positive integer $n$, simply find $k$, where $k$ is the constant satisfying $f_1(x) = \\sqrt{x^2 + 6k}$ derived from the given definition. One day, there is a Street Art Show at somewhere, and there are some spectators around. We consider this place as an Euclidean plane. Let $K$ be the center of the show. And name the spectators by $A_{1}, A_{2}, \\ldots, A_{n}, \\ldots$ They pick their positions $P_{1}, P_{2}, \\ldots, P_{n}, \\ldots$ one by one. The positions need to satisfy the following three conditions simultaneously. (i) The distance between $K$ and $A_{n}$ is no less than 10 meters, that is, $K P_{n} \\geq 10 \\mathrm{~m}$ holds for any positive integer $n$. (ii) The distance between $A_{n}$ and any previous spectator is no less than $(k - 7)$ meters, that is, $P_{m} P_{n} \\geq (k - 7) \\mathrm{~m}$ holds for any $n \\geq 2$ and any $1 \\leq m \\leq n-1$. (iii) $A_{n}$ always choose the position closest to $K$ that satisfies (i) and (ii), that is, $K P_{n}$ reaches its minimum possible value. If there are more than one point that satisfy (i) and (ii) and have the minimum distance to $K, A_{n}$ may choose any one of them. For example, $A_{1}$ is not restricted by (ii), so he may choose any point on the circle $C$ which is centered at $K$ with radius $(k + 2)$ meters. For $A_{2}$, since there are lots of points on $C$ which are at least $(k - 7)$ meters apart from $P_{1}$, he may choose anyone of them. (1) Which of the following statement is true? (A) There exist positive real numbers $c_{1}, c_{2}$ such that for any positive integer $n$, no matter how $A_{1}, A_{2}, \\ldots, A_{n}$ choose their positions, $c_{1} \\leq K P_{n} \\leq c_{2}$ always hold (unit: meter); (B) There exist positive real numbers $c_{1}, c_{2}$ such that for any positive integer $n$, no matter how $A_{1}, A_{2}, \\ldots, A_{n}$ choose their positions, $c_{1} \\sqrt{n} \\leq K P_{n} \\leq c_{2} \\sqrt{n}$ always hold (unit: meter); (C) There exist positive real numbers $c_{1}, c_{2}$ such that for any positive integer $n$, no matter how $A_{1}, A_{2}, \\ldots, A_{n}$ choose their positions, $c_{1} n \\leq K P_{n} \\leq c_{2} n$ always hold (unit: meter); (D) There exist positive real numbers $c_{1}, c_{2}$ such that for any positive integer $n$, no matter how $A_{1}, A_{2}, \\ldots, A_{n}$ choose their positions, $c_{1} n^{2} \\leq K P_{n} \\leq c_{2} n^{2}$ always hold (unit: meter)."
+         "content": "Find all functions $f: \\mathbb{R}^+ \\to \\mathbb{R}^+$ such that \n$$(z + 1)f(x + y) = f(xf(z) + y) + f(yf(z) + x),$$\nfor all positive real numbers $x, y, z$. Instead of determining all positive functions satisfying the given functional equation, simply find $m = c - 1$, where $c$ is the proportionality constant in the linear function that satisfies the equation. Determine all functions $f: \\mathbb{R} \\to \\mathbb{R}$ such that \n$$ f(x^(m + 3)) + f(y)^(m + 3) + f(z)^(m + 3) = (m + 3)xyz $$\nfor all real numbers $x$, $y$ and $z$ with $x+y+z=m$."
       }
    ]
 }
@@ -25,16 +27,34 @@ payload = json.dumps(payload_dict)
 
 headers = {
    'Content-Type': 'application/json',
-   'Authorization': f"Bearer sk-FaUSeCcEsbNHsi64pOxKrLVvKlLLZSNGRwHTgEZFmtbd2LSm" 
+   'Authorization': f"Bearer sk-qyq6QZ5Of8zKMgVaZhHMc470DCUF4OLBF2cSqp5XHXfB02Z3" 
 }
 
 try:
    conn.request("POST", "/v1/chat/completions", payload, headers)
-   # import pdb
-   # pdb.set_trace()
    res = conn.getresponse()
-   data = res.read()
-   print(data.decode("utf-8"))
+   usage = None
+   for raw_line in res:
+      line = raw_line.decode("utf-8").strip()
+      if not line.startswith("data: "):
+         continue
+      data_str = line[6:]
+      if data_str == "[DONE]":
+         break
+      try:
+         chunk = json.loads(data_str)
+         if chunk.get("usage"):
+            usage = chunk["usage"]
+         if not chunk.get("choices"):
+            continue
+         delta = chunk["choices"][0]["delta"]
+         if delta.get("content"):
+            print(delta["content"], end="", flush=True)
+      except (json.JSONDecodeError, KeyError):
+         pass
+   print()
+   if usage:
+      print(f"\n[Usage] prompt={usage.get('prompt_tokens')} completion={usage.get('completion_tokens')} total={usage.get('total_tokens')}")
    
 except Exception as e:
    print(f"Error: {e}")
