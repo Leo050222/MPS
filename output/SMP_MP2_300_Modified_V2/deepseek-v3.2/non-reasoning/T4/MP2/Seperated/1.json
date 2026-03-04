@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-03-02T19:19:25.105261+00:00",
+  "model": "deepseek-v3.2",
+  "type": "T4_MP2_seperated_Evaluation",
+  "Problem_ID": 1,
+  "math_problem": [
+    {
+      "A11": "Given $30$ students such that each student has at most $5$ friends and for every $5$ students there is a pair of students that are not friends, determine the maximum $k$ such that for all such possible configurations, there exists $k$ students who are all not friends. Instead of determining the maximum such $k$, simply find $d = \\mathrm{ex}(30, K_6) + 1644$, where $\\mathrm{ex}(30, K_6)$ is the maximum number of edges in a graph on $30$ vertices with no clique of $6$ vertices derived from the extremal analysis of the complement of the friendship graph."
+    },
+    {
+      "A1275": "How many real numbers $x$ are solutions to the following equation? $$2003^{x}+2004^{x}=2005^{x}$$"
+    }
+  ],
+  "reasoning_content": "Alright, let’s go step-by-step.\n\n---\n\n## **Problem 1**\n\nWe have 30 students, each with at most 5 friends.  \nThat means in the friendship graph \\( G \\), \\(\\Delta(G) \\le 5\\).\n\nAlso: “for every 5 students there is a pair of students that are not friends” means:  \nIn \\( G \\), any set of 5 vertices contains at least one non-edge.  \nEquivalently: \\( G \\) has no \\( K_5 \\) as a subgraph? Wait, careful: “for every 5 students there is a pair of students that are not friends” means in \\( G \\) there is no \\( K_5 \\) of mutual friends? No — it says: pick any 5 vertices, there exists at least one pair among them that are **not** friends. That means \\( G \\) does **not** contain \\( K_5 \\) as a subgraph? Actually, if \\( G \\) had a \\( K_5 \\), then those 5 vertices would all be friends pairwise, contradicting the condition. So indeed \\( G \\) has no \\( K_5 \\).\n\nSo \\( G \\) is a graph on 30 vertices, \\(\\Delta(G) \\le 5\\), and \\( \\omega(G) \\le 4 \\) (no \\( K_5 \\)).\n\nBut the problem asks: “determine the maximum \\( k \\) such that for all such possible configurations, there exists \\( k \\) students who are all not friends.”  \nThat means: in the complement graph \\( \\overline{G} \\), we want the largest \\( k \\) such that \\( \\overline{G} \\) has a clique of size \\( k \\) for **every** such \\( G \\).  \nEquivalently: \\( \\alpha(G) \\ge k \\) for all \\( G \\) satisfying the conditions.\n\nBut they say: “Instead of determining the maximum such \\( k \\), simply find \\( d = \\mathrm{ex}(30, K_6) + 1644 \\), where \\(\\mathrm{ex}(30, K_6)\\) is the maximum number of edges in a graph on 30 vertices with no clique of 6 vertices derived from the extremal analysis of the complement of the friendship graph.”\n\nSo they are rephrasing:  \nIn \\( \\overline{G} \\), what’s the maximum number of edges with no \\( K_6 \\)? That’s Turán’s theorem:  \n\\(\\mathrm{ex}(n, K_r) = t_{r-1}(n)\\), the number of edges in Turán graph \\( T(n, r-1) \\).\n\nHere \\( n = 30 \\), \\( r = 6 \\), so \\( r-1 = 5 \\).\n\nTurán graph \\( T(30, 5) \\) partitions 30 vertices into 5 parts as equal as possible:  \n30 = 6 + 6 + 6 + 6 + 6 (all equal size 6).\n\nNumber of edges = complete 5-partite graph with parts of size 6:\n\n\\[\n\\mathrm{ex}(30, K_6) = \\binom{30}{2} - 5 \\cdot \\binom{6}{2}\n\\]\n\\[\n= 435 - 5 \\cdot 15 = 435 - 75 = 360.\n\\]\n\nCheck: direct formula: \\( t_5(30) = \\frac{1}{2} \\left( 30^2 - 30 \\mod 5 \\times (30 \\div 5) \\dots \\right) \\) — easier:  \nEach part size \\( \\lfloor 30/5 \\rfloor = 6 \\), remainder 0, so all parts size 6.  \nEdges missing: between vertices in same part: \\( 5 \\times \\binom{6}{2} = 5 \\times 15 = 75 \\).  \nTotal possible edges \\( \\binom{30}{2} = 435 \\), so \\( 435 - 75 = 360 \\). Yes.\n\nSo \\( \\mathrm{ex}(30, K_6) = 360 \\).\n\nThen \\( d = 360 + 1644 = 2004 \\).\n\n---\n\n**Answer 1:** \\( 2004 \\).\n\n---\n\n## **Problem 2**\n\nEquation:  \n\\[\n2003^x + 2004^x = 2005^x.\n\\]\n\nDivide through by \\( 2005^x \\):\n\n\\[\n\\left( \\frac{2003}{2005} \\right)^x + \\left( \\frac{2004}{2005} \\right)^x = 1.\n\\]\n\nLet \\( a = 2003/2005 \\), \\( b = 2004/2005 \\), both \\( 0 < a < b < 1 \\).\n\nDefine \\( f(x) = a^x + b^x \\), with \\( a, b \\) constants.\n\nDerivative:  \n\\[\nf'(x) = a^x \\ln a + b^x \\ln b.\n\\]\nSince \\( \\ln a < 0 \\) and \\( \\ln b < 0 \\), \\( f'(x) < 0 \\) for all \\( x \\). So \\( f \\) is strictly decreasing.\n\nAlso:\n- As \\( x \\to +\\infty \\), \\( a^x \\to 0 \\), \\( b^x \\to 0 \\), so \\( f(x) \\to 0 \\).\n- As \\( x \\to -\\infty \\), \\( a^x \\to +\\infty \\), \\( b^x \\to +\\infty \\), so \\( f(x) \\to +\\infty \\).\n\nSince \\( f \\) is continuous and strictly decreasing from \\( +\\infty \\) to \\( 0 \\), it crosses \\( 1 \\) exactly once.\n\nSo there is exactly **1** real solution.\n\nCheck if \\( x=2 \\) works: \\( 2003^2 + 2004^2 = 4012009 + 4016016 = 8028025 \\), \\( 2005^2 = 4020025 \\), not equal. So not an integer solution. But exactly one real solution exists.\n\n---\n\n**Answer 2:** \\( 1 \\).\n\n---\n\n**Final JSON:**\n\n```json\n{\n    \"reasoning\": \"For Problem 1: The condition means the friendship graph G has no K_5, so its complement has no K_6. By Turán's theorem, ex(30, K_6) = edges in T(30,5) = 360. Then d = 360 + 1644 = 2004. For Problem 2: The function f(x) = (2003/2005)^x + (2004/2005)^x is strictly decreasing from ∞ to 0, so it equals 1 exactly once.\",\n    \"answer_1\": \"2004\",\n    \"answer_2\": \"1\"\n}\n```",
+  "problem_type": [
+    {
+      "A11": [
+        "Mathematics -> Discrete Mathematics -> Graph Theory"
+      ]
+    },
+    {
+      "A1275": [
+        "Mathematics -> Algebra -> Intermediate Algebra -> Exponential Functions"
+      ]
+    }
+  ],
+  "output_answer": [
+    "2004",
+    "1"
+  ],
+  "ground_truth": [
+    "2004",
+    "1"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 440,
+  "completion_tokens": 1433,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

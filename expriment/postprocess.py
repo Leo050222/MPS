@@ -106,10 +106,13 @@ def load_all_outputs(output_dir: str) -> list[dict]:
     for json_file in output_path.glob("*.json"):
         if json_file.name == "eval.json" or json_file.name == "summary.json":
             continue
-        
+
         try:
             with open(json_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
+                # 如果文件名是纯数字（如 1.json），补充 _filename_id 便于失败统计
+                if json_file.stem.isdigit() and "Problem_ID" not in data:
+                    data["_filename_id"] = int(json_file.stem)
                 results.append(data)
         except Exception as e:
             logger.warning(f"Failed to load {json_file}: {e}")
@@ -164,21 +167,29 @@ def main(model: str, type: str, output_dir: str, task: str):
     total_completion_tokens = 0
     total_reasoning_tokens = 0
     total_cost = 0.0
-    
+    failed_count = 0
+    failed_ids = []
+
     # 按类别统计
     category_stats = defaultdict(lambda: {"correct": 0, "total": 0})
 
     # 处理每个结果
     for result in results:
-        filename = result.get("Problem_ID")
+        # 检测特殊失败文件：没有 Problem_ID 或没有 correctness 字段
+        if "Problem_ID" not in result or "correctness" not in result:
+            failed_count += 1
+            fid = result.get("_filename_id", result.get("Problem_ID"))
+            failed_ids.append(fid)
+            continue
+
         # 提取 correctness（可能是列表或单个布尔值）
         correctness = result.get("correctness", [])
         if not isinstance(correctness, list):
             correctness = [correctness] if correctness else [False]
-        
+
         # 判断是否正确（当前结果本身）
         is_correct = calculate_correctness(correctness)
-        
+
         # 统计 token 使用量
         total_prompt_tokens += result.get("prompt_tokens", 0)
         total_completion_tokens += result.get("completion_tokens", 0)
@@ -188,7 +199,7 @@ def main(model: str, type: str, output_dir: str, task: str):
         total_count += 1
         if is_correct:
             correct_count += 1
-        
+
         # 按类别统计
         problem_type = result.get("problem_type", [])
         category = extract_category_from_problem_type(problem_type)
@@ -222,6 +233,10 @@ def main(model: str, type: str, output_dir: str, task: str):
                 "value": round(overall_accuracy, 2),
                 "correct_count": correct_count,
                 "total_count": total_count
+            },
+            "failed_inference": {
+                "count": failed_count,
+                "problem_ids": sorted([i for i in failed_ids if i is not None])
             },
             "category_accuracies": category_accuracies,
             "total_token_usage": {

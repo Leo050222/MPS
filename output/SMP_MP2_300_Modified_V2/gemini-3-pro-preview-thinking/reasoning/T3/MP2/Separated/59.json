@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-03-03T14:13:27.724884+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 59,
+  "math_problem": [
+    {
+      "A1212": "Jude repeatedly flips a coin. If he has already flipped $n$ heads, the coin lands heads with probability $\\frac{1}{n+2}$ and tails with probability $\\frac{n+1}{n+2}$. If Jude continues flipping forever, let $p$ be the probability that he flips 3 heads in a row at some point. Compute $\\lfloor 180 p\\rfloor$. Instead of computing the floor of 180 times the probability of eventually flipping three heads in a row, simply find $\\delta = p_5 - \\frac{53}{72}$, where $p_5$ is the probability that the fifth head is preceded by a tail and that no three consecutive heads have occurred in the sequence up to the fifth head, as derived from analyzing the process to avoid three consecutive heads."
+    },
+    {
+      "A1935": "Compute the number of ways a non-self-intersecting concave quadrilateral can be drawn in the plane such that two of its vertices are $(0,0)$ and $(1,0)$, and the other two vertices are two distinct lattice points $(a, b),(c, d)$ with $0 \\leq a, c \\leq 59$ and $1 \\leq b, d \\leq 5$."
+    }
+  ],
+  "reasoning_content": "To solve Problem 1, we analyze the coin flipping process. We are asked to find $\\delta = p_5 - \\frac{53}{72}$, where $p_5$ is the probability that the fifth head is preceded by a tail and that no three consecutive heads have occurred in the sequence up to the fifth head.\nLet the state after $h$ heads be defined by the current run of heads $k$. We want to reach $h=5$ with $k=1$ (since the 5th head is preceded by a tail) without ever visiting $k=3$.\nUsing dynamic programming or path counting with the given probabilities $P(H|n) = \\frac{1}{n+2}$ and $P(T|n) = \\frac{n+1}{n+2}$, we calculated the probability of reaching the valid states at each step.\nThe probability of reaching the target state at $h=5$ (run 1, no HHH) was calculated to be exactly $\\frac{53}{72}$.\nThus, $\\delta = \\frac{53}{72} - \\frac{53}{72} = 0$.\n\nTo solve Problem 2, we need to count the number of ways a non-self-intersecting concave quadrilateral can be drawn with vertices $(0,0), (1,0)$ and two distinct lattice points $(a,b), (c,d)$ in the range $0 \\le a, c \\le 59$ and $1 \\le b, d \\le 5$.\nA set of 4 points forms a concave quadrilateral if and only if one point is strictly inside the triangle formed by the other three. Since $(0,0)$ and $(1,0)$ are on the boundary of the convex hull of all valid points, the interior point must be one of $(a,b)$ or $(c,d)$.\nWe calculated the number of pairs of points $\\{P, Q\\}$ such that $Q$ is inside $\\triangle (0,0)(1,0)P$. Using Pick's Theorem and summing over the grid, we found there are 122 such sets where one point is inside the other's triangle.\nFor each such set of 4 points, there are exactly 3 distinct non-self-intersecting concave quadrilaterals that can be drawn.\nThe total number of ways is $122 \\times 3 = 366$.\n\n{\n    \"reasoning\": \"For Problem 1, the calculated probability p_5 is exactly 53/72, so the difference delta is 0. For Problem 2, we counted the number of valid sets of vertices to be 122, and since each set allows 3 distinct concave quadrilaterals, the total count is 366.\",\n    \"answer_1\": \"0\",\n    \"answer_2\": \"366\"\n}",
+  "problem_type": [
+    {
+      "A1212": [
+        "Mathematics -> Applied Mathematics -> Probability -> Other"
+      ]
+    },
+    {
+      "A1935": [
+        "Mathematics -> Geometry -> Plane Geometry -> Polygons",
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "0",
+    "366"
+  ],
+  "ground_truth": [
+    "0",
+    "366"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 540,
+  "completion_tokens": 23189,
+  "reasoning_tokens": 22559,
+  "cost": 0.0
+}

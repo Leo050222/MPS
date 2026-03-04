@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-03-03T06:34:57.419418+00:00",
+  "model": "deepseek-v3.2",
+  "type": "T2_MP2_seperated_Evaluation",
+  "Problem_ID": 43,
+  "math_problem": [
+    {
+      "A419": "$a$ and $b$ are integers such that $a+\\sqrt{b}=\\sqrt{15+\\sqrt{216}}$. Compute $a / b$. Instead of computing the ratio of the integer coefficient to the radicand in the denested form of the nested radical, simply find $k = a + 3$, where $a$ is the integer coefficient in that denested form."
+    },
+    {
+      "A681": "Mark has a cursed six-sided die that never rolls the same number twice in a row, and all other outcomes are equally likely. Compute the expected number of rolls it takes for Mark to roll every number at least once."
+    }
+  ],
+  "reasoning_content": "{\n    \"reasoning\": \"For Problem 1, we denest sqrt(15+sqrt(216)). Assuming sqrt(15+sqrt(216)) = a+sqrt(b) with integers a, b, squaring both sides gives 15+sqrt(216)=a^2+b+2a sqrt(b). Equating rational and irrational parts yields a^2+b=15 and 2a sqrt(b)=sqrt(216)=6 sqrt(6). Thus a sqrt(b)=3 sqrt(6), so sqrt(b)=3 sqrt(6)/a, implying b=54/a^2. Substituting into a^2+b=15 gives a^4-15a^2+54=0, solved by a^2=9 (since a is integer), so a=3 (positive) and b=6. Hence a+sqrt(b)=3+sqrt(6). The problem asks for k=a+3, so k=6.\\n\\nFor Problem 2, we compute the expected number of rolls to see all six faces at least once, given that consecutive rolls cannot be the same. Starting from having seen m distinct numbers and with the last roll among them, let E(m) be the expected additional rolls. By symmetry, E(m) depends only on m. From state with m seen, the probability to roll a new number is (6-m)/5, and to roll an old number (other than the last) is (m-1)/5. The recurrence is E(m)=1+((6-m)/5)E(m+1)+((m-1)/5)E(m). Simplifying gives E(m)=5/(6-m)+E(m+1) for m=1,...,5, with E(6)=0. Solving backward: E(5)=5, E(4)=5+5/2=15/2, E(3)=15/2+5/3=55/6, E(2)=55/6+5/4=125/12, E(1)=125/12+1=137/12. The first roll is always needed, so total expected rolls =1+E(1)=1+137/12=149/12.\",\n    \"answer_1\": \"6\",\n    \"answer_2\": \"149/12\"\n}",
+  "problem_type": [
+    {
+      "A419": [
+        "Mathematics -> Algebra -> Intermediate Algebra -> Quadratic Functions"
+      ]
+    },
+    {
+      "A681": [
+        "Mathematics -> Applied Mathematics -> Probability -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "6",
+    "149/12"
+  ],
+  "ground_truth": [
+    "6",
+    "\\frac{149}{12}"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 395,
+  "completion_tokens": 7783,
+  "reasoning_tokens": 7299,
+  "cost": 0.0
+}

@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-03-03T14:02:10.746149+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T1_MP2_seperated_Evaluation",
+  "Problem_ID": 11,
+  "math_problem": [
+    {
+      "A3046": "Consider positive integers $a \\leq b \\leq c \\leq d \\leq e$. There are $N$ lists $a, b, c, d, e$ with a mean of 2023 and a median of 2023, in which the integer 2023 appears more than once, and in which no other integer appears more than once. What is the sum of the digits of $N$? Instead of computing the sum of the digits of the total number of such ordered quintuples, simply find $e = \\left(N - \\frac{21464546}{7}\\right)$, where $N$ is the total number of such ordered quintuples."
+    },
+    {
+      "A3059": "In Rad's garden there are exactly 30 red roses, exactly 19 yellow roses, and no other roses. How many of the yellow roses does Rad need to remove so that $\\frac{2}{7}$ of the roses in the garden are yellow?"
+    }
+  ],
+  "reasoning_content": "To solve Problem 1, we need to find the number of ordered quintuples of positive integers $(a, b, c, d, e)$ such that $a \\leq b \\leq c \\leq d \\leq e$, the mean is 2023, the median is 2023, the integer 2023 appears more than once, and no other integer appears more than once.\n\n1.  **Analyze Constraints:**\n    *   Median is $c$, so $c = 2023$.\n    *   Mean is 2023, so $a+b+c+d+e = 5 \\times 2023 = 10115$.\n    *   Since $c=2023$, $a+b+d+e = 8092$.\n    *   2023 appears $\\geq 2$ times.\n    *   Any integer $x \\neq 2023$ appears exactly 1 time (distinct).\n\n2.  **Case Analysis based on the frequency of 2023:**\n\n    *   **Case A: 2023 appears 5 times.**\n        *   $a=b=c=d=e=2023$.\n        *   Sum is correct. Constraints satisfied.\n        *   Count = **1**.\n\n    *   **Case B: 2023 appears 4 times.**\n        *   Impossible because the sum of the four 2023s is 8092, leaving the fifth term to be 2023, which would make it 5 times. Count = **0**.\n\n    *   **Case C: 2023 appears 3 times.**\n        *   Since $c=2023$, the occurrences must be contiguous.\n        *   **Subcase C1:** $a < b=c=d=2023 < e$.\n            *   $a + 3(2023) + e = 10115 \\implies a + e = 4046$.\n            *   $a < 2023$ and $e > 2023$.\n            *   $a$ can be any integer from $1$ to $2022$. $e$ is determined by $a$.\n            *   Count = **2022**.\n        *   Other subcases (e.g., $a=b=c=2023 < d < e$) fail the sum or order constraints.\n\n    *   **Case D: 2023 appears 2 times.**\n        *   **Subcase D1:** $a < b=c=2023 < d < e$.\n            *   $a + 2(2023) + d + e = 10115 \\implies a + d + e = 6069$.\n            *   $1 \\leq a < 2023 < d < e$.\n            *   Let $d = 2023 + x$ and $e = 2023 + y$ with $1 \\leq x < y$.\n            *   $a = 2023 - (x+y)$.\n            *   Constraint $a \\geq 1 \\implies x+y \\leq 2022$.\n            *   We need to sum the number of pairs $(x, y)$ with $1 \\leq x < y$ and $x+y = S$ for $S \\in \\{3, \\dots, 2022\\}$.\n            *   The number of pairs is $\\sum_{S=3}^{2022} \\lfloor \\frac{S-1}{2} \\rfloor = 2 \\sum_{k=1}^{1010} k = 1010 \\times 1011 = \\mathbf{1,021,110}$.\n        *   **Subcase D2:** $a < b < c=d=2023 < e$.\n            *   $a + b + e = 6069$.\n            *   $1 \\leq a < b < 2023 < e$.\n            *   Let $a = 2023 - x$ and $b = 2023 - y$ with $x > y \\geq 1$.\n            *   $e = 2023 + x + y$.\n            *   Constraint $a \\geq 1 \\implies x \\leq 2022$.\n            *   We need pairs $(x, y)$ such that $1 \\leq y < x \\leq 2022$.\n            *   Count is $\\binom{2022}{2} = \\frac{2022 \\times 2021}{2} = 1011 \\times 2021 = \\mathbf{2,043,231}$.\n\n3.  **Total Count $N$:**\n    *   $N = 1 + 2022 + 1,021,110 + 2,043,231 = 3,066,364$.\n\n4.  **Calculate $e$:**\n    *   $e = N - \\frac{21464546}{7} = 3066364 - \\frac{21464546}{7}$.\n    *   $3066364 = \\frac{21464548}{7}$.\n    *   $e = \\frac{21464548 - 21464546}{7} = \\frac{2}{7}$.\n\nTo solve Problem 2:\n1.  Initial state: 30 red, 19 yellow. Total = 49.\n2.  Remove $k$ yellow roses. New yellow count = $19-k$. New total = $49-k$.\n3.  Target ratio: $\\frac{19-k}{49-k} = \\frac{2}{7}$.\n4.  $7(19-k) = 2(49-k) \\implies 133 - 7k = 98 - 2k \\implies 35 = 5k \\implies k = 7$.\n\n{\n    \"reasoning\": \"For Problem 1, we enumerated the possible lists based on the frequency of the median 2023. The cases were: 5 times (1 solution), 3 times (2022 solutions), and 2 times (split into two subcases yielding 1,021,110 and 2,043,231 solutions). Summing these gives N = 3,066,364. The calculation N - 21464546/7 results in 2/7. For Problem 2, we set up the equation (19-k)/(49-k) = 2/7, which solves to k=7.\",\n    \"answer_1\": \"2/7\",\n    \"answer_2\": \"7\"\n}",
+  "problem_type": [
+    {
+      "A3046": [
+        "Mathematics -> Applied Mathematics -> Math Word Problems"
+      ]
+    },
+    {
+      "A3059": [
+        "Mathematics -> Applied Mathematics -> Math Word Problems"
+      ]
+    }
+  ],
+  "output_answer": [
+    "2/7",
+    "7"
+  ],
+  "ground_truth": [
+    "2/7",
+    "7"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 491,
+  "completion_tokens": 16118,
+  "reasoning_tokens": 14501,
+  "cost": 0.0
+}

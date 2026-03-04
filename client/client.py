@@ -1299,20 +1299,20 @@ class zhipuClient(BaseClient):
 class deepseekClient(BaseClient):
     """DeepSeek V3.2 客户端。
 
-    推理模式通过切换 API 侧模型名实现：
-    - reasoning="minimal" → API model=deepseek-chat  (非思考)
-    - reasoning!="minimal" → API model=deepseek-reasoner (思考，不支持 top_p)
+    统一使用 deepseek-chat 模型，通过 extra_body 控制思考模式：
+    - reasoning="minimal" → thinking disabled，支持 top_p
+    - reasoning!="minimal" → thinking enabled，不支持 top_p（官方限制）
 
     流式响应中 delta.reasoning_content 为思考过程，仅收集 delta.content 作答案。
     """
     def __init__(self, model: str = "deepseek-v3.2"):
         super().__init__(model=model)
 
-    def _api_model(self, reasoning: str) -> tuple[str, bool]:
-        """返回 (api_model_name, use_top_p)"""
+    def _thinking_kwargs(self, reasoning: str) -> tuple[dict, bool]:
+        """返回 (extra_body, use_top_p)"""
         if reasoning == "minimal":
-            return "deepseek-chat", True
-        return "deepseek-reasoner", False
+            return {"thinking": {"type": "disabled"}}, True
+        return {"thinking": {"type": "enabled"}}, False
 
     def get_response(self, prompt, reasoning: str = "minimal", seed: int = None):
         try:
@@ -1323,12 +1323,14 @@ class deepseekClient(BaseClient):
             else:
                 raise ValueError(f"Unsupported prompt type: {type(prompt)}")
 
-            api_model, use_top_p = self._api_model(reasoning)
+            extra_body, use_top_p = self._thinking_kwargs(reasoning)
             kwargs = {
-                "model": api_model,
+                "model": "deepseek-chat",
                 "messages": messages,
                 "stream": True,
                 "stream_options": {"include_usage": True},
+                "extra_body": extra_body,
+                "max_tokens": 131070,
             }
             if use_top_p:
                 kwargs["top_p"] = TOP_P
@@ -1398,7 +1400,7 @@ class deepseekClient(BaseClient):
             return None
 
     async def get_response_async(self, prompt, reasoning: str = "minimal", seed: int = None):
-        """异步流式调用。非思考用 deepseek-chat，思考用 deepseek-reasoner。"""
+        """异步流式调用。通过 extra_body thinking 参数控制思考模式。"""
         try:
             if isinstance(prompt, list):
                 messages = prompt
@@ -1407,12 +1409,14 @@ class deepseekClient(BaseClient):
             else:
                 raise ValueError(f"Unsupported prompt type: {type(prompt)}")
 
-            api_model, use_top_p = self._api_model(reasoning)
+            extra_body, use_top_p = self._thinking_kwargs(reasoning)
             kwargs = {
-                "model": api_model,
+                "model": "deepseek-chat",
                 "messages": messages,
                 "stream": True,
                 "stream_options": {"include_usage": True},
+                "extra_body": extra_body,
+                "max_tokens": 131070,
             }
             if use_top_p:
                 kwargs["top_p"] = TOP_P

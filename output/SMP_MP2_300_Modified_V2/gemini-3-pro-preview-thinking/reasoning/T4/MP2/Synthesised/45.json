@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-03-03T14:10:12.670829+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T4_MP2_synthesised_Evaluation",
+  "Problem_ID": 45,
+  "math_problem": "Find the number of triples of sets $(A, B, C)$ such that: (a) $A, B, C \\subseteq\\{1,2,3, \\ldots, 8\\}$. (b) $|A \\cap B|=|B \\cap C|=|C \\cap A|=2$. (c) $|A|=|B|=|C|=4$. Here, $|S|$ denotes the number of elements in the set $S$. Instead of determining the total number of such triples of sets, simply find $m = |A \\cap B \\cap C|$, where $|A \\cap B \\cap C|$ is the size of the triple intersection derived from the structural consideration of configurations with no elements belonging to exactly two of the sets. Compute the number of ways there are to assemble $m$ red unit cubes and $(m + 23)$ white unit cubes into a $(m + 1) \\times (m + 1) \\times (m + 1)$ cube such that red is visible on exactly 4 faces of the larger cube. (Rotations and reflections are considered distinct.)",
+  "reasoning_content": "To find the value of $m$, we analyze the properties of the sets $A, B, C$.\nWe are given:\n1. $A, B, C \\subseteq \\{1, \\dots, 8\\}$.\n2. $|A \\cap B| = |B \\cap C| = |C \\cap A| = 2$.\n3. $|A| = |B| = |C| = 4$.\n4. We consider the configuration with \"no elements belonging to exactly two of the sets\".\n\nLet $x_{AB}$ be the number of elements in $A \\cap B$ but not in $C$. Similarly for $x_{BC}$ and $x_{CA}$.\nThe condition \"no elements belonging to exactly two of the sets\" implies $x_{AB} = x_{BC} = x_{CA} = 0$.\nWe know $|A \\cap B| = x_{AB} + |A \\cap B \\cap C|$.\nSubstituting the values: $2 = 0 + |A \\cap B \\cap C|$.\nThus, $|A \\cap B \\cap C| = 2$.\nSo, $m = 2$.\n\nWe need to assemble $m=2$ red unit cubes and $(m+23)=25$ white unit cubes into a $(m+1) \\times (m+1) \\times (m+1) = 3 \\times 3 \\times 3$ cube.\nWe need to find the number of ways to place the 2 red cubes such that red is visible on exactly 4 faces of the larger cube. Rotations and reflections are considered distinct, so we count the specific positions in the fixed grid.\n\nLet the set of faces of the large cube be $S = \\{F_1, \\dots, F_6\\}$.\nFor a unit cube at position $P$, let $F(P)$ be the set of faces of the large cube where this unit cube is visible.\nWe want to find the number of pairs of positions $\\{P_1, P_2\\}$ such that $|F(P_1) \\cup F(P_2)| = 4$.\nThe size of $F(P)$ depends on the type of position:\n- Corner ($C$): $|F(C)| = 3$. (8 corners)\n- Edge ($E$): $|F(E)| = 2$. (12 edges)\n- Face ($F$): $|F(F)| = 1$. (6 face centers)\n- Center ($X$): $|F(X)| = 0$. (1 center)\n\nWe analyze the possible combinations of $|F(P_1)|$ and $|F(P_2)|$ that allow the union size to be 4:\n1.  **Corner + Corner** ($3+3$): Requires intersection size 2.\n    Two corners share 2 faces if and only if they are adjacent (connected by an edge of the large cube).\n    There are 12 edges in a cube, so **12** such pairs.\n\n2.  **Corner + Edge** ($3+2$): Requires intersection size 1.\n    A corner has 3 faces. An edge has 2 faces. They share exactly 1 face if the edge lies on one of the corner's faces but is not incident to the corner.\n    For each of the 8 corners, there are 6 such edges.\n    Total pairs: $8 \\times 6 = 48$. So **48** pairs.\n\n3.  **Corner + Face** ($3+1$): Requires intersection size 0.\n    The face piece must be on a face opposite to one of the corner's faces.\n    For each of the 8 corners, there are 3 opposite faces.\n    Total pairs: $8 \\times 3 = 24$. So **24** pairs.\n\n4.  **Edge + Edge** ($2+2$): Requires intersection size 0.\n    The two edges must not share any faces.\n    For a given edge (which touches 2 faces), there are 5 edges in the cube that touch neither of those faces.\n    Total pairs: $(12 \\times 5) / 2 = 30$. So **30** pairs.\n\nOther combinations (like Corner+Center, Face+Face, etc.) cannot produce a union of size 4.\n\nTotal number of ways = $12 + 48 + 24 + 30 = 114$.\n\n{  \n    \"reasoning\": \"First, we determine m=2 based on the set intersection conditions. Then, we solve the combinatorial problem of placing 2 red cubes in a 3x3x3 grid such that they are visible on exactly 4 faces. By classifying the positions (Corner, Edge, Face) and summing the valid configurations (Corner-Corner: 12, Corner-Edge: 48, Corner-Face: 24, Edge-Edge: 30), we find the total count.\",\n    \"answer\": \"114\"\n}",
+  "problem_type": [
+    {
+      "A1074": [
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    },
+    {
+      "A1136": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "114"
+  ],
+  "ground_truth": [
+    "45360",
+    "114"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 520,
+  "completion_tokens": 16299,
+  "reasoning_tokens": 15192,
+  "cost": 0.0
+}

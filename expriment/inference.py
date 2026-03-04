@@ -376,15 +376,18 @@ def load_existing_outputs(output_dir: str) -> dict:
     if not os.path.isdir(output_dir):
         return existing
     for fname in os.listdir(output_dir):
-        if not fname.endswith(".json") or fname == "eval.json":
+        if not fname.endswith(".json") or fname == "eval.json" or fname == "summary.json":
             continue
+        # 从文件名提取 Problem_ID（例如 "123.json" -> 123）
+        stem = fname[:-5]  # 去掉 ".json"
+        if not stem.isdigit():
+            continue
+        pid = int(stem)
         fpath = os.path.join(output_dir, fname)
         try:
             with open(fpath, "r", encoding="utf-8") as f:
                 record = json.load(f)
-            pid = record.get("Problem_ID")
-            if pid is not None:
-                existing[int(pid)] = record
+            existing[pid] = record
         except Exception as e:
             logger.warning(f"Failed to load cached result {fpath}: {e}")
     return existing 
@@ -526,6 +529,9 @@ async def process_single_problem_async(
         response = None
         extracted_data = None
         max_retry = MAX_RETRY
+        empty_json = {
+            "response_emptry": 1
+        }
         for attempt in range(1, max_retry + 1):
             try:
                 response = await client.get_response_async(prompt=prompt, reasoning=reasoning, seed=seed)
@@ -534,6 +540,8 @@ async def process_single_problem_async(
                 response = None
 
             if response is None:
+                with open(out_file, "w", encoding="utf-8") as f:
+                    json.dump(empty_json, f, ensure_ascii=False, indent=2)
                 logger.warning(f"[{Problem_ID}] Empty response, retrying... {attempt}/{max_retry}")
                 await asyncio.sleep(3)
                 continue
@@ -554,6 +562,9 @@ async def process_single_problem_async(
                 # 检查 answer 是否为空（空列表、或列表中只有空字符串）
                 answer = extracted_data.get("answer", [])
                 if not answer or answer == [""] or answer == []:
+                    out_file = os.path.join(output_path, f"{Problem_ID}.json")
+                    with open(out_file, "w", encoding="utf-8") as f:
+                        json.dump(response, f, ensure_ascii=False, indent=2)
                     logger.warning(f"[{Problem_ID}] answer is empty after extraction, retrying... {attempt}/{max_retry}")
                     await asyncio.sleep(2)
                     continue

@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-03-03T07:29:43.666754+00:00",
+  "model": "deepseek-v3.2",
+  "type": "T5_MP2_synthesised_Evaluation",
+  "Problem_ID": 11,
+  "math_problem": "Find the smallest constant $C$ such that for every real polynomial $P(x)$ of degree 3 that has a root in the interval $[0,1]$, \n\\[ \\int_0^1 \\left| P(x) \\right|\\,dx \\leq C \\max_{x \\in [0,1]} \\left| P(x) \\right|. \\] Instead of determining the smallest constant guaranteeing the stated integral inequality for all such cubic polynomials, simply find $\\alpha = P(1)$, where $P(1)$ is the value at $x=1$ of the extremal cubic polynomial, normalized so that its maximum absolute value on $[0,1]$ is $1$ and having a root in $[0,1]$, that achieves the supremum of $\\int_0^1 |P(x)| \\, dx$ among all qualifying polynomials. Let $n$ be an even positive integer. Let $p$ be a monic, real polynomial of degree $2n$; that is to say, $p(x) = x^{2n} + a_{2n-1} x^{2n-1} + \\cdots + a_1 x + a_0$ for some real coefficients $a_0, \\dots, a_{2n-1}$. Suppose that $p(\\alpha / k) = k^(\\alpha + 1)$ for all integers $k$ such that $1 \\leq |k| \\leq n$. Find all other real numbers $x$ for which $p(\\alpha / x) = x^(\\alpha + 1)$.",
+  "reasoning_content": "The problem requires finding the smallest constant \\(C\\) such that for every cubic polynomial with a root in \\([0,1]\\), \\(\\int_0^1 |P(x)|\\,dx \\leq C \\max_{x\\in[0,1]} |P(x)|\\). Instead of computing \\(C\\), we need to find \\(\\alpha = P(1)\\) for the extremal polynomial that achieves the supremum of the integral, normalized so that \\(\\max_{x\\in[0,1]} |P(x)| = 1\\) and it has a root in \\([0,1]\\).\n\nThe extremal polynomial maximizes the ratio \\(\\int_0^1 |P| / \\|P\\|_\\infty\\). Through analysis and known results in approximation theory, the Chebyshev polynomial of degree 3, shifted to \\([0,1]\\), is a candidate. Specifically, \\(T_3(2x-1)\\) satisfies \\(\\max_{[0,1]} |T_3(2x-1)| = 1\\), has roots in \\([0,1]\\), and yields \\(\\int_0^1 |T_3(2x-1)|\\,dx = 5/8\\), which is the maximum possible value. For this polynomial, \\(T_3(2\\cdot1-1) = T_3(1) = 1\\). Other extremal polynomials, such as \\(4x^3 - 3x\\) (which is \\(T_3(x)\\) on \\([-1,1]\\) restricted to \\([0,1]\\)), also give \\(P(1) = 1\\). While \\(-T_3(2x-1)\\) is also extremal with \\(P(1) = -1\\), the typical normalization and the context suggest taking the polynomial with \\(P(1) = 1\\). Thus, \\(\\alpha = 1\\).\n\n```json\n{\n    \"reasoning\": \"The extremal cubic polynomial that maximizes ∫_0^1 |P| dx subject to max|P|=1 and having a root in [0,1] is given by the shifted Chebyshev polynomial T_3(2x-1) or equivalent forms like 4x^3-3x. These yield the maximal integral of 5/8 and have P(1)=1. While there is a sign ambiguity, the typical normalization leads to P(1)=1.\",\n    \"answer\": \"1\"\n}\n```",
+  "problem_type": [
+    {
+      "A3234": [
+        "Mathematics -> Calculus -> Integral Calculus -> Applications of Integrals",
+        "Mathematics -> Algebra -> Algebra -> Polynomial Operations"
+      ]
+    },
+    {
+      "A3243": [
+        "Mathematics -> Algebra -> Algebra -> Polynomial Operations"
+      ]
+    }
+  ],
+  "output_answer": [
+    "1"
+  ],
+  "ground_truth": [
+    "\\frac{5}{6}",
+    "\\pm 1/n!"
+  ],
+  "correctness": [
+    false
+  ],
+  "prompt_tokens": 614,
+  "completion_tokens": 29913,
+  "reasoning_tokens": 29410,
+  "cost": 0.0
+}

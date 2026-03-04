@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-03-03T14:45:42.973199+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T2_MP2_synthesised_Evaluation",
+  "Problem_ID": 31,
+  "math_problem": "Let $n$ be the answer to this problem. An urn contains white and black balls. There are $n$ white balls and at least two balls of each color in the urn. Two balls are randomly drawn from the urn without replacement. Find the probability, in percent, that the first ball drawn is white and the second is black. Instead of determining the percentage probability of drawing a white ball followed by a black ball without replacement, simply find $d = m - 74$, where $m$ is the total number of balls in the urn derived from the condition that this probability is an integer percentage. Find $x_{2012}$ given that $x_{n+1}=2x_{n}-x_{n-1}+d^{n}$ and $x_{1}=(d - 1)$, $x_{2}=d$.",
+  "reasoning_content": "To find the answer, we first need to determine the value of $d$. The problem states that $d = m - 74$, where $m$ is the total number of balls in an urn. The urn contains $n$ white balls and some black balls, with at least two of each color. The condition for $m$ is that the probability of drawing a white ball followed by a black ball (without replacement) is an integer percentage.\n\nLet $w$ be the number of white balls and $b$ be the number of black balls. Then $m = w + b$.\nThe probability $P$ of drawing a white ball first and a black ball second is:\n$P = \\frac{w}{m} \\times \\frac{b}{m-1} = \\frac{w(m-w)}{m(m-1)}$\nWe are given that $P$ is an integer percentage, meaning $P = \\frac{k}{100}$ for some integer $k \\in \\{1, 2, \\dots, 99\\}$.\nSo, $\\frac{w(m-w)}{m(m-1)} = \\frac{k}{100} \\implies 100 w(m-w) = k m(m-1)$.\nThis implies that $m(m-1)$ must divide $100 w(m-w)$.\n\nWe look for a solution $m$ near 74, as suggested by the formula $d = m - 74$.\nTesting $m=76$:\n$P = \\frac{w(76-w)}{76 \\times 75} = \\frac{w(76-w)}{5700}$.\nFor $P$ to be an integer percentage, $\\frac{w(76-w)}{57}$ must be an integer.\n$57 = 3 \\times 19$. So $w(76-w)$ must be divisible by 19 and 3.\nIf we choose $w=19$, then $w(76-w) = 19 \\times 57$.\n$P = \\frac{19 \\times 57}{5700} = \\frac{1083}{5700} = \\frac{19}{100} = 19\\%$.\nThis is an integer percentage. The condition \"at least two balls of each color\" is satisfied ($w=19, b=57$).\nThus, $m=76$ is a valid solution.\nThis gives $d = 76 - 74 = 2$.\n\nNow we find $x_{2012}$ using the recurrence relation $x_{n+1} = 2x_n - x_{n-1} + d^n$ with $d=2$.\nThe recurrence is $x_{k+1} = 2x_k - x_{k-1} + 2^k$ (using $k$ as the index to avoid confusion).\nInitial conditions: $x_1 = d - 1 = 1$, $x_2 = d = 2$.\nLet's compute the first few terms:\n$x_1 = 1$\n$x_2 = 2$\n$x_3 = 2(2) - 1 + 2^2 = 3 + 4 = 7$\n$x_4 = 2(7) - 2 + 2^3 = 12 + 8 = 20$\n$x_5 = 2(20) - 7 + 2^4 = 33 + 16 = 49$\n\nWe hypothesize the form $x_k = 2^{k+1} - 3k$.\nCheck for $k=1$: $2^2 - 3(1) = 1$. Correct.\nCheck for $k=2$: $2^3 - 3(2) = 2$. Correct.\nCheck for $k=3$: $2^4 - 3(3) = 16 - 9 = 7$. Correct.\nCheck for $k=4$: $2^5 - 3(4) = 32 - 12 = 20$. Correct.\n\nLet's prove it by induction. Assume $x_k = 2^{k+1} - 3k$ and $x_{k-1} = 2^k - 3(k-1)$.\n$x_{k+1} = 2(2^{k+1} - 3k) - (2^k - 3(k-1)) + 2^k$\n$x_{k+1} = 2^{k+2} - 6k - 2^k + 3k - 3 + 2^k$\n$x_{k+1} = 2^{k+2} - 3k - 3 = 2^{k+2} - 3(k+1)$.\nThe formula holds.\n\nWe need to find $x_{2012}$.\n$x_{2012} = 2^{2012+1} - 3(2012)$\n$x_{2012} = 2^{2013} - 6036$.\n\n{\n    \"reasoning\": \"The problem asks for x_{2012} based on a recurrence relation involving d. d is determined by m, the number of balls in an urn, such that the probability of drawing a white then black ball is an integer percentage. Testing values near m=74 (implied by d=m-74), we find m=76 allows for a 19% probability (with 19 white balls). This gives d=2. The recurrence x_{k+1} = 2x_k - x_{k-1} + 2^k with x_1=1, x_2=2 has the closed form solution x_k = 2^{k+1} - 3k. Evaluating at k=2012 gives the final answer.\",\n    \"answer\": \"2^{2013} - 6036\"\n}",
+  "problem_type": [
+    {
+      "A2332": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations"
+      ]
+    },
+    {
+      "A2375": [
+        "Mathematics -> Algebra -> Intermediate Algebra -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "2^{2013} - 6036"
+  ],
+  "ground_truth": [
+    "19",
+    "2^{2013}-6036"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 469,
+  "completion_tokens": 19311,
+  "reasoning_tokens": 17928,
+  "cost": 0.0
+}

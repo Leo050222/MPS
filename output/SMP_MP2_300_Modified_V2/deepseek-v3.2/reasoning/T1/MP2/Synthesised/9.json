@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-03-02T19:25:24.872443+00:00",
+  "model": "deepseek-v3.2",
+  "type": "T1_MP2_synthesised_Evaluation",
+  "Problem_ID": 9,
+  "math_problem": "A store sells jellybeans at a fixed price per gram. The price for 250 g of jellybeans is $7.50$. What mass of jellybeans sells for $1.80$? Instead of determining the mass corresponding to a specified price, simply find $p$, the fixed price per gram. We call the pair $(m, n)$ of positive integers a happy pair if the greatest common divisor of $m$ and $n$ is a perfect square. For example, $(20, 24)$ is a happy pair because the greatest common divisor of 20 and 24 is 4. Suppose that $k$ is a positive integer such that $((p + \\frac{20579997}{100}), 35k)$ is a happy pair. What is the number of possible values of $k$ with $k \\leq (p + \\frac{293997}{100})$?",
+  "reasoning_content": "{\n  \"reasoning\": \"First, find the price per gram p. Given that 250 g costs $7.50, we have p = 7.50 / 250 = 0.03 = 3/100. Then compute the expressions: p + 20579997/100 = 3/100 + 20579997/100 = 20580000/100 = 205800. Similarly, p + 293997/100 = 3/100 + 293997/100 = 294000/100 = 2940. So we need to count positive integers k ≤ 2940 such that (205800, 35k) is a happy pair, i.e., gcd(205800, 35k) is a perfect square.\\n\\nFactorize 205800: 205800 = 2^3 * 3 * 5^2 * 7^3. And 35k = 5 * 7 * k. The condition requires that for each prime in the gcd, the exponent is even. Analyzing the exponents:\\n- For prime 2: min(3, v₂(k)) must be even ⇒ v₂(k) ∈ {0, 2}.\\n- For prime 3: min(1, v₃(k)) must be even ⇒ v₃(k) = 0.\\n- For prime 5: min(2, 1+v₅(k)) must be even ⇒ v₅(k) ≥ 1.\\n- For prime 7: min(3, 1+v₇(k)) must be even ⇒ v₇(k) = 1 exactly.\\nThus k must be of the form k = 2^a * 5^c * 7 * m, where a ∈ {0, 2}, c ≥ 1, and m is coprime to 210 (i.e., gcd(m, 210) = 1). Also k ≤ 2940.\\n\\nList possible (a, c) pairs with K₀ = 2^a * 5^c * 7 ≤ 2940:\\n- a=0: c=1 (K₀=35), c=2 (175), c=3 (875). c=4 gives 4375 > 2940.\\n- a=2: c=1 (K₀=140), c=2 (700). c=3 gives 3500 > 2940.\\nFor each pair, let M = floor(2940 / K₀). Count numbers m ≤ M that are coprime to 210:\\n1. (0,1): M=84, count=20.\\n2. (0,2): M=16, count=3.\\n3. (0,3): M=3, count=1.\\n4. (2,1): M=21, count=5.\\n5. (2,2): M=4, count=1.\\nSum = 20+3+1+5+1 = 30.\\n\\nAlternatively, let t = k/35, so t ≤ 84. Conditions on t: not divisible by 3 or 7, and v₂(t) ∈ {0, 2}. Counting odd t gives 24, and t divisible by 4 but not 8 gives 6, total 30. Hence, there are 30 possible values of k.\",\n  \"answer\": \"30\"\n}",
+  "problem_type": [
+    {
+      "A3493": [
+        "Mathematics -> Applied Mathematics -> Math Word Problems"
+      ]
+    },
+    {
+      "A2994": [
+        "Mathematics -> Number Theory -> Greatest Common Divisors (GCD)"
+      ]
+    }
+  ],
+  "output_answer": [
+    "30"
+  ],
+  "ground_truth": [
+    "60 \\mathrm{~g}",
+    "30"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 462,
+  "completion_tokens": 10318,
+  "reasoning_tokens": 9585,
+  "cost": 0.0
+}

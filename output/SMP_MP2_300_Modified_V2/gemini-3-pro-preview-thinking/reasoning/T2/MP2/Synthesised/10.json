@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-03-03T14:02:43.501522+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T2_MP2_synthesised_Evaluation",
+  "Problem_ID": 10,
+  "math_problem": "You are given a $10 \\times 2$ grid of unit squares. Two different squares are adjacent if they share a side. How many ways can one mark exactly nine of the squares so that no two marked squares are adjacent? Instead of counting the total number of ways to mark exactly nine of the squares so that no two marked squares are adjacent, simply find $w$, where $w$ is the number of ways to mark one square in each of nine consecutive rows such that no two marked squares in adjacent rows share the same column. Suppose that $m$ and $n$ are positive integers with $m<n$ such that the interval $[m, n)$ contains more multiples of $(w + 2019)$ than multiples of $(w + 1998)$. Compute the maximum possible value of $n-m$.",
+  "reasoning_content": "To find the value of $w$, we consider the problem of marking one square in each of nine consecutive rows of a $10 \\times 2$ grid (effectively a $9 \\times 2$ grid) such that no two marked squares in adjacent rows share the same column.\nLet the column of the marked square in row $i$ be $c_i \\in \\{1, 2\\}$ for $i=1, \\dots, 9$.\nThe condition states that for any adjacent rows $i$ and $i+1$, the marked squares must not share the same column, so $c_i \\neq c_{i+1}$.\nFor the first row, there are 2 choices for $c_1$.\nFor the second row, $c_2$ must be different from $c_1$, so there is only 1 choice.\nSimilarly, for each subsequent row, there is only 1 choice.\nThus, the total number of ways is $w = 2 \\times 1^8 = 2$.\n\nWe are given $A = w + 2019 = 2 + 2019 = 2021$ and $B = w + 1998 = 2 + 1998 = 2000$.\nWe want to maximize $n - m$ such that the interval $[m, n)$ contains more multiples of $A$ than multiples of $B$. Let $L = n - m$. Let $N_A$ and $N_B$ be the counts of multiples of $A$ and $B$ in $[m, n)$ respectively. We require $N_A > N_B$.\nSince $A > B$, multiples of $A$ are less frequent than multiples of $B$. For $N_A > N_B$ to hold, we must select an interval where we \"catch\" an extra multiple of $A$ while avoiding multiples of $B$.\nThe condition $N_A > N_B$ implies $N_A \\ge k+1$ and $N_B \\le k$ for some integer $k$.\nThe minimum length $L$ required to contain $k+1$ multiples of $A$ is $kA + 1$.\nThe maximum length $L$ that can contain at most $k$ multiples of $B$ is $(k+1)B - 1$.\nFor such an interval to exist, we must have:\n$(k+1)B - 1 \\ge kA + 1$\n$(k+1)B - kA \\ge 2$\n$B - k(A - B) \\ge 2$\nSubstituting $A = 2021$ and $B = 2000$:\n$2000 - k(21) \\ge 2$\n$1998 \\ge 21k$\n$k \\le \\frac{1998}{21} = 95.14\\dots$\nThe maximum integer $k$ is 95.\nThe maximum length $L$ corresponds to this maximum $k$:\n$L_{max} = (95 + 1)B - 1 = 96 \\times 2000 - 1 = 192000 - 1 = 191999$.\nSince $\\gcd(A, B) = 1$, we can always find a starting position $m$ to satisfy the alignment requirements for any valid length.\n\n{  \n    \"reasoning\": \"First, we determine w. The problem asks for the number of ways to mark one square in each of 9 rows of a 2-column grid such that adjacent rows have marked squares in different columns. There are 2 choices for the first row, and 1 choice for each subsequent row (determined by the previous one). Thus w = 2 * 1^8 = 2. Then we define A = w + 2019 = 2021 and B = w + 1998 = 2000. We seek the maximum length L = n - m such that the number of multiples of A in [m, n) is greater than the number of multiples of B. Let these counts be N_A and N_B. We need N_A > N_B. This requires N_A >= k+1 and N_B <= k for some k. The length constraints are L >= kA + 1 and L <= (k+1)B - 1. Solving (k+1)B - 1 >= kA + 1 yields k <= (B-2)/(A-B). With A=2021, B=2000, we get k <= 1998/21 = 95.14, so max k = 95. The maximum length is L = (95+1)*2000 - 1 = 191999.\",\n    \"answer\": \"191999\"\n}",
+  "problem_type": [
+    {
+      "A1402": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations"
+      ]
+    },
+    {
+      "A1403": [
+        "Mathematics -> Number Theory -> Congruences"
+      ]
+    }
+  ],
+  "output_answer": [
+    "191999"
+  ],
+  "ground_truth": [
+    "36",
+    "191999"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 467,
+  "completion_tokens": 15338,
+  "reasoning_tokens": 14234,
+  "cost": 0.0
+}
