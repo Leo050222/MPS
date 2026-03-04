@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-03-02T19:40:01.751893+00:00",
+  "model": "deepseek-v3.2",
+  "type": "T2_MP2_synthesised_Evaluation",
+  "Problem_ID": 19,
+  "math_problem": "Suppose $a$ and $b$ be positive integers not exceeding 100 such that $$a b=\\left(\\frac{\\operatorname{lcm}(a, b)}{\\operatorname{gcd}(a, b)}\\right)^{2}$$ Compute the largest possible value of $a+b$. Instead of computing the maximum possible sum of two positive integers not exceeding 100 that satisfy the given equation relating their product to the square of the ratio of their least common multiple to their greatest common divisor, simply find $m = s - 77$, where $s$ is that maximum possible sum. Consider a $(m + 4) \\times (m + 4)$ grid of squares. Vladimir colors some of these squares red, such that the centers of any four red squares do not form an axis-parallel rectangle (i.e. a rectangle whose sides are parallel to those of the squares). What is the maximum number of squares he could have colored red?",
+  "reasoning_content": "{\n    \"reasoning\": \"First, solve for a and b such that ab = (lcm(a,b)/gcd(a,b))^2. Let d = gcd(a,b), a = dx, b = dy with gcd(x,y)=1. Then lcm(a,b) = dxy. The equation becomes d^2 xy = (xy)^2, so d^2 = xy. Since gcd(x,y)=1, x and y are perfect squares: x = u^2, y = v^2, so d = uv. Then a = u^3 v, b = u v^3. Constraints a,b ≤ 100. For u=1: v=1,2,3,4 give sums 2,10,30,68. For u=2: v=3 (coprime) gives sum 78. u≥3 gives no valid pairs with sum >78. So maximum sum s = 78. Then m = s - 77 = 1. The grid is (m+4)×(m+4) = 5×5.\\n\\nFor the 5×5 grid, we need the maximum number of red squares with no axis-parallel rectangle (no 2×2 submatrix of all ones). Let r_i be reds in row i. Condition: pairs of columns within each row must be distinct across rows, so sum_i C(r_i,2) ≤ C(5,2)=10. Maximize T = sum r_i. For T=12, distribution (4,2,2,2,2) gives sum C(r_i,2)=10, and a construction exists: Row1: columns 1-4; Row2: 1,5; Row3: 2,5; Row4: 3,5; Row5: 4,5. This has no rectangle and total 12. For T=13, minimal sum C(r_i,2) is 11 > 10, impossible. So maximum is 12.\",\n    \"answer\": \"12\"\n}",
+  "problem_type": [
+    {
+      "A2041": [
+        "Mathematics -> Number Theory -> Prime Numbers",
+        "Mathematics -> Algebra -> Prealgebra -> Integers"
+      ]
+    },
+    {
+      "A2090": [
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "12"
+  ],
+  "ground_truth": [
+    "78",
+    "12"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 467,
+  "completion_tokens": 9106,
+  "reasoning_tokens": 8674,
+  "cost": 0.0
+}

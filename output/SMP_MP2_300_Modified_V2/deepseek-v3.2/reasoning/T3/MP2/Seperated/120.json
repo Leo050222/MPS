@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-03-03T09:03:00.241547+00:00",
+  "model": "deepseek-v3.2",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 120,
+  "math_problem": [
+    {
+      "A4009": "Find the smallest value that the expression takes $x^4 + y^4 - x^2y - xy^2$, for positive numbers $x$ and $y$ satisfying $x + y \\le 1$. Instead of determining the minimal value attained by the given quartic expression over the region of positive variables summing to at most one, simply find $k$ equal to that minimal value plus $\\frac{401}{8}$."
+    },
+    {
+      "A1824": "An integer $n$ is chosen uniformly at random from the set $\\{1,2,3, \\ldots, 2023!\\}$. Compute the probability that $$\\operatorname{gcd}\\left(n^{n}+50, n+1\\right)=1$$"
+    }
+  ],
+  "reasoning_content": "{\n    \"reasoning\": \"For Problem 1, we minimize f(x,y)=x^4+y^4-x^2y-xy^2 for x>0, y>0, x+y≤1. Write f in terms of s=x+y and t=xy: f=s^4 - (4s^2+s)t + 2t^2. For fixed s, f is quadratic in t and convex, minimized at the maximum t, i.e., when x=y. Then f(s)=s^4/8 - s^3/4. This function is decreasing for s in (0,1], so the minimum is at s=1, giving f_min=-1/8. Then k = -1/8 + 401/8 = 400/8 = 50. For Problem 2, we need P(gcd(n^n+50, n+1)=1) for n uniform in {1,...,2023!}. Let d = gcd(n^n+50, n+1). For any prime p dividing n+1, n ≡ -1 mod p, so n^n+50 ≡ (-1)^n+50 mod p. We need this nonzero mod p. This gives conditions: if n even, then p cannot be 3 or 17; if n odd, then p cannot be 7. So we need: if n is even, n+1 not divisible by 3 or 17; if n is odd, n+1 not divisible by 7. Since 2023! is a multiple of 2,3,7,17, we consider residues modulo 714 = 2*3*7*17. Count good residues: total 714 residues; bad residues: even with n ≡ 2 mod 3 or n ≡ 16 mod 17 gives 133, odd with n ≡ 6 mod 7 gives 51, total 184 bad. So good = 530. Probability = 530/714 = 265/357.\",\n    \"answer_1\": \"50\",\n    \"answer_2\": \"265/357\"\n}",
+  "problem_type": [
+    {
+      "A4009": [
+        "Mathematics -> Algebra -> Algebra -> Polynomial Operations"
+      ]
+    },
+    {
+      "A1824": [
+        "Mathematics -> Number Theory -> Greatest Common Divisors (GCD)",
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "50",
+    "265/357"
+  ],
+  "ground_truth": [
+    "50",
+    "\\frac{265}{357}"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 414,
+  "completion_tokens": 9187,
+  "reasoning_tokens": 8746,
+  "cost": 0.0
+}

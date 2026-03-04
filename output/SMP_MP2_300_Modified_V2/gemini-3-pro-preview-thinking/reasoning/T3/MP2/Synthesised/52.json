@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-03-03T14:09:54.319917+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T3_MP2_synthesised_Evaluation",
+  "Problem_ID": 52,
+  "math_problem": "The country of HMMTLand has 8 cities. Its government decides to construct several two-way roads between pairs of distinct cities. After they finish construction, it turns out that each city can reach exactly 3 other cities via a single road, and from any pair of distinct cities, either exactly 0 or 2 other cities can be reached from both cities by a single road. Compute the number of ways HMMTLand could have constructed the roads. Instead of computing the total number of possible road constructions satisfying the conditions, simply find $N$, where $N$ is the number of connected road constructions satisfying the conditions. A real number $x$ is chosen uniformly at random from the interval $(0,10)$. Compute the probability that $\\sqrt{x}$, $\\sqrt{x+(N-833)}$, and $\\sqrt{10-x}$ are the side lengths of a non-degenerate triangle.",
+  "reasoning_content": "To find the number of ways HMMTLand could have constructed the roads, we model the cities and roads as a graph $G$ with 8 vertices. The given conditions are:\n1. The graph is 3-regular (each city connects to exactly 3 others).\n2. For any pair of distinct vertices $u, v$, the number of common neighbors $|N(u) \\cap N(v)|$ is either 0 or 2.\n3. The graph is connected.\n\nLet's determine the structure of such a graph. Let $u$ be a vertex with neighbors $v_1, v_2, v_3$.\nConsider the pair $(v_1, v_2)$. They share $u$ as a neighbor. Since the number of common neighbors must be 0 or 2, they must share exactly one other neighbor, say $x$.\nSimilarly, $v_2$ and $v_3$ share a neighbor $y$ (other than $u$), and $v_1$ and $v_3$ share a neighbor $z$ (other than $u$).\nIf $x, y, z$ were not distinct, or if any were equal to $u, v_1, v_2, v_3$, we would find contradictions with the degree constraints or the common neighbor constraints (e.g., forming a $K_4$ component, which would make the graph disconnected).\nAssuming $x, y, z$ are distinct new vertices, we have 7 vertices so far. The 8th vertex $t$ must be connected to $x, y, z$ to satisfy their degree constraints.\nThis structure corresponds to the cube graph $Q_3$. We can verify that $Q_3$ satisfies all conditions: it is 3-regular, connected, and the number of common neighbors is 0 (for adjacent vertices or opposite vertices) or 2 (for vertices at distance 2).\nThus, the graph must be isomorphic to $Q_3$.\n\nWe need to calculate $N$, the number of labeled graphs on 8 vertices isomorphic to $Q_3$.\nThe number of such graphs is given by $\\frac{8!}{|\\text{Aut}(Q_3)|}$.\nThe automorphism group of the cube $Q_3$ has size $2^3 \\times 3! = 8 \\times 6 = 48$.\nSo, $N = \\frac{40320}{48} = 840$.\n\nNext, we compute the probability. We are given side lengths $a = \\sqrt{x}$, $b = \\sqrt{x + (N - 833)} = \\sqrt{x + 7}$, and $c = \\sqrt{10 - x}$.\nThe variable $x$ is chosen uniformly from $(0, 10)$.\nFor these to form a non-degenerate triangle, the triangle inequalities must hold:\n1. $a + b > c \\implies \\sqrt{x} + \\sqrt{x+7} > \\sqrt{10-x}$\n2. $a + c > b \\implies \\sqrt{x} + \\sqrt{10-x} > \\sqrt{x+7}$\n3. $b + c > a \\implies \\sqrt{x+7} + \\sqrt{10-x} > \\sqrt{x}$\n\nSolving these inequalities:\n1. Squaring both sides of $\\sqrt{x} + \\sqrt{x+7} > \\sqrt{10-x}$ leads to $5x^2 - 46x + 9 < 0$ (for appropriate domain), which gives roots $0.2$ and $9$. The inequality holds for $x > 0.2$.\n2. Squaring both sides of $\\sqrt{x} + \\sqrt{10-x} > \\sqrt{x+7}$ leads to the same quadratic inequality. It holds for $x < 9$.\n3. $\\sqrt{x+7} > \\sqrt{x}$ is always true, so the sum with $\\sqrt{10-x}$ is definitely greater than $\\sqrt{x}$. This holds for all $x \\in (0, 10)$.\n\nThe valid range for $x$ is the intersection of these intervals: $(0.2, 9)$.\nThe length of this interval is $9 - 0.2 = 8.8$.\nThe total length of the sample space is $10 - 0 = 10$.\nThe probability is $\\frac{8.8}{10} = 0.88$.\n\n{\n    \"reasoning\": \"The road construction corresponds to a 3-regular connected graph on 8 vertices where every pair of vertices shares 0 or 2 neighbors. The only such graph is the cube graph Q3. The number of labeled copies of Q3 is N = 8! / |Aut(Q3)| = 40320 / 48 = 840. The triangle side lengths are sqrt(x), sqrt(x+7), and sqrt(10-x). The triangle inequalities reduce to 0.2 < x < 9. The length of this valid interval is 8.8, and the total interval is 10, so the probability is 0.88.\",\n    \"answer\": \"0.88\"\n}",
+  "problem_type": [
+    {
+      "A1138": [
+        "Mathematics -> Discrete Mathematics -> Graph Theory"
+      ]
+    },
+    {
+      "A1784": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Other",
+        "Mathematics -> Algebra -> Algebra -> Equations and Inequalities"
+      ]
+    }
+  ],
+  "output_answer": [
+    "0.88"
+  ],
+  "ground_truth": [
+    "875",
+    "\\frac{22}{25}"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 482,
+  "completion_tokens": 15849,
+  "reasoning_tokens": 14684,
+  "cost": 0.0
+}

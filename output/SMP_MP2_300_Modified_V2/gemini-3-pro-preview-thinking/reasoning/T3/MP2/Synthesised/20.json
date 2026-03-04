@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-03-03T14:02:11.880393+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T3_MP2_synthesised_Evaluation",
+  "Problem_ID": 20,
+  "math_problem": "Tetrahedron $A B C D$ with volume 1 is inscribed in circumsphere $\\omega$ such that $A B=A C=A D=2$ and $B C \\cdot C D \\cdot D B=16$. Find the radius of $\\omega$. Instead of determining the circumradius of the sphere containing all four vertices, simply find $\\delta = AX - \\frac{7}{10}$, where $AX$ is the altitude from vertex $A$ to the plane of face $BCD$. In the Cartesian plane, let $A=(0,0)$, $B=(200,100)$, and $C=(30,330)$. Compute the number of ordered pairs $(x, y)$ of integers so that $\\left(x+\\delta, y+\\delta\\right)$ is in the interior of triangle $A B C$.",
+  "reasoning_content": "To find the value of $\\delta$, we first determine the altitude $h = AX$ of the tetrahedron $ABCD$.\nLet $a, b, c$ be the side lengths of the base triangle $BCD$. We are given $abc = 16$.\nThe volume of the tetrahedron is $V = \\frac{1}{3} \\text{Area}(BCD) \\cdot h = 1$.\nThe area of triangle $BCD$ can be expressed in terms of its circumradius $R_{base}$ as $\\text{Area}(BCD) = \\frac{abc}{4R_{base}} = \\frac{16}{4R_{base}} = \\frac{4}{R_{base}}$.\nSubstituting this into the volume formula:\n$1 = \\frac{1}{3} \\cdot \\frac{4}{R_{base}} \\cdot h \\implies h = \\frac{3}{4} R_{base}$.\n\nSince $AB=AC=AD=2$, the projection of $A$ onto the base $BCD$ is the circumcenter of $\\triangle BCD$. Thus, in the right triangle formed by the altitude $h$, the circumradius $R_{base}$, and the edge $AB$, we have:\n$h^2 + R_{base}^2 = AB^2 = 2^2 = 4$.\nSubstituting $R_{base} = \\frac{4}{3}h$:\n$h^2 + \\left(\\frac{4}{3}h\\right)^2 = 4 \\implies h^2 + \\frac{16}{9}h^2 = 4 \\implies \\frac{25}{9}h^2 = 4$.\n$h^2 = \\frac{36}{25} \\implies h = \\frac{6}{5} = 1.2$.\nThe problem defines $\\delta = AX - \\frac{7}{10} = 1.2 - 0.7 = 0.5$.\n\nNext, we find the number of integer pairs $(x, y)$ such that $(x+\\delta, y+\\delta) = (x+0.5, y+0.5)$ lies in the interior of triangle $ABC$ with vertices $A(0,0)$, $B(200,100)$, and $C(30,330)$.\nThe equations of the lines forming the triangle are:\n1.  $AB$: $x - 2y = 0$. Interior condition: $x - 2y < 0$.\n    For $P(x+0.5, y+0.5)$: $(x+0.5) - 2(y+0.5) < 0 \\implies x - 2y - 0.5 < 0 \\implies x - 2y \\le 0 \\implies x \\le 2y$.\n2.  $AC$: $11x - y = 0$. Interior condition: $11x - y > 0$.\n    For $P(x+0.5, y+0.5)$: $11(x+0.5) - (y+0.5) > 0 \\implies 11x - y + 5 > 0 \\implies 11x - y \\ge -4 \\implies y \\le 11x + 4$.\n3.  $BC$: $23x + 17y = 6300$. Interior condition: $23x + 17y < 6300$.\n    For $P(x+0.5, y+0.5)$: $23(x+0.5) + 17(y+0.5) < 6300 \\implies 23x + 17y + 20 < 6300 \\implies 23x + 17y \\le 6279$.\n\nWe sum the number of integers $y$ for each integer $x$ in the valid range. The range for $x$ is determined to be $0 \\le x \\le 199$.\nThe number of points is $S = \\sum_{x=0}^{199} (\\min(11x+4, \\lfloor \\frac{6279-23x}{17} \\rfloor) - \\lceil x/2 \\rceil + 1)$.\nSplitting the sum at $x=29$:\n$S_1 = \\sum_{x=0}^{29} (11x + 4 - \\lceil x/2 \\rceil + 1) = 4710$.\n$S_2 = \\sum_{x=30}^{199} (\\lfloor \\frac{6279-23x}{17} \\rfloor - \\lceil x/2 \\rceil + 1) = 26770$.\nTotal number of points $S = 4710 + 26770 = 31480$.\n\n{\n    \"reasoning\": \"First, we found the altitude h of the tetrahedron to be 1.2, which gives delta = 0.5. Then, we translated the condition of a point (x+0.5, y+0.5) being inside triangle ABC into integer constraints on x and y. We summed the number of valid y values for each x from 0 to 199 by splitting the summation into two parts based on which upper bound inequality was active. The first part (x=0 to 29) summed to 4710 and the second part (x=30 to 199) summed to 26770.\",\n    \"answer\": \"31480\"\n}",
+  "problem_type": [
+    {
+      "A2583": [
+        "Mathematics -> Geometry -> Solid Geometry -> 3D Shapes"
+      ]
+    },
+    {
+      "A1413": [
+        "Mathematics -> Geometry -> Plane Geometry -> Polygons",
+        "Mathematics -> Applied Mathematics -> Probability -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "31480"
+  ],
+  "ground_truth": [
+    "\\frac{5}{3}",
+    "31480"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 473,
+  "completion_tokens": 17297,
+  "reasoning_tokens": 16039,
+  "cost": 0.0
+}

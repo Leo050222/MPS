@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-03-03T13:58:42.097127+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T2_MP2_seperated_Evaluation",
+  "Problem_ID": 19,
+  "math_problem": [
+    {
+      "A2041": "Suppose $a$ and $b$ be positive integers not exceeding 100 such that $$a b=\\left(\\frac{\\operatorname{lcm}(a, b)}{\\operatorname{gcd}(a, b)}\\right)^{2}$$ Compute the largest possible value of $a+b$. Instead of computing the maximum possible sum of two positive integers not exceeding 100 that satisfy the given equation relating their product to the square of the ratio of their least common multiple to their greatest common divisor, simply find $m = s - 77$, where $s$ is that maximum possible sum."
+    },
+    {
+      "A2090": "Consider a $5 \\times 5$ grid of squares. Vladimir colors some of these squares red, such that the centers of any four red squares do not form an axis-parallel rectangle (i.e. a rectangle whose sides are parallel to those of the squares). What is the maximum number of squares he could have colored red?"
+    }
+  ],
+  "reasoning_content": "Here are the step-by-step solutions to the two problems.\n\n### Problem 1\n\n**1. Analyze the given equation:**\nThe equation is given by $ab = \\left(\\frac{\\operatorname{lcm}(a, b)}{\\operatorname{gcd}(a, b)}\\right)^{2}$.\nWe know the fundamental property of the least common multiple and greatest common divisor: $ab = \\operatorname{lcm}(a, b) \\cdot \\operatorname{gcd}(a, b)$.\nLet $g = \\operatorname{gcd}(a, b)$ and $L = \\operatorname{lcm}(a, b)$. Then $L = \\frac{ab}{g}$.\nSubstituting this into the given equation:\n$$ab = \\left(\\frac{ab/g}{g}\\right)^2 = \\left(\\frac{ab}{g^2}\\right)^2 = \\frac{a^2 b^2}{g^4}$$\nDividing both sides by $ab$ (since $a, b > 0$):\n$$1 = \\frac{ab}{g^4} \\implies ab = g^4$$\n\n**2. Express $a$ and $b$ in terms of coprime factors:**\nSince $g = \\operatorname{gcd}(a, b)$, we can write $a = gx$ and $b = gy$ where $\\operatorname{gcd}(x, y) = 1$.\nSubstitute these into $ab = g^4$:\n$$(gx)(gy) = g^4 \\implies g^2 xy = g^4 \\implies xy = g^2$$\nSince $x$ and $y$ are coprime and their product is a perfect square, both $x$ and $y$ must be perfect squares.\nLet $x = u^2$ and $y = v^2$ with $\\operatorname{gcd}(u, v) = 1$.\nThen $g^2 = u^2 v^2 \\implies g = uv$.\n\n**3. Rewrite $a$ and $b$ in terms of $u$ and $v$:**\n$$a = gx = (uv)u^2 = u^3 v$$\n$$b = gy = (uv)v^2 = u v^3$$\nWe are given that $a, b \\le 100$. We want to maximize $s = a + b = uv(u^2 + v^2)$.\n\n**4. Test possible values for $u$ and $v$:**\nAssume $u \\le v$ without loss of generality (since $a+b$ is symmetric). Since $\\operatorname{gcd}(u, v) = 1$, $u \\neq v$ unless $u=v=1$.\n*   **Case $u=1$:**\n    $a = v$, $b = v^3$.\n    Constraint: $b \\le 100 \\implies v^3 \\le 100 \\implies v \\le 4$.\n    Possible pairs $(a, b)$:\n    $v=1 \\implies (1, 1)$, sum = 2.\n    $v=2 \\implies (2, 8)$, sum = 10.\n    $v=3 \\implies (3, 27)$, sum = 30.\n    $v=4 \\implies (4, 64)$, sum = 68.\n*   **Case $u=2$:**\n    $a = 8v$, $b = 2v^3$.\n    Constraint: $b \\le 100 \\implies 2v^3 \\le 100 \\implies v^3 \\le 50 \\implies v \\le 3$.\n    Since $\\operatorname{gcd}(2, v) = 1$, $v$ must be odd. Also $v \\ge u$ implies $v \\ge 2$, so $v=3$.\n    $v=3 \\implies a = 8(3) = 24$, $b = 2(27) = 54$.\n    Sum $s = 24 + 54 = 78$.\n*   **Case $u=3$:**\n    $a = 27v$, $b = 3v^3$.\n    Constraint: $b \\le 100 \\implies 3v^3 \\le 100 \\implies v^3 \\le 33 \\implies v \\le 3$.\n    Since $v \\ge u$, $v$ must be 3, but $\\operatorname{gcd}(3,3) \\neq 1$. No solutions.\n*   **Case $u \\ge 4$:**\n    $b = uv^3 \\ge 4(1)^3 = 4$. If $v > 1$, $b$ grows rapidly.\n    If $u=4, v=1 \\implies a=64, b=4$, sum = 68.\n    If $u=5, v=1 \\implies a=125 > 100$.\n\n**5. Conclusion:**\nThe maximum sum is $s = 78$.\nThe problem asks for $m = s - 77$.\n$m = 78 - 77 = 1$.\n\n### Problem 2\n\n**1. Identify the problem type:**\nThis is a problem of finding the maximum number of 1s in a $5 \\times 5$ binary matrix such that no $2 \\times 2$ submatrix consists entirely of 1s (which corresponds to an axis-parallel rectangle of red squares).\n\n**2. Apply combinatorial bounds:**\nLet $N$ be the total number of red squares. Let $r_i$ be the number of red squares in row $i$.\nThe number of pairs of red squares in row $i$ is $\\binom{r_i}{2}$.\nThe total number of pairs of columns occupied by red squares across all rows is $\\sum_{i=1}^5 \\binom{r_i}{2}$.\nSince there are $\\binom{5}{2} = 10$ distinct pairs of columns in a $5 \\times 5$ grid, and no pair of columns can be occupied by red squares in more than one row (otherwise a rectangle is formed), we must have:\n$$\\sum_{i=1}^5 \\binom{r_i}{2} \\le 10$$\n\n**3. Maximize $N = \\sum r_i$:**\nTo maximize the sum of variables subject to a convex constraint, the variables should be as unequal as possible. However, we are limited by the integer nature and the specific cap of 10.\nLet's test possible values for $N$:\n*   **Try $N=13$:** The most even distribution (which minimizes the sum of combinations) is $3, 3, 3, 2, 2$.\n    Sum of pairs = $3\\binom{3}{2} + 2\\binom{2}{2} = 3(3) + 2(1) = 9 + 2 = 11$.\n    Since $11 > 10$, it is impossible to place 13 squares.\n*   **Try $N=12$:** A distribution of $4, 2, 2, 2, 2$ sums to 12.\n    Sum of pairs = $\\binom{4}{2} + 4\\binom{2}{2} = 6 + 4(1) = 10$.\n    This satisfies the condition $\\le 10$.\n\n**4. Construct a valid grid for $N=12$:**\nWe need to assign column pairs to rows such that no pair is repeated.\nRow 1 (4 squares): Columns {1, 2, 3, 4}. Pairs covered: {1,2}, {1,3}, {1,4}, {2,3}, {2,4}, {3,4}.\nRemaining available pairs involving column 5: {1,5}, {2,5}, {3,5}, {4,5}.\nWe have 4 rows left, each needing 2 squares (1 pair).\nRow 2: {1, 5}\nRow 3: {2, 5}\nRow 4: {3, 5}\nRow 5: {4, 5}\nThis configuration has $4 + 2 + 2 + 2 + 2 = 12$ red squares and no rectangles.\n\n**5. Conclusion:**\nThe maximum number of red squares is 12.\n\n{\n    \"reasoning\": \"For Problem 1, the equation simplifies to ab = gcd(a,b)^4, leading to a=u^3v and b=uv^3 with gcd(u,v)=1. Maximizing a+b under the constraint a,b <= 100 yields a=24, b=54 with sum 78. Thus m = 78 - 77 = 1. For Problem 2, using the combinatorial argument sum(r_i choose 2) <= 10, the maximum number of squares is 12, which can be achieved with row counts 4,2,2,2,2.\",\n    \"answer_1\": \"1\",\n    \"answer_2\": \"12\"\n}",
+  "problem_type": [
+    {
+      "A2041": [
+        "Mathematics -> Number Theory -> Prime Numbers",
+        "Mathematics -> Algebra -> Prealgebra -> Integers"
+      ]
+    },
+    {
+      "A2090": [
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "1",
+    "12"
+  ],
+  "ground_truth": [
+    "1",
+    "12"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 476,
+  "completion_tokens": 9113,
+  "reasoning_tokens": 7062,
+  "cost": 0.0
+}

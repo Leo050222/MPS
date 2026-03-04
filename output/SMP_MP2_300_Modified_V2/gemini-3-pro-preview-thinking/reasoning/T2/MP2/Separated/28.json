@@ -1,0 +1,45 @@
+{
+  "timestamp": "2026-03-03T14:03:14.456922+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T2_MP2_seperated_Evaluation",
+  "Problem_ID": 28,
+  "math_problem": [
+    {
+      "A2252": "Compute all ordered triples $(x, y, z)$ of real numbers satisfying the following system of equations: $$\\begin{aligned} x y+z & =40 \\\\ x z+y & =51 \\\\ x+y+z & =19 \\end{aligned}$$ Instead of computing all ordered triples of real numbers satisfying the system of equations, simply find $k = z + \\frac{17}{5}$, where $z$ is the third component in the solution corresponding to the smaller root for $x + 1$ among the roots of the quadratic equation derived from the system."
+    },
+    {
+      "A2257": "There are 21 competitors with distinct skill levels numbered $1,2, \\ldots, 21$. They participate in a pingpong tournament as follows. First, a random competitor is chosen to be \"active\", while the rest are \"inactive.\" Every round, a random inactive competitor is chosen to play against the current active one. The player with the higher skill will win and become (or remain) active, while the loser will be eliminated from the tournament. The tournament lasts for 20 rounds, after which there will only be one player remaining. Alice is the competitor with skill 11. What is the expected number of games that she will get to play?"
+    }
+  ],
+  "reasoning_content": "To solve Problem 1, we analyze the system of equations:\n1) $xy + z = 40$\n2) $xz + y = 51$\n3) $x + y + z = 19$\n\nFrom (3), $y+z = 19-x$.\nSubtracting (1) from (2) gives $x(z-y) - (z-y) = 11$, so $(x-1)(z-y) = 11$.\nThus $z-y = \\frac{11}{x-1}$.\nWe have a system for $y$ and $z$ in terms of $x$:\n$z+y = 19-x$\n$z-y = \\frac{11}{x-1}$\nSolving for $z$: $2z = 19 - x + \\frac{11}{x-1} \\implies z = \\frac{1}{2}(19 - x + \\frac{11}{x-1})$.\nSolving for $y$: $2y = 19 - x - \\frac{11}{x-1} \\implies y = \\frac{1}{2}(19 - x - \\frac{11}{x-1})$.\nSubstitute these into (1):\n$x \\cdot \\frac{1}{2}(19 - x - \\frac{11}{x-1}) + \\frac{1}{2}(19 - x + \\frac{11}{x-1}) = 40$\nMultiply by 2:\n$x(19 - x) - \\frac{11x}{x-1} + 19 - x + \\frac{11}{x-1} = 80$\n$18x - x^2 + 19 - \\frac{11(x-1)}{x-1} = 80$\n$-x^2 + 18x + 19 - 11 = 80$\n$-x^2 + 18x - 72 = 0 \\implies x^2 - 18x + 72 = 0$.\nThe roots are $x=6$ and $x=12$.\nThe roots for $x+1$ are $7$ and $13$. The smaller root is $7$, corresponding to $x=6$.\nFor $x=6$, $z = \\frac{1}{2}(19 - 6 + \\frac{11}{5}) = \\frac{1}{2}(13 + 2.2) = 7.6 = \\frac{38}{5}$.\nWe need $k = z + \\frac{17}{5} = \\frac{38}{5} + \\frac{17}{5} = \\frac{55}{5} = 11$.\n\nTo solve Problem 2, we model the tournament as a random permutation of the 21 players. Alice (skill 11) plays against opponent $Y$ if she is the \"incumbent\" when $Y$ arrives (or vice versa) and they haven't been eliminated.\nAlice will play exactly one game in which she loses (against a player with skill $>11$).\nShe wins against a player $Y$ (skill $<11$) if they play.\nLet $W = \\{1, \\dots, 10\\}$ and $B = \\{12, \\dots, 21\\}$. Alice is $A$.\nThe probability Alice beats a specific $y \\in W$ is the sum of the probability she plays $y$ when $A$ is before $y$ and when $y$ is before $A$.\n$P(A \\text{ beats } y) = \\frac{1}{12 \\times 11} + \\frac{1}{(22-y)(21-y)}$.\nSumming over $y=1$ to $10$:\n$\\sum_{y=1}^{10} \\frac{1}{132} = \\frac{10}{132} = \\frac{5}{66}$.\n$\\sum_{y=1}^{10} \\frac{1}{(22-y)(21-y)} = \\sum_{k=12}^{21} \\frac{1}{k(k-1)} = \\frac{1}{11} - \\frac{1}{21} = \\frac{10}{231}$.\nTotal expected wins $E[W] = \\frac{5}{66} + \\frac{10}{231} = \\frac{35}{462} + \\frac{20}{462} = \\frac{55}{462} = \\frac{5}{42}$.\nTotal expected games = $1 (\\text{loss}) + E[W] = 1 + \\frac{5}{42} = \\frac{47}{42}$.\n\n{\n    \"reasoning\": \"For Problem 1, we reduced the system to a quadratic in x, found roots 6 and 12, selected x=6, calculated z=7.6, and found k=11. For Problem 2, we used the random permutation model. Alice plays 1 losing game. The expected number of wins is calculated by summing probabilities of playing each weaker opponent, yielding 5/42. Total games = 1 + 5/42 = 47/42.\",\n    \"answer_1\": \"11\",\n    \"answer_2\": \"47/42\"\n}",
+  "problem_type": [
+    {
+      "A2252": [
+        "Mathematics -> Algebra -> Algebra -> Algebraic Expressions",
+        "Mathematics -> Algebra -> Algebra -> Equations and Inequalities"
+      ]
+    },
+    {
+      "A2257": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Other",
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "11",
+    "47/42"
+  ],
+  "ground_truth": [
+    "11",
+    "\\frac{47}{42}"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 547,
+  "completion_tokens": 17323,
+  "reasoning_tokens": 16082,
+  "cost": 0.0
+}

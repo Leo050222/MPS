@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-03-03T14:04:53.009907+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 31,
+  "math_problem": [
+    {
+      "A682": "The game of Penta is played with teams of five players each, and there are five roles the players can play. Each of the five players chooses two of five roles they wish to play. If each player chooses their roles randomly, what is the probability that each role will have exactly two players? Instead of computing the probability that every role is selected by precisely two players, simply find $e = T(favorable) - 1940$, where $T(favorable)$ is the total number of favorable outcomes where each role receives exactly two choices."
+    },
+    {
+      "A1519": "Given a positive integer $k$, let \\|k\\| denote the absolute difference between $k$ and the nearest perfect square. For example, \\|13\\|=3 since the nearest perfect square to 13 is 16. Compute the smallest positive integer $n$ such that $\\frac{\\|1\\|+\\|2\\|+\\cdots+\\|n\\|}{n}=100$."
+    }
+  ],
+  "reasoning_content": "Here is the step-by-step reasoning for the solutions:\n\n### Problem 1: The Game of Penta\n\n**1. Modeling the Problem**\nWe can model the choices of the 5 players as edges in a graph where the 5 vertices represent the 5 roles ($R_1, \\dots, R_5$). Each player chooses 2 distinct roles, which corresponds to drawing an edge between those two vertices. Since there are 5 players, there are 5 edges in total. The players are distinct entities ($P_1, \\dots, P_5$), so the assignment of edges to players matters.\n\n**2. Condition for Favorable Outcomes**\nThe condition is that \"each role will have exactly two players\". In graph theory terms, this means every vertex in our graph must have a degree of exactly 2. A graph where every vertex has degree 2 is a collection of disjoint cycles. Since there are 5 vertices, the lengths of these cycles must sum to 5.\n\n**3. Identifying Valid Graph Structures**\nWe are forming a 2-regular multigraph on 5 vertices using 5 edges. The possible cycle structures (partitions of 5) are:\n*   **Case A:** A single cycle of length 5 ($C_5$).\n*   **Case B:** A cycle of length 3 and a cycle of length 2 ($C_3 \\cup C_2$). Note that a \"cycle of length 2\" in a multigraph represents two vertices connected by two edges (a double edge).\n*   Other partitions like $4+1$ or $2+2+1$ are impossible because a cycle of length 1 implies a loop (a player choosing the same role twice), which is not allowed as players choose two *distinct* roles.\n\n**4. Counting Outcomes for Case A ($C_5$)**\n*   First, determine the number of distinct Hamiltonian cycles ($C_5$) on 5 labeled vertices. The formula is $\\frac{(n-1)!}{2}$. For $n=5$, this is $\\frac{4!}{2} = 12$ distinct cycles.\n*   For a specific cycle (e.g., $R_1-R_2-R_3-R_4-R_5-R_1$), there are 5 distinct edges.\n*   We must assign these 5 distinct edges to the 5 distinct players. There are $5! = 120$ ways to do this.\n*   Total outcomes for Case A = $12 \\times 120 = 1440$.\n\n**5. Counting Outcomes for Case B ($C_3 \\cup C_2$)**\n*   First, choose 3 vertices to form the triangle ($C_3$). The remaining 2 will form the double edge ($C_2$). There are $\\binom{5}{3} = 10$ ways to choose the vertices.\n*   Once the vertices are chosen (say $\\{A,B,C\\}$ for the triangle and $\\{D,E\\}$ for the double edge), the edges are fixed: $\\{A,B\\}, \\{B,C\\}, \\{C,A\\}$ for the triangle, and two copies of $\\{D,E\\}$ for the double edge.\n*   We have a multiset of 5 edges: $\\{e_1, e_2, e_3, e_4, e_4\\}$. We need to assign these to the 5 players.\n*   The number of distinct permutations of this multiset is $\\frac{5!}{1!1!1!2!} = \\frac{120}{2} = 60$.\n*   Total outcomes for Case B = $10 \\times 60 = 600$.\n\n**6. Final Calculation**\n*   Total favorable outcomes $T(\\text{favorable}) = 1440 + 600 = 2040$.\n*   We need to find $e = T(\\text{favorable}) - 1940$.\n*   $e = 2040 - 1940 = 100$.\n\n### Problem 2: Nearest Perfect Square\n\n**1. Analyzing the Sum**\nLet $S(n) = \\sum_{k=1}^n \\|k\\|$. We want to find the smallest $n$ such that $S(n) = 100n$.\nConsider the integers $k$ whose nearest perfect square is $m^2$. These integers lie in the interval roughly from $m^2 - m + 1$ to $m^2 + m$. The length of this interval is $2m$.\nFor a complete block of integers associated with $m^2$, the sum of distances $\\|k\\|$ is exactly $m^2$.\nThus, if $n$ is the end of the block for $M$ (i.e., $n = M^2 + M$), the total sum is $\\sum_{m=1}^M m^2 = \\frac{M(M+1)(2M+1)}{6}$.\nThe average would be $\\frac{S(n)}{n} = \\frac{2M+1}{6}$. For this to be 100, $2M+1 \\approx 600 \\implies M \\approx 300$.\n\n**2. Refining the Search**\nWe check values around $M=300$.\nLet $n$ fall within the block associated with $M=300$. The previous blocks ($m=1$ to $299$) end at $N_{prev} = 299^2 + 299 = 89700$.\nThe sum of the previous blocks is $S_{prev} = \\sum_{m=1}^{299} m^2 = \\frac{299(300)(599)}{6} = 8,955,050$.\nLet $x$ be the number of terms taken from the $M=300$ block. The values of $\\|k\\|$ in this block start at $M-1=299$ and descend: $299, 298, \\dots$.\nWe require the total average to be 100:\n$S_{prev} + \\sum_{i=1}^x a_i = 100(N_{prev} + x)$\n$8,955,050 + \\sum_{i=1}^x a_i = 8,970,000 + 100x$\n$\\sum_{i=1}^x a_i - 100x = 14,950$\n$\\sum_{i=1}^x (a_i - 100) = 14,950$\n\n**3. Solving for x**\nThe terms $a_i$ for the $M=300$ block are $299, 298, 297, \\dots$.\nThe terms $(a_i - 100)$ are $199, 198, 197, \\dots$.\nWe need the sum of the first $x$ terms of this arithmetic progression to equal 14,950.\nSum $= \\frac{x}{2}(2 \\times 199 + (x-1)(-1)) = 14,950$.\nAlternatively, simply summing integers from 199 downwards.\nLet's test if we sum exactly from 199 down to 100.\nThe number of terms is $199 - 100 + 1 = 100$.\nSum $= \\frac{100}{2}(199 + 100) = 50(299) = 14,950$.\nThis matches exactly!\nSo, $x = 100$.\n\n**4. Calculating n**\n$n = N_{prev} + x = 89700 + 100 = 89800$.\nWe verified that no smaller $M$ works (as the \"surplus\" sum capacity grows with $M$), and $x=100$ is the first time the sum hits 14,950 in the $M=300$ block.\n\n**Final Answers**\nProblem 1: 100\nProblem 2: 89800\n\n```json\n{\n    \"reasoning\": \"For Problem 1, we modeled the scenario as finding the number of 2-regular multigraphs on 5 labeled vertices with 5 labeled edges (assigned to distinct players). The two valid structures are a 5-cycle (1440 ways) and a triangle plus a double edge (600 ways), totaling 2040. Subtracting 1940 gives 100. For Problem 2, we analyzed the cumulative sum of distances to the nearest square. The sum for the block of numbers nearest to m^2 is m^2. Approximating the average sum/n = 100 leads to a block around m=300. Solving the specific arithmetic progression for the partial sum in the 300th block yields n = 89700 + 100 = 89800.\",\n    \"answer_1\": \"100\",\n    \"answer_2\": \"89800\"\n}\n```",
+  "problem_type": [
+    {
+      "A682": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations",
+        "Mathematics -> Discrete Mathematics -> Graph Theory"
+      ]
+    },
+    {
+      "A1519": [
+        "Mathematics -> Number Theory -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "100",
+    "89800"
+  ],
+  "ground_truth": [
+    "100",
+    "89800"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 476,
+  "completion_tokens": 15136,
+  "reasoning_tokens": 13058,
+  "cost": 0.0
+}

@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-03-03T14:44:42.275169+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T4_MP2_seperated_Evaluation",
+  "Problem_ID": 45,
+  "math_problem": [
+    {
+      "A1074": "Find the number of triples of sets $(A, B, C)$ such that: (a) $A, B, C \\subseteq\\{1,2,3, \\ldots, 8\\}$. (b) $|A \\cap B|=|B \\cap C|=|C \\cap A|=2$. (c) $|A|=|B|=|C|=4$. Here, $|S|$ denotes the number of elements in the set $S$. Instead of determining the total number of such triples of sets, simply find $m = |A \\cap B \\cap C|$, where $|A \\cap B \\cap C|$ is the size of the triple intersection derived from the structural consideration of configurations with no elements belonging to exactly two of the sets."
+    },
+    {
+      "A1136": "Compute the number of ways there are to assemble 2 red unit cubes and 25 white unit cubes into a $3 \\times 3 \\times 3$ cube such that red is visible on exactly 4 faces of the larger cube. (Rotations and reflections are considered distinct.)"
+    }
+  ],
+  "reasoning_content": "To solve Problem 1, we analyze the set-theoretic equations given the constraints.\nLet $m = |A \\cap B \\cap C|$.\nLet $x_{AB} = |(A \\cap B) \\setminus C|$, $x_{BC} = |(B \\cap C) \\setminus A|$, and $x_{CA} = |(C \\cap A) \\setminus B|$.\nThe problem asks for $m$ derived from the structural consideration of configurations with \"no elements belonging to exactly two of the sets\". This condition implies $x_{AB} = x_{BC} = x_{CA} = 0$.\nWe are given the pairwise intersection sizes:\n$|A \\cap B| = x_{AB} + m = 2$\n$|B \\cap C| = x_{BC} + m = 2$\n$|C \\cap A| = x_{CA} + m = 2$\nSubstituting the condition $x_{AB} = x_{BC} = x_{CA} = 0$ into any of these equations yields:\n$0 + m = 2 \\implies m = 2$.\nWe can verify this is consistent with the set sizes.\n$|A| = |A \\setminus (B \\cup C)| + x_{AB} + x_{CA} + m = 4$.\nWith $m=2$ and pairwise-only terms 0, the number of elements unique to $A$ is $4 - 2 = 2$. Similarly for $B$ and $C$.\nThe total size of the union would be $2 (unique A) + 2 (unique B) + 2 (unique C) + 2 (intersection) = 8$.\nThis fits within the universe $\\{1, \\ldots, 8\\}$.\nThus, $m=2$.\n\nTo solve Problem 2, we count the number of pairs of positions for the 2 red cubes such that the union of the sets of visible faces has size 4.\nLet $S_1$ and $S_2$ be the sets of visible faces for the two cubes. We need $|S_1 \\cup S_2| = 4$.\nThe number of visible faces for a cube depends on its position: Corner (3), Edge (2), Face Center (1), Center (0).\nWe analyze the valid combinations $(|S_1|, |S_2|)$:\n1.  **Two Corners ($3, 3$):** We need $|S_1 \\cup S_2| = 3 + 3 - |S_1 \\cap S_2| = 4 \\implies |S_1 \\cap S_2| = 2$.\n    This occurs when two corners share an edge of the large cube. There are 12 edges, so **12** such pairs.\n2.  **Corner and Edge ($3, 2$):** We need $3 + 2 - |S_1 \\cap S_2| = 4 \\implies |S_1 \\cap S_2| = 1$.\n    The edge cube must share exactly 1 face with the corner. For each of the 8 corners, there are 6 such edges.\n    Total = $8 \\times 6 = \\mathbf{48}$ pairs.\n3.  **Two Edges ($2, 2$):** We need $2 + 2 - |S_1 \\cap S_2| = 4 \\implies |S_1 \\cap S_2| = 0$.\n    The two edge cubes must be on disjoint sets of faces. For any edge (12 total), there are 5 edges disjoint from it.\n    Since the order of selection doesn't matter for the pair, count is $(12 \\times 5) / 2 = \\mathbf{30}$ pairs.\n4.  **Corner and Face Center ($3, 1$):** We need $3 + 1 - |S_1 \\cap S_2| = 4 \\implies |S_1 \\cap S_2| = 0$.\n    The face center must be on a face not touching the corner. For each of the 8 corners, there are 3 disjoint faces (hence 3 face centers).\n    Total = $8 \\times 3 = \\mathbf{24}$ pairs.\n\nOther combinations (like Edge+Face Center) cannot sum to 4.\nTotal ways = $12 + 48 + 30 + 24 = 114$.\n\n{\n    \"reasoning\": \"For Problem 1, the condition 'no elements belonging to exactly two of the sets' implies the pairwise exclusive intersections are empty. Since the total pairwise intersection size is 2, the triple intersection m must be 2. For Problem 2, we sum the valid configurations of two red cubes: 12 pairs of adjacent corners, 48 pairs of a corner and an edge sharing 1 face, 30 pairs of edges sharing 0 faces, and 24 pairs of a corner and a face center sharing 0 faces.\",\n    \"answer_1\": \"2\",\n    \"answer_2\": \"114\"\n}",
+  "problem_type": [
+    {
+      "A1074": [
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    },
+    {
+      "A1136": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "2",
+    "114"
+  ],
+  "ground_truth": [
+    "2",
+    "114"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 496,
+  "completion_tokens": 12185,
+  "reasoning_tokens": 11056,
+  "cost": 0.0
+}

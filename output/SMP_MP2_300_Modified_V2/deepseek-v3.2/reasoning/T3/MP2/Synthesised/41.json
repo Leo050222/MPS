@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-03-03T06:44:57.688375+00:00",
+  "model": "deepseek-v3.2",
+  "type": "T3_MP2_synthesised_Evaluation",
+  "Problem_ID": 41,
+  "math_problem": "In triangle $ABC, \\angle A=2 \\angle C$. Suppose that $AC=6, BC=8$, and $AB=\\sqrt{a}-b$, where $a$ and $b$ are positive integers. Compute $100 a+b$. Instead of computing the concatenated numerical value from the positive integers $a$ and $b$ defining the side length $AB$, simply find $k = b + 5$, where $b$ is the positive integer subtracted in the expression for $AB$. Let $P_{1}, P_{2}, \\ldots, P_{k}$ be $k$ distinct points on a circle. Determine the number of possible configurations made by drawing a set of line segments connecting pairs of these $k$ points, such that: (1) each $P_{i}$ is the endpoint of at most one segment and (2) no two segments intersect. (The configuration with no edges drawn is allowed.)",
+  "reasoning_content": "The problem involves two parts: first, solving for side \\(AB\\) in triangle \\(ABC\\) with given conditions to find \\(b\\) and then \\(k = b + 5\\); second, counting the number of non-crossing matchings on \\(k\\) points on a circle.\n\n**Step 1: Solve the triangle problem.**  \nGiven: \\(\\angle A = 2\\angle C\\), \\(AC = 6\\), \\(BC = 8\\). Let \\(\\angle C = \\gamma\\), then \\(\\angle A = 2\\gamma\\), and \\(\\angle B = \\pi - 3\\gamma\\). Using the law of sines:\n\\[\n\\frac{BC}{\\sin A} = \\frac{AC}{\\sin B} = \\frac{AB}{\\sin C}.\n\\]\nSubstitute: \\(BC = 8\\) opposite \\(\\angle A\\), \\(AC = 6\\) opposite \\(\\angle B\\), \\(AB\\) opposite \\(\\angle C\\). So:\n\\[\n\\frac{8}{\\sin 2\\gamma} = \\frac{6}{\\sin 3\\gamma}.\n\\]\nUsing trigonometric identities: \\(\\sin 2\\gamma = 2\\sin\\gamma\\cos\\gamma\\), \\(\\sin 3\\gamma = 3\\sin\\gamma - 4\\sin^3\\gamma\\). Substitute and simplify:\n\\[\n8(3\\sin\\gamma - 4\\sin^3\\gamma) = 6(2\\sin\\gamma\\cos\\gamma).\n\\]\nDivide both sides by \\(2\\sin\\gamma\\) (since \\(\\sin\\gamma > 0\\)):\n\\[\n4(3 - 4\\sin^2\\gamma) = 6\\cos\\gamma.\n\\]\nSubstitute \\(\\sin^2\\gamma = 1 - \\cos^2\\gamma\\):\n\\[\n4(3 - 4(1 - \\cos^2\\gamma)) = 6\\cos\\gamma \\implies 4(3 - 4 + 4\\cos^2\\gamma) = 6\\cos\\gamma \\implies 4(-1 + 4\\cos^2\\gamma) = 6\\cos\\gamma.\n\\]\nSimplify: \\(-4 + 16\\cos^2\\gamma = 6\\cos\\gamma\\), so \\(16\\cos^2\\gamma - 6\\cos\\gamma - 4 = 0\\). Divide by 2: \\(8\\cos^2\\gamma - 3\\cos\\gamma - 2 = 0\\). Solve the quadratic:\n\\[\n\\cos\\gamma = \\frac{3 \\pm \\sqrt{9 + 64}}{16} = \\frac{3 \\pm \\sqrt{73}}{16}.\n\\]\nSince \\(\\gamma < \\pi/3\\) (from \\(\\angle B > 0\\)), \\(\\cos\\gamma > 0.5\\), so take the positive root: \\(\\cos\\gamma = (3 + \\sqrt{73})/16\\).\n\nNow compute \\(AB\\) using law of sines:\n\\[\nAB = \\frac{8\\sin\\gamma}{\\sin 2\\gamma} = \\frac{8\\sin\\gamma}{2\\sin\\gamma\\cos\\gamma} = \\frac{4}{\\cos\\gamma}.\n\\]\nSubstitute \\(\\cos\\gamma\\):\n\\[\nAB = \\frac{4}{(3 + \\sqrt{73})/16} = \\frac{64}{3 + \\sqrt{73}}.\n\\]\nRationalize: Multiply numerator and denominator by \\(\\sqrt{73} - 3\\):\n\\[\nAB = \\frac{64(\\sqrt{73} - 3)}{73 - 9} = \\frac{64(\\sqrt{73} - 3)}{64} = \\sqrt{73} - 3.\n\\]\nThus, \\(AB = \\sqrt{a} - b\\) with \\(a = 73\\), \\(b = 3\\). Then \\(k = b + 5 = 3 + 5 = 8\\).\n\n**Step 2: Count configurations for \\(k = 8\\) points on a circle.**  \nWe need the number of sets of line segments connecting pairs of the 8 points such that: (1) each point is an endpoint of at most one segment, and (2) no two segments intersect. The empty configuration is allowed. This is equivalent to counting non-crossing matchings on 8 labeled points on a circle. The number of such configurations is given by the Motzkin number \\(M_8\\). Compute Motzkin numbers recursively:\n- \\(M_0 = 1\\)\n- \\(M_1 = 1\\)\n- \\(M_2 = 2\\)\n- \\(M_3 = 4\\)\n- \\(M_4 = 9\\)\n- \\(M_5 = 21\\)\n- \\(M_6 = 51\\)\n- \\(M_7 = 127\\)\n- \\(M_8 = M_7 + \\sum_{i=0}^{6} M_i M_{6-i} = 127 + (1\\cdot51 + 1\\cdot21 + 2\\cdot9 + 4\\cdot4 + 9\\cdot2 + 21\\cdot1 + 51\\cdot1) = 127 + 196 = 323\\).\n\nThus, the number of possible configurations is 323.\n\nFinal answer: 323.\n\n{  \n    \"reasoning\": \"In triangle ABC, let ∠C = γ, then ∠A = 2γ and ∠B = π - 3γ. Using the law of sines: 8/sin(2γ) = 6/sin(3γ). Solving gives cos γ = (3 + √73)/16. Then AB = 4/cos γ = √73 - 3, so a = 73, b = 3, and k = b + 5 = 8. The number of non-crossing matchings on 8 points on a circle is the Motzkin number M_8 = 323.\",  \n    \"answer\": \"323\"  \n}",
+  "problem_type": [
+    {
+      "A899": [
+        "Mathematics -> Geometry -> Plane Geometry -> Triangulations",
+        "Mathematics -> Algebra -> Intermediate Algebra -> Quadratic Functions"
+      ]
+    },
+    {
+      "A1634": [
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "323"
+  ],
+  "ground_truth": [
+    "7303",
+    "323"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 471,
+  "completion_tokens": 5092,
+  "reasoning_tokens": 3901,
+  "cost": 0.0
+}

@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-03-03T14:01:11.852462+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T2_MP2_synthesised_Evaluation",
+  "Problem_ID": 19,
+  "math_problem": "Suppose $a$ and $b$ be positive integers not exceeding 100 such that $$a b=\\left(\\frac{\\operatorname{lcm}(a, b)}{\\operatorname{gcd}(a, b)}\\right)^{2}$$ Compute the largest possible value of $a+b$. Instead of computing the maximum possible sum of two positive integers not exceeding 100 that satisfy the given equation relating their product to the square of the ratio of their least common multiple to their greatest common divisor, simply find $m = s - 77$, where $s$ is that maximum possible sum. Consider a $(m + 4) \\times (m + 4)$ grid of squares. Vladimir colors some of these squares red, such that the centers of any four red squares do not form an axis-parallel rectangle (i.e. a rectangle whose sides are parallel to those of the squares). What is the maximum number of squares he could have colored red?",
+  "reasoning_content": "The problem consists of two parts. First, we must find the maximum value of $a+b$ satisfying the given number theory condition. Second, we use that sum to define the size of a grid and solve a combinatorial geometry problem.\n\n**Part 1: Maximizing $a+b$**\n\nWe are given positive integers $a, b \\le 100$ such that:\n$$ab = \\left(\\frac{\\operatorname{lcm}(a, b)}{\\operatorname{gcd}(a, b)}\\right)^{2}$$\n\nLet $g = \\operatorname{gcd}(a, b)$. Then we can write $a = gx$ and $b = gy$ where $\\operatorname{gcd}(x, y) = 1$.\nThe least common multiple is $\\operatorname{lcm}(a, b) = gxy$.\nSubstituting these into the equation:\n$$(gx)(gy) = \\left(\\frac{gxy}{g}\\right)^2$$\n$$g^2 xy = (xy)^2$$\n$$g^2 = xy$$\n\nSince $\\operatorname{gcd}(x, y) = 1$ and their product is a perfect square, both $x$ and $y$ must be perfect squares. Let $x = u^2$ and $y = v^2$ for positive integers $u, v$ with $\\operatorname{gcd}(u, v) = 1$.\nThen $g = \\sqrt{xy} = uv$.\nNow we can express $a$ and $b$ in terms of $u$ and $v$:\n$$a = gx = (uv)(u^2) = u^3 v$$\n$$b = gy = (uv)(v^2) = u v^3$$\n\nWe want to maximize $s = a + b = uv(u^2 + v^2)$ subject to $a, b \\le 100$.\nAssume without loss of generality that $u \\le v$. Since $\\operatorname{gcd}(u, v) = 1$, we check possible values:\n\n1.  **Case $u=1$**:\n    $a = v$, $b = v^3$.\n    We need $v^3 \\le 100$. The largest integer $v$ satisfying this is $v=4$ ($4^3 = 64$).\n    If $v=4$, $a=4, b=64$. Sum $s = 68$.\n    ($v=5 \\implies b=125 > 100$).\n\n2.  **Case $u=2$**:\n    $a = 8v$, $b = 2v^3$.\n    We need $2v^3 \\le 100 \\implies v^3 \\le 50$.\n    Since $\\operatorname{gcd}(2, v) = 1$, $v$ must be odd. Also $v \\ge u=2$, so $v \\ge 3$.\n    Try $v=3$: $3^3 = 27 \\le 50$.\n    $a = 2^3 \\cdot 3 = 24$.\n    $b = 2 \\cdot 3^3 = 54$.\n    Both are $\\le 100$. Sum $s = 24 + 54 = 78$.\n    Try $v=5$: $5^3 = 125$, so $2v^3 = 250 > 100$.\n\n3.  **Case $u=3$**:\n    $a = 27v$, $b = 3v^3$.\n    We need $v > 3$ (since $u \\le v$ and coprime).\n    Smallest valid $v$ is 4.\n    $a = 27(4) = 108 > 100$. No solution.\n\nThe maximum sum is $s = 78$.\n\n**Part 2: Grid Coloring**\n\nWe calculate $m = s - 77 = 78 - 77 = 1$.\nThe grid size is $(m+4) \\times (m+4) = 5 \\times 5$.\nWe want to find the maximum number of red squares such that no four red squares form an axis-parallel rectangle. This is equivalent to finding the maximum number of 1s in a $5 \\times 5$ binary matrix that contains no $2 \\times 2$ submatrix of 1s. This is the Zarankiewicz problem $Z(5, 5, 2, 2)$.\n\nLet $N$ be the number of red squares. Let $r_i$ be the number of red squares in row $i$. The condition that no rectangle exists implies that the total number of pairs of red squares in the same row cannot exceed the total number of pairs of columns:\n$$\\sum_{i=1}^{5} \\binom{r_i}{2} \\le \\binom{5}{2} = 10$$\n\nWe want to maximize $N = \\sum r_i$.\nUsing the bound:\nIf $N=13$, the most even distribution of row counts is $3, 3, 3, 2, 2$.\nSum of pairs: $3\\binom{3}{2} + 2\\binom{2}{2} = 3(3) + 2(1) = 11$.\nSince $11 > 10$, $N=13$ is impossible.\n\nIf $N=12$, we can distribute row counts as $4, 2, 2, 2, 2$.\nSum of pairs: $\\binom{4}{2} + 4\\binom{2}{2} = 6 + 4(1) = 10$.\nThis satisfies the bound. A valid construction exists (e.g., one row with 1s in columns 1,2,3,4, and four rows each sharing a distinct column with the first row and all sharing column 5).\n\nThus, the maximum number of red squares is 12.\n\n{  \n    \"reasoning\": \"First, we solve the number theory problem. The condition implies a=u^3v and b=uv^3 for coprime u,v. Maximizing a+b under the constraint a,b <= 100 yields the pair (24, 54) with sum s=78. Then m = 78 - 77 = 1. The grid size is 5x5. The problem asks for the maximum number of colored squares without an axis-parallel rectangle, which is the Zarankiewicz problem Z(5,5,2,2). The theoretical upper bound derived from convexity is 12, and a valid construction for 12 exists.\",\n    \"answer\": \"12\"\n}",
+  "problem_type": [
+    {
+      "A2041": [
+        "Mathematics -> Number Theory -> Prime Numbers",
+        "Mathematics -> Algebra -> Prealgebra -> Integers"
+      ]
+    },
+    {
+      "A2090": [
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "12"
+  ],
+  "ground_truth": [
+    "78",
+    "12"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 491,
+  "completion_tokens": 9544,
+  "reasoning_tokens": 8042,
+  "cost": 0.0
+}

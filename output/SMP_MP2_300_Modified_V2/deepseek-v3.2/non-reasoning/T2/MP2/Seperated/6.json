@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-03-02T19:19:52.037132+00:00",
+  "model": "deepseek-v3.2",
+  "type": "T2_MP2_seperated_Evaluation",
+  "Problem_ID": 6,
+  "math_problem": [
+    {
+      "A1205": "Ava and Tiffany participate in a knockout tournament consisting of a total of 32 players. In each of 5 rounds, the remaining players are paired uniformly at random. In each pair, both players are equally likely to win, and the loser is knocked out of the tournament. The probability that Ava and Tiffany play each other during the tournament is $\\frac{a}{b}$, where $a$ and $b$ are relatively prime positive integers. Compute $100 a+b$. Instead of evaluating the specified linear combination of the numerator and denominator representing the probability that the two designated players meet during the tournament, simply find $e = b - 16$, where $b$ is the denominator of that probability when expressed as a reduced fraction."
+    },
+    {
+      "A1271": "Let $p$ be a real number and $c \\neq 0$ an integer such that $c-0.1<x^{p}\\left(\\frac{1-(1+x)^{10}}{1+(1+x)^{10}}\\right)<c+0.1$ for all (positive) real numbers $x$ with $0<x<10^{-100}$. Find the ordered pair $(p, c)$."
+    }
+  ],
+  "reasoning_content": "Alright, let’s go step-by-step.\n\n---\n\n## **Problem 1**\n\nWe have a knockout tournament with \\( 32 \\) players, 5 rounds.  \nIn each round, remaining players are paired randomly, each match winner chosen with probability \\( \\frac12 \\) independently.\n\nWe want the probability that Ava and Tiffany meet at some point during the tournament.\n\n---\n\n### Step 1: Known formula for meeting probability in knockout tournaments\n\nIn a knockout tournament with \\( N \\) players (power of 2), the probability two specific players meet is:\n\n\\[\nP(\\text{meet}) = \\frac{2}{N}\n\\]\n\nReason:  \nThey can only meet if they are ever in the same bracket path, which requires them to be in the same half, same quarter, etc., as they advance.  \nAlternatively, known fact: In a random knockout draw, the probability they meet equals the probability they are paired in some round, which can be computed as:\n\nLet \\( N = 2^n \\).  \nIn round \\( k \\) (1-indexed), there are \\( 2^{n-k+1} \\) players left.  \nFor them to meet in round \\( k \\), they must both survive to that round (each wins \\( k-1 \\) matches, probability \\( \\left(\\frac12\\right)^{k-1} \\) each), and then be paired together in that round.\n\nProbability both survive to round \\( k \\):\n\n\\[\n\\left(\\frac12\\right)^{k-1} \\times \\left(\\frac12\\right)^{k-1} = \\left(\\frac12\\right)^{2k-2}\n\\]\n\nGiven they both survive to round \\( k \\), number of players = \\( 2^{n-k+1} \\).  \nProbability they are paired together in that round:\n\n\\[\n\\frac{1}{\\text{number of players} - 1} = \\frac{1}{2^{n-k+1} - 1}\n\\]\n\nThus probability they meet in round \\( k \\):\n\n\\[\n\\left(\\frac12\\right)^{2k-2} \\cdot \\frac{1}{2^{n-k+1} - 1}\n\\]\n\nSum over \\( k = 1 \\) to \\( n \\):\n\n\\[\nP = \\sum_{k=1}^n \\frac{1}{4^{k-1} \\cdot (2^{n-k+1} - 1)}\n\\]\n\nBut known simpler result: \\( P = \\frac{2}{N} \\) for \\( N \\) players.\n\n---\n\n### Step 2: Apply to \\( N = 32 \\)\n\n\\[\nP = \\frac{2}{32} = \\frac{1}{16}\n\\]\n\nSo \\( a = 1, b = 16 \\), relatively prime.\n\n---\n\n### Step 3: What the problem asks\n\nThey say: “Compute \\( 100a + b \\)” — but then they say: “Instead of evaluating that, simply find \\( e = b - 16 \\)”.\n\nSince \\( b = 16 \\), \\( e = 16 - 16 = 0 \\).\n\nSo answer to Problem 1 is \\( 0 \\).\n\n---\n\n**Check**: The problem statement is a bit convoluted: they first define \\( a/b \\) as the probability, then say “Compute \\( 100a + b \\)” but then say “Instead of evaluating that, find \\( e = b - 16 \\)”. So \\( e \\) is just \\( b - 16 \\), and \\( b = 16 \\), so \\( e = 0 \\).\n\n---\n\n## **Problem 2**\n\nWe have:\n\nFor all \\( 0 < x < 10^{-100} \\),\n\n\\[\nc - 0.1 < x^p \\left( \\frac{1 - (1+x)^{10}}{1 + (1+x)^{10}} \\right) < c + 0.1\n\\]\n\nwhere \\( c \\neq 0 \\) is an integer.\n\n---\n\n### Step 1: Approximate \\( (1+x)^{10} \\) for small \\( x \\)\n\n\\[\n(1+x)^{10} = 1 + 10x + 45x^2 + 120x^3 + \\dots\n\\]\n\n---\n\n### Step 2: Simplify the fraction\n\nLet \\( A = (1+x)^{10} \\).\n\n\\[\n\\frac{1 - A}{1 + A} = \\frac{1 - (1 + 10x + 45x^2 + \\dots)}{2 + 10x + 45x^2 + \\dots}\n\\]\n\nNumerator: \\( -10x - 45x^2 - 120x^3 - \\dots \\)  \nDenominator: \\( 2 + 10x + 45x^2 + \\dots \\)\n\nFactor \\( -10x \\) from numerator:\n\nNumerator \\( = -10x \\left( 1 + \\frac{45}{10}x + \\frac{120}{10}x^2 + \\dots \\right) = -10x \\left( 1 + 4.5x + 12x^2 + \\dots \\right) \\)\n\nDenominator: \\( 2 \\left( 1 + 5x + 22.5x^2 + \\dots \\right) \\)\n\nSo:\n\n\\[\n\\frac{1 - A}{1 + A} = \\frac{-10x \\left( 1 + 4.5x + 12x^2 + \\dots \\right)}{2 \\left( 1 + 5x + 22.5x^2 + \\dots \\right)}\n\\]\n\n\\[\n= -5x \\cdot \\frac{1 + 4.5x + 12x^2 + \\dots}{1 + 5x + 22.5x^2 + \\dots}\n\\]\n\n---\n\n### Step 3: Expand the ratio\n\n\\[\n\\frac{1 + 4.5x + 12x^2 + \\dots}{1 + 5x + 22.5x^2 + \\dots}\n\\]\n\nUsing \\( \\frac{1 + a_1 x + a_2 x^2}{1 + b_1 x + b_2 x^2} = 1 + (a_1 - b_1)x + \\dots \\):\n\nHere \\( a_1 = 4.5, b_1 = 5 \\), so \\( a_1 - b_1 = -0.5 \\).\n\nSo:\n\n\\[\n= 1 - 0.5x + O(x^2)\n\\]\n\nThus:\n\n\\[\n\\frac{1 - A}{1 + A} = -5x \\left( 1 - 0.5x + O(x^2) \\right) = -5x + 2.5x^2 + O(x^3)\n\\]\n\n---\n\n### Step 4: Multiply by \\( x^p \\)\n\nWe have:\n\n\\[\nx^p \\cdot \\frac{1 - A}{1 + A} = x^p \\left( -5x + 2.5x^2 + O(x^3) \\right)\n\\]\n\n\\[\n= -5 x^{p+1} + 2.5 x^{p+2} + O(x^{p+3})\n\\]\n\n---\n\n### Step 5: Behavior as \\( x \\to 0^+ \\)\n\nWe need this expression to be between \\( c - 0.1 \\) and \\( c + 0.1 \\) for all sufficiently small \\( x \\) (here \\( x < 10^{-100} \\)).\n\nIf \\( p+1 > 0 \\), then as \\( x \\to 0^+ \\), \\( x^{p+1} \\to 0 \\), so the whole expression tends to 0. Then \\( c \\) would have to be 0 (since bounds are tight), but \\( c \\neq 0 \\) given. So \\( p+1 \\) cannot be \\( > 0 \\) if we want nonzero integer \\( c \\).\n\nIf \\( p+1 < 0 \\), then as \\( x \\to 0^+ \\), \\( x^{p+1} \\to \\infty \\) (if \\( p+1 < 0 \\), i.e., \\( p < -1 \\)), magnitude blows up, cannot be bounded between two constants differing by 0.2 unless coefficient is 0, but coefficient is -5, so no.\n\nThus \\( p+1 = 0 \\), i.e., \\( p = -1 \\).\n\n---\n\n### Step 6: Case \\( p = -1 \\)\n\nThen \\( x^{p} = 1/x \\).\n\nWe computed \\( \\frac{1 - A}{1 + A} = -5x + 2.5x^2 + O(x^3) \\).\n\nMultiply by \\( 1/x \\):\n\n\\[\nx^{-1} \\cdot \\frac{1 - A}{1 + A} = -5 + 2.5x + O(x^2)\n\\]\n\nAs \\( x \\to 0^+ \\), this tends to \\( -5 \\).\n\nSo for very small \\( x \\), the expression is \\( -5 + 2.5x + \\dots \\), which is between \\( -5 - 0.1 \\) and \\( -5 + 0.1 \\) for sufficiently small \\( x \\).\n\nThus \\( c = -5 \\), \\( p = -1 \\).\n\n---\n\nCheck: \\( c \\) is integer \\( \\neq 0 \\), works.\n\n---\n\n**Final answers:**\n\nProblem 1: \\( e = 0 \\)  \nProblem 2: \\( (p, c) = (-1, -5) \\)\n\n---\n\n```json\n{\n    \"reasoning\": \"For Problem 1: In a knockout tournament with 32 players, probability two specific players meet is 1/16, so b=16, e=b-16=0. For Problem 2: Expand (1+x)^10 for small x, simplify given expression multiplied by x^p. For it to be bounded between c-0.1 and c+0.1 as x→0+, need p=-1, then limit is -5, so c=-5.\",\n    \"answer_1\": \"0\",\n    \"answer_2\": \"(-1, -5)\"\n}\n```",
+  "problem_type": [
+    {
+      "A1205": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations"
+      ]
+    },
+    {
+      "A1271": [
+        "Mathematics -> Algebra -> Intermediate Algebra -> Exponential Functions"
+      ]
+    }
+  ],
+  "output_answer": [
+    "0",
+    "(-1, -5)"
+  ],
+  "ground_truth": [
+    "0",
+    "(-1, -5)"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 502,
+  "completion_tokens": 2149,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

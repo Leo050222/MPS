@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-03-03T07:18:22.906821+00:00",
+  "model": "deepseek-v3.2",
+  "type": "T4_MP2_synthesised_Evaluation",
+  "Problem_ID": 39,
+  "math_problem": "Find all positive integers $a$, $b$, $n$ and prime numbers $p$ that satisfy\n\\[\na^{2013} + b^{2013} = p^n.\n\\] Instead of identifying all tuples of positive integers and primes satisfying the given Diophantine equation, simply find $p$, the prime number that appears in the solutions. For each positive integer $k$ denote $C(k)$ to be sum of its distinct prime divisors. For example $C(1)=0,C(2)=2,C(45)=8$. Find all positive integers $n$ for which $C(p^n+1)=C(n)$.",
+  "reasoning_content": "{\n    \"reasoning\": \"First, we analyze the equation $a^{2013} + b^{2013} = p^n$. Assuming $\\\\gcd(a,b)=1$, we factor the left-hand side as $(a+b)(a^{2012} - a^{2011}b + \\\\cdots + b^{2012})$. Both factors are powers of $p$, and their $\\\\gcd$ divides $2013$. If $p$ does not divide $2013$, then the factors are coprime, so one must be $1$, forcing $a=b=1$ and $p=2$, $n=1$. If $p$ divides $2013$ (so $p=3,11,61$), we need coprime $a,b$ such that $a^{2013}+b^{2013}$ is a pure power of $p$. Checking small cases like $a=1,b=2$ for $p=3$ yields $1+2^{2013}=3^m$, which by Mihăilescu's theorem has no solution for $2013>3$. Similar arguments rule out $p=11,61$. Thus, the only prime is $p=2$. Then we solve $C(2^n+1)=C(n)$, where $C(k)$ is the sum of distinct prime divisors of $k$. For small $n$, we compute: $n=1$: $C(3)=3$, $C(1)=0$; $n=2$: $C(5)=5$, $C(2)=2$; $n=3$: $C(9)=3$, $C(3)=3$; $n=4$: $C(17)=17$, $C(4)=2$; $n=5$: $C(33)=14$, $C(5)=5$; $n=6$: $C(65)=18$, $C(6)=5$; etc. Only $n=3$ satisfies the equality. For larger $n$, $C(2^n+1)$ is typically much larger than $C(n)$, and the only case where $2^n+1$ is a prime power giving a small sum is $n=3$ with $2^3+1=9=3^2$. Thus, the only positive integer $n$ is $3$.\",\n    \"answer\": \"3\"\n}",
+  "problem_type": [
+    {
+      "A3657": [
+        "Mathematics -> Number Theory -> Prime Numbers",
+        "Mathematics -> Number Theory -> Factorization"
+      ]
+    },
+    {
+      "A3658": [
+        "Mathematics -> Number Theory -> Prime Numbers"
+      ]
+    }
+  ],
+  "output_answer": [
+    "3"
+  ],
+  "ground_truth": [
+    "(a, b, p, n) = (2^k, 2^k, 2, 2013k + 1)",
+    "3"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 410,
+  "completion_tokens": 14168,
+  "reasoning_tokens": 13657,
+  "cost": 0.0
+}

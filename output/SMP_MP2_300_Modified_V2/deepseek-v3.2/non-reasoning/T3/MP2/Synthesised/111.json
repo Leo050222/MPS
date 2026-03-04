@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-03-03T06:54:54.082503+00:00",
+  "model": "deepseek-v3.2",
+  "type": "T3_MP2_synthesised_Evaluation",
+  "Problem_ID": 111,
+  "math_problem": "Let $n=2000$ and $p=23$. The exponent of $p$ in $n!$ is $\\sum_{k=1}^\\infty \\lfloor n / p^k \\rfloor$. Find the greatest positive integer $x$ such that $p^{6+x}$ divides $n!$. Instead of determining the largest additional exponent beyond 6 for which the prime power divides the factorial, simply find $m = \\lfloor n / p \\rfloor - 36$, where $\\lfloor n / p \\rfloor$ is the first term in the sum for the exponent of $p$ in $n!$. Let $S=\\{-100,-99,-98, \\ldots, 99,100\\}$. Choose a $m$-element subset $T$ of $S$ at random. Find the expected number of elements of the set $\\{|x|: x \\in T\\}$.",
+  "reasoning_content": "Alright, let's go step-by-step.\n\n---\n\n**Step 1: Understanding the problem setup**\n\nWe have \\( n = 2000 \\), \\( p = 23 \\).\n\nThe exponent of \\( p \\) in \\( n! \\) is  \n\\[\ne_p(n!) = \\sum_{k=1}^\\infty \\left\\lfloor \\frac{n}{p^k} \\right\\rfloor.\n\\]\n\nWe are told:  \nInstead of determining the largest additional exponent beyond 6 for which \\( p^{6+x} \\) divides \\( n! \\), simply find  \n\\[\nm = \\left\\lfloor \\frac{n}{p} \\right\\rfloor - 36.\n\\]\n\n---\n\n**Step 2: Compute \\( m \\)**\n\n\\[\n\\left\\lfloor \\frac{2000}{23} \\right\\rfloor.\n\\]\n\\( 23 \\times 86 = 1978 \\), \\( 23 \\times 87 = 2001 \\) (too big).  \nSo \\( \\lfloor 2000/23 \\rfloor = 86 \\).\n\nThus:\n\\[\nm = 86 - 36 = 50.\n\\]\n\nSo \\( m = 50 \\).\n\n---\n\n**Step 3: Understanding the rest of the problem**\n\nWe have \\( S = \\{-100, -99, \\dots, 99, 100\\} \\).  \nSize of \\( S \\): from \\(-100\\) to \\(100\\) inclusive: \\( 201 \\) integers.\n\nWe choose a random \\( m \\)-element subset \\( T \\) of \\( S \\), where \\( m = 50 \\).\n\nWe want the **expected number of elements of the set**  \n\\[\n\\{ |x| : x \\in T \\}.\n\\]\n\nThat is: take absolute values of elements in \\( T \\), then count distinct absolute values.\n\n---\n\n**Step 4: Structure of \\( S \\) by absolute value**\n\nFor \\( a \\ge 1 \\), the absolute value \\( a \\) corresponds to two elements in \\( S \\): \\( a \\) and \\( -a \\), except for \\( a = 0 \\) which corresponds to just \\( 0 \\).\n\nSo possible absolute values: \\( 0, 1, 2, \\dots, 100 \\).  \nThat’s \\( 101 \\) possible absolute values.\n\nLet \\( A_j \\) be the event that absolute value \\( j \\) appears in \\( \\{ |x| : x \\in T \\} \\).\n\nWe want:\n\\[\nE\\left[ \\sum_{j=0}^{100} I_{A_j} \\right] = \\sum_{j=0}^{100} P(A_j).\n\\]\n\n---\n\n**Step 5: Compute \\( P(A_j) \\) for \\( j = 0 \\)**\n\nFor \\( j = 0 \\): only element \\( 0 \\) in \\( S \\) with \\( |x| = 0 \\).  \nWe choose \\( T \\) uniformly from all \\( \\binom{201}{50} \\) subsets of size 50.\n\n\\( P(A_0) \\) = probability \\( 0 \\in T \\).\n\nNumber of subsets of size 50 containing \\( 0 \\): choose remaining 49 from 200 others: \\( \\binom{200}{49} \\).\n\nSo:\n\\[\nP(A_0) = \\frac{\\binom{200}{49}}{\\binom{201}{50}}.\n\\]\nSimplify:  \n\\[\n\\frac{\\binom{200}{49}}{\\binom{201}{50}} = \\frac{\\frac{200!}{49!151!}}{\\frac{201!}{50!151!}} = \\frac{50}{201}.\n\\]\n\n---\n\n**Step 6: Compute \\( P(A_j) \\) for \\( j \\ge 1 \\)**\n\nFor \\( j \\ge 1 \\), \\( |x| = j \\) corresponds to two elements in \\( S \\): \\( j \\) and \\( -j \\).\n\nWe want probability that at least one of \\( j \\) or \\( -j \\) is in \\( T \\).\n\nComplement: neither \\( j \\) nor \\( -j \\) is in \\( T \\).\n\nNumber of subsets of size 50 avoiding both \\( j \\) and \\( -j \\): choose 50 from the other \\( 201 - 2 = 199 \\) elements: \\( \\binom{199}{50} \\).\n\nSo:\n\\[\nP(\\text{neither}) = \\frac{\\binom{199}{50}}{\\binom{201}{50}}.\n\\]\n\nThus:\n\\[\nP(A_j) = 1 - \\frac{\\binom{199}{50}}{\\binom{201}{50}}.\n\\]\n\n---\n\n**Step 7: Simplify \\( P(A_j) \\) for \\( j \\ge 1 \\)**\n\n\\[\n\\frac{\\binom{199}{50}}{\\binom{201}{50}} = \\frac{\\frac{199!}{50!149!}}{\\frac{201!}{50!151!}} = \\frac{199!}{50!149!} \\cdot \\frac{50!151!}{201!}.\n\\]\nCancel \\( 50! \\):\n\\[\n= \\frac{199!}{149!} \\cdot \\frac{151!}{201!}.\n\\]\nWrite \\( 201! = 201 \\cdot 200 \\cdot 199! \\), \\( 151! = 151 \\cdot 150 \\cdot 149! \\).\n\nSo:\n\\[\n\\frac{199!}{149!} \\cdot \\frac{151 \\cdot 150 \\cdot 149!}{201 \\cdot 200 \\cdot 199!} = \\frac{151 \\cdot 150}{201 \\cdot 200}.\n\\]\n\nThus:\n\\[\nP(\\text{neither}) = \\frac{151 \\cdot 150}{201 \\cdot 200}.\n\\]\n\nCompute: \\( 151 \\times 150 = 22650 \\), \\( 201 \\times 200 = 40200 \\).\n\n\\[\n\\frac{22650}{40200} = \\frac{2265}{4020} = \\frac{453}{804} = \\frac{151}{268}.\n\\]\n\nSo:\n\\[\nP(A_j) = 1 - \\frac{151}{268} = \\frac{117}{268}, \\quad j \\ge 1.\n\\]\n\n---\n\n**Step 8: Expected number of distinct absolute values**\n\nWe have \\( j = 0 \\) with probability \\( \\frac{50}{201} \\), and \\( j = 1 \\) to \\( 100 \\) each with probability \\( \\frac{117}{268} \\).\n\nSo:\n\\[\nE = \\frac{50}{201} + 100 \\cdot \\frac{117}{268}.\n\\]\n\n---\n\n**Step 9: Compute numerically exactly**\n\nFirst term: \\( \\frac{50}{201} \\).\n\nSecond term: \\( 100 \\times \\frac{117}{268} = \\frac{11700}{268} \\).\n\nSimplify \\( \\frac{11700}{268} \\): divide numerator and denominator by 4: \\( \\frac{2925}{67} \\).\n\nSo:\n\\[\nE = \\frac{50}{201} + \\frac{2925}{67}.\n\\]\n\nCommon denominator: \\( 201 = 3 \\times 67 \\), so \\( \\frac{2925}{67} = \\frac{2925 \\times 3}{201} = \\frac{8775}{201} \\).\n\nThus:\n\\[\nE = \\frac{50 + 8775}{201} = \\frac{8825}{201}.\n\\]\n\nCheck if \\( 8825 \\) and \\( 201 \\) share a factor:  \n\\( 201 = 3 \\times 67 \\), \\( 8825 \\div 67 = 131.716... \\) not integer, \\( 8825 \\div 3 \\) not integer. So simplified.\n\n---\n\n**Step 10: Final answer**\n\n\\[\nE = \\frac{8825}{201}.\n\\]\n\n---\n\n**Final JSON:**\n\n```json\n{\n    \"reasoning\": \"We computed m = floor(2000/23) - 36 = 86 - 36 = 50. S has 201 elements. For j=0, P(A_0) = 50/201. For j≥1, P(A_j) = 1 - (151*150)/(201*200) = 117/268. Expected number = 50/201 + 100*(117/268) = 8825/201.\",\n    \"answer\": \"8825/201\"\n}\n```",
+  "problem_type": [
+    {
+      "A3709": [
+        "Mathematics -> Number Theory -> Factorization"
+      ]
+    },
+    {
+      "A1188": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations"
+      ]
+    }
+  ],
+  "output_answer": [
+    "8825/201"
+  ],
+  "ground_truth": [
+    "83",
+    "\\frac{8825}{201}"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 469,
+  "completion_tokens": 1756,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

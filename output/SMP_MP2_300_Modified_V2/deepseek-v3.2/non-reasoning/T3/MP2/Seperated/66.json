@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-03-03T06:35:19.212044+00:00",
+  "model": "deepseek-v3.2",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 66,
+  "math_problem": [
+    {
+      "A2103": "For how many positive integers $a$ does the polynomial $x^{2}-a x+a$ have an integer root? Instead of counting the positive integers $a$ such that the given quadratic polynomial has an integer root, simply find $k = a + 7$, where $a$ is a positive integer such that $x^{2} - a x + a$ has an integer root."
+    },
+    {
+      "A2096": "Marisa has two identical cubical dice labeled with the numbers \\(\\{1,2,3,4,5,6\\}\\). However, the two dice are not fair, meaning that they can land on each face with different probability. Marisa rolls the two dice and calculates their sum. Given that the sum is 2 with probability 0.04, and 12 with probability 0.01, the maximum possible probability of the sum being 7 is $p$. Compute $\\lfloor 100 p\\rfloor$."
+    }
+  ],
+  "reasoning_content": "Alright, let’s go step-by-step.\n\n---\n\n## **Problem 1**\n\nWe have \\( x^2 - a x + a = 0 \\) with \\( a \\) a positive integer, and we want integer roots.\n\nLet the integer roots be \\( r \\) and \\( s \\), so:\n\n\\[\nx^2 - a x + a = (x - r)(x - s) = x^2 - (r+s)x + rs\n\\]\n\nThus:\n\\[\nr + s = a\n\\]\n\\[\nrs = a\n\\]\n\nSubstitute \\( a = r+s \\) into \\( rs = a \\):\n\n\\[\nrs = r + s\n\\]\n\\[\nrs - r - s = 0\n\\]\n\\[\nrs - r - s + 1 = 1\n\\]\n\\[\n(r - 1)(s - 1) = 1\n\\]\n\nSince \\( r, s \\) are integers, possibilities:\n\n1. \\( r - 1 = 1, \\; s - 1 = 1 \\) → \\( r = 2, s = 2 \\) → \\( a = 4 \\)\n2. \\( r - 1 = -1, \\; s - 1 = -1 \\) → \\( r = 0, s = 0 \\) → \\( a = 0 \\) (not positive integer, discard)\n\nSo only \\( a = 4 \\) works.\n\nCheck: \\( x^2 - 4x + 4 = (x-2)^2 \\) has integer root 2.\n\nThus \\( k = a + 7 = 4 + 7 = 11 \\).\n\n---\n\n**Answer 1:** \\( 11 \\)\n\n---\n\n## **Problem 2**\n\nWe have two identical unfair cubic dice, faces labeled \\( 1, 2, 3, 4, 5, 6 \\).\n\nLet \\( p_i \\) = probability of face \\( i \\) on one die, \\( i = 1, \\dots, 6 \\), with \\( \\sum_{i=1}^6 p_i = 1 \\), \\( p_i \\ge 0 \\).\n\nTwo dice rolled independently, so probability of sum \\( S = i+j \\) is:\n\n\\[\nP(S = m) = \\sum_{i+j = m} p_i p_j\n\\]\n\nGiven:\n\\[\nP(S=2) = p_1 p_1 = p_1^2 = 0.04 \\quad \\Rightarrow \\quad p_1 = 0.2\n\\]\n\\[\nP(S=12) = p_6 p_6 = p_6^2 = 0.01 \\quad \\Rightarrow \\quad p_6 = 0.1\n\\]\n\nWe want to maximize \\( P(S=7) \\).\n\n---\n\n\\( P(S=7) = 2(p_1 p_6 + p_2 p_5 + p_3 p_4) \\)  \nBut \\( p_1 = 0.2, p_6 = 0.1 \\) fixed.\n\nSo:\n\\[\nP(S=7) = 2(0.2 \\cdot 0.1 + p_2 p_5 + p_3 p_4)\n\\]\n\\[\n= 0.04 + 2(p_2 p_5 + p_3 p_4)\n\\]\n\nWe have \\( p_2 + p_3 + p_4 + p_5 = 1 - p_1 - p_6 = 1 - 0.3 = 0.7 \\).\n\nLet \\( x = p_2, y = p_3, z = p_4, w = p_5 \\), with \\( x+y+z+w = 0.7 \\), all nonnegative.\n\nWe want to maximize \\( x w + y z \\).\n\n---\n\nBy symmetry and the fact that for fixed sum \\( x+w \\) and \\( y+z \\), product \\( xw \\) is maximized when \\( x=w \\), and \\( yz \\) maximized when \\( y=z \\), but here \\( x+w \\) and \\( y+z \\) are not independent because \\( x+w + y+z = 0.7 \\).\n\nLet \\( S_1 = x+w \\), \\( S_2 = y+z \\), \\( S_1 + S_2 = 0.7 \\).\n\nWe want to maximize \\( xw + yz \\) subject to \\( 0 \\le x,w \\le S_1 \\), \\( 0 \\le y,z \\le S_2 \\).\n\nFor fixed \\( S_1 \\), \\( xw \\le (S_1/2)^2 \\) (when \\( x=w=S_1/2 \\)), similarly \\( yz \\le (S_2/2)^2 \\).\n\nSo:\n\\[\nF(S_1) = \\frac{S_1^2}{4} + \\frac{(0.7 - S_1)^2}{4} = \\frac{S_1^2 + (0.7 - S_1)^2}{4}\n\\]\n\nDerivative: \\( \\frac{2S_1 - 2(0.7 - S_1)}{4} = \\frac{4S_1 - 1.4}{4} = 0 \\) → \\( S_1 = 0.35 \\).\n\nSo \\( S_1 = S_2 = 0.35 \\), then \\( x=w=0.175 \\), \\( y=z=0.175 \\).\n\nCheck: \\( p_2 = p_3 = p_4 = p_5 = 0.175 \\) possible? Sum \\( 0.175 \\times 4 = 0.7 \\), yes.\n\nThen \\( xw + yz = 0.175^2 + 0.175^2 = 0.06125 \\).\n\nSo:\n\\[\nP(S=7) = 0.04 + 2 \\times 0.06125 = 0.04 + 0.1225 = 0.1625\n\\]\n\n---\n\nBut wait — are \\( p_i \\) allowed to be equal? Yes, no restriction except nonnegativity and sum 1.\n\nSo \\( p = 0.1625 \\).\n\nWe need \\( \\lfloor 100 p \\rfloor = \\lfloor 16.25 \\rfloor = 16 \\).\n\n---\n\n**Answer 2:** \\( 16 \\)\n\n---\n\nFinal JSON:\n\n```json\n{\n    \"reasoning\": \"For Problem 1: The quadratic has integer roots if and only if (r-1)(s-1)=1 for integer roots r,s, giving only a=4 among positive integers, so k=4+7=11. For Problem 2: Given p1=0.2, p6=0.1, we maximize P(sum=7)=0.04+2(p2 p5 + p3 p4) by setting p2=p3=p4=p5=0.175, giving p=0.1625, so floor(100p)=16.\",\n    \"answer_1\": \"11\",\n    \"answer_2\": \"16\"\n}\n```",
+  "problem_type": [
+    {
+      "A2103": [
+        "Mathematics -> Algebra -> Intermediate Algebra -> Quadratic Functions"
+      ]
+    },
+    {
+      "A2096": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "11",
+    "16"
+  ],
+  "ground_truth": [
+    "7",
+    "28"
+  ],
+  "correctness": [
+    false,
+    false
+  ],
+  "prompt_tokens": 459,
+  "completion_tokens": 1500,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

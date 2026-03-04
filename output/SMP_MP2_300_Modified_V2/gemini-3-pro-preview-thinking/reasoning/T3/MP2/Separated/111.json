@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-03-03T14:26:14.941576+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 111,
+  "math_problem": [
+    {
+      "A3709": "Find the greatest positive integer $x$ such that $23^{6+x}$ divides $2000!$ Instead of determining the largest additional exponent beyond 6 for which the prime power divides the factorial, simply find $m = \\lfloor n / p \\rfloor - 36$, where $\\lfloor n / p \\rfloor$ is the first term in the sum for the exponent of $p$ in $n!$."
+    },
+    {
+      "A1188": "Let $S=\\{-100,-99,-98, \\ldots, 99,100\\}$. Choose a 50-element subset $T$ of $S$ at random. Find the expected number of elements of the set $\\{|x|: x \\in T\\}$."
+    }
+  ],
+  "reasoning_content": "**Problem 1 Reasoning**\n\nThe problem asks us to consider the greatest positive integer $x$ such that $23^{6+x}$ divides $2000!$. However, the problem statement explicitly directs us to perform a different calculation: \"Instead of determining the largest additional exponent beyond 6... simply find $m = \\lfloor n / p \\rfloor - 36$\".\n\nFrom the context of the factorial $2000!$ and the base $23$, we identify $n = 2000$ and $p = 23$. The term $\\lfloor n / p \\rfloor$ represents the first term in Legendre's Formula for the exponent of the prime $p$ in $n!$.\n\nWe calculate $\\lfloor n / p \\rfloor$:\n$$ \\lfloor 2000 / 23 \\rfloor = 86 $$\n(Since $23 \\times 86 = 1978$ and $23 \\times 87 = 2001$).\n\nFollowing the instruction to find $m$:\n$$ m = 86 - 36 = 50 $$\n\n**Problem 2 Reasoning**\n\nLet $S = \\{-100, -99, \\ldots, 99, 100\\}$. The size of set $S$ is 201. We choose a subset $T$ of size 50 uniformly at random. We want to find the expected size of the set of absolute values $A = \\{|x| : x \\in T\\}$. The possible values in $A$ are integers from 0 to 100.\n\nLet $I_k$ be the indicator variable that $k \\in A$. The size of $A$ is $Y = \\sum_{k=0}^{100} I_k$. By linearity of expectation, $E[Y] = \\sum_{k=0}^{100} P(k \\in A)$.\n\nFor $k=0$:\n$0 \\in A$ if and only if $0 \\in T$. There is only one element in $S$ with absolute value 0.\n$$ P(0 \\in A) = \\frac{\\binom{200}{49}}{\\binom{201}{50}} = \\frac{50}{201} $$\n\nFor $k \\in \\{1, \\ldots, 100\\}$:\nThere are two elements in $S$ with absolute value $k$: $\\{k, -k\\}$.\n$k \\notin A$ if and only if neither $k$ nor $-k$ is in $T$. The remaining elements to choose from are $201 - 2 = 199$.\n$$ P(k \\notin A) = \\frac{\\binom{199}{50}}{\\binom{201}{50}} = \\frac{199! \\, 50! \\, 151!}{50! \\, 149! \\, 201!} = \\frac{151 \\times 150}{201 \\times 200} = \\frac{151}{268} $$\n$$ P(k \\in A) = 1 - \\frac{151}{268} = \\frac{117}{268} $$\n\nSumming over all $k$:\n$$ E[Y] = P(0 \\in A) + \\sum_{k=1}^{100} P(k \\in A) = \\frac{50}{201} + 100 \\times \\frac{117}{268} $$\n$$ 100 \\times \\frac{117}{268} = \\frac{2925}{67} $$\nTo add $\\frac{50}{201}$, we convert $\\frac{2925}{67}$ to a denominator of 201 (multiplying by 3):\n$$ \\frac{2925 \\times 3}{201} = \\frac{8775}{201} $$\n$$ E[Y] = \\frac{50}{201} + \\frac{8775}{201} = \\frac{8825}{201} $$\n\n```json\n{\n    \"reasoning\": \"For Problem 1, the text explicitly redirects the task to calculating m = floor(2000/23) - 36, which results in 50. For Problem 2, we use linearity of expectation. The probability that 0 is in the set of absolute values is 50/201. For any k from 1 to 100, the probability k is in the set is 117/268. Summing these probabilities gives the expected value.\",\n    \"answer_1\": \"50\",\n    \"answer_2\": \"8825/201\"\n}\n```",
+  "problem_type": [
+    {
+      "A3709": [
+        "Mathematics -> Number Theory -> Factorization"
+      ]
+    },
+    {
+      "A1188": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations"
+      ]
+    }
+  ],
+  "output_answer": [
+    "50",
+    "8825/201"
+  ],
+  "ground_truth": [
+    "50",
+    "\\frac{8825}{201}"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 439,
+  "completion_tokens": 8776,
+  "reasoning_tokens": 7677,
+  "cost": 0.0
+}

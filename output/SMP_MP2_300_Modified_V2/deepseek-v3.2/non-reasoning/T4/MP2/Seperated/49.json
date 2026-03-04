@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-03-02T19:38:30.451602+00:00",
+  "model": "deepseek-v3.2",
+  "type": "T4_MP2_seperated_Evaluation",
+  "Problem_ID": 49,
+  "math_problem": [
+    {
+      "A1650": "A polynomial $P$ of degree 2015 satisfies the equation $P(n)=\\frac{1}{n^{2}}$ for $n=1,2, \\ldots, 2016$. Find \\lfloor 2017 P(2017)\\rfloor. Instead of finding the floor of the product of the next successive integer and the value of $P$ evaluated at that integer, simply find $d = Q(0) + 5$, where $Q(x) = x^{2} P(x) - 1$ is the auxiliary polynomial derived from the given interpolation condition."
+    },
+    {
+      "A174": "In the polynomial $x^4 - 18x^3 + kx^2 + 200x - 1984 = 0$ , the product of $2$ of its roots is $- 32$ . Find $k$ ."
+    }
+  ],
+  "reasoning_content": "Alright, let’s go step-by-step.\n\n---\n\n## **Problem 1**\n\nWe are told:  \n\\( P \\) is a polynomial of degree \\( 2015 \\) such that  \n\\[\nP(n) = \\frac{1}{n^2} \\quad \\text{for } n = 1, 2, \\dots, 2016.\n\\]\n\nDefine \\( Q(x) = x^2 P(x) - 1 \\).\n\nThen \\( Q(n) = n^2 \\cdot \\frac{1}{n^2} - 1 = 0 \\) for \\( n = 1, 2, \\dots, 2016 \\).\n\nSo \\( Q(x) \\) has roots \\( 1, 2, \\dots, 2016 \\).\n\nAlso, \\( Q(x) = x^2 P(x) - 1 \\) and \\( P \\) has degree \\( 2015 \\), so \\( x^2 P(x) \\) has degree \\( 2017 \\), so \\( Q(x) \\) has degree \\( 2017 \\).\n\nThus \\( Q(x) \\) is a degree \\( 2017 \\) polynomial with roots \\( 1, 2, \\dots, 2016 \\).  \nLet the 2017th root be \\( r \\). Then:\n\n\\[\nQ(x) = C \\cdot (x - 1)(x - 2)\\dots(x - 2016)(x - r).\n\\]\n\nAlso, from \\( Q(x) = x^2 P(x) - 1 \\), we see \\( Q(0) = 0^2 P(0) - 1 = -1 \\).\n\nSo:\n\\[\nQ(0) = C \\cdot (0 - 1)(0 - 2)\\dots(0 - 2016)(0 - r) = -1.\n\\]\n\nThat is:\n\\[\nC \\cdot (-1)^{2016} \\cdot (1 \\cdot 2 \\cdots 2016) \\cdot (-r) = -1.\n\\]\n\nSince \\( (-1)^{2016} = 1 \\), we have:\n\\[\nC \\cdot (2016!) \\cdot (-r) = -1.\n\\]\n\\[\n- C \\cdot (2016!) \\cdot r = -1 \\implies C \\cdot (2016!) \\cdot r = 1.\n\\]\n\\[\nC = \\frac{1}{2016! \\cdot r}.\n\\]\n\n---\n\nNow, \\( Q(x) \\) has degree 2017, so the coefficient of \\( x^{2017} \\) in \\( Q(x) \\) is \\( C \\).\n\nBut from \\( Q(x) = x^2 P(x) - 1 \\), the coefficient of \\( x^{2017} \\) in \\( Q(x) \\) equals the coefficient of \\( x^{2015} \\) in \\( P(x) \\), call it \\( a_{2015} \\).\n\nBut we can also find \\( C \\) another way:  \nWe know \\( Q(x) = x^2 P(x) - 1 \\), and \\( P \\) has degree 2015, so \\( Q \\) has degree 2017.  \nAlso, \\( Q(n) = 0 \\) for \\( n = 1, \\dots, 2016 \\), so \\( Q(x) = A (x - 1)\\dots(x - 2016)(x - r) \\).\n\nWe can find \\( r \\) by evaluating \\( Q(x) \\) at \\( x = 0 \\) and \\( x = 2017 \\).\n\nWe already used \\( Q(0) = -1 \\) to relate \\( C \\) and \\( r \\).\n\nNow, \\( P(2017) \\) is unknown, but \\( Q(2017) = 2017^2 P(2017) - 1 \\).\n\nAlso, \\( Q(2017) = C \\cdot (2017 - 1)(2017 - 2)\\dots(2017 - 2016)(2017 - r) \\).\n\nThat is:\n\\[\nQ(2017) = C \\cdot (2016)(2015)\\dots(1)(2017 - r) = C \\cdot 2016! \\cdot (2017 - r).\n\\]\n\nBut \\( C \\cdot 2016! = \\frac{1}{r} \\) from earlier.\n\nSo:\n\\[\nQ(2017) = \\frac{1}{r} \\cdot (2017 - r) = \\frac{2017}{r} - 1.\n\\]\n\nThus:\n\\[\n2017^2 P(2017) - 1 = \\frac{2017}{r} - 1.\n\\]\n\\[\n2017^2 P(2017) = \\frac{2017}{r}.\n\\]\n\\[\n2017 P(2017) = \\frac{1}{r}.\n\\]\n\nSo \\( r = \\frac{1}{2017 P(2017)} \\).\n\n---\n\nBut the problem says: Instead of finding \\( \\lfloor 2017 P(2017) \\rfloor \\), find \\( d = Q(0) + 5 \\).\n\nWe already have \\( Q(0) = -1 \\), so \\( d = -1 + 5 = 4 \\).\n\nSo the answer to Problem 1 is \\( 4 \\).\n\n---\n\n**Check:**  \nWe didn’t need \\( r \\) or \\( P(2017) \\) at all for \\( Q(0) + 5 \\).  \nGiven \\( Q(0) = -1 \\) from definition, \\( Q(0) + 5 = 4 \\).\n\n---\n\n## **Problem 2**\n\nGiven: \\( x^4 - 18x^3 + kx^2 + 200x - 1984 = 0 \\), product of two of its roots is \\( -32 \\).\n\nLet roots be \\( a, b, c, d \\).\n\nVieta’s formulas:\n\\[\na + b + c + d = 18,\n\\]\n\\[\nab + ac + ad + bc + bd + cd = k,\n\\]\n\\[\nabc + abd + acd + bcd = -200,\n\\]\n\\[\nabcd = -1984.\n\\]\n\nGiven: product of two roots is \\( -32 \\), say \\( ab = -32 \\).\n\nThen \\( abcd = (-32) \\cdot cd = -1984 \\implies cd = \\frac{-1984}{-32} = 62 \\).\n\nSo \\( ab = -32 \\), \\( cd = 62 \\).\n\nAlso \\( a+b+c+d = 18 \\).\n\nAlso \\( abc + abd + acd + bcd = ab(c+d) + cd(a+b) = -32(c+d) + 62(a+b) = -200 \\).\n\nLet \\( S_1 = a+b \\), \\( S_2 = c+d \\). Then \\( S_1 + S_2 = 18 \\).\n\nEquation from sum of products of three roots:\n\\[\n-32 S_2 + 62 S_1 = -200.\n\\]\n\nSubstitute \\( S_2 = 18 - S_1 \\):\n\\[\n-32(18 - S_1) + 62 S_1 = -200.\n\\]\n\\[\n-576 + 32 S_1 + 62 S_1 = -200.\n\\]\n\\[\n94 S_1 = 376 \\implies S_1 = 4.\n\\]\nSo \\( a+b = 4 \\), \\( c+d = 14 \\).\n\n---\n\nNow \\( k = ab + ac + ad + bc + bd + cd = ab + cd + (a+b)(c+d) \\).\n\nWe have \\( ab = -32 \\), \\( cd = 62 \\), \\( (a+b)(c+d) = 4 \\cdot 14 = 56 \\).\n\nSo:\n\\[\nk = (-32) + 62 + 56 = 86.\n\\]\n\n---\n\n**Check:**  \n\\( ab = -32 \\), \\( cd = 62 \\), \\( a+b=4 \\), \\( c+d=14 \\), \\( abcd = -1984 \\) works.  \nSum of roots \\( 4+14=18 \\), sum of triple products: \\( ab(c+d) + cd(a+b) = -32\\cdot 14 + 62\\cdot 4 = -448 + 248 = -200 \\) works.\n\nSo \\( k = 86 \\).\n\n---\n\n**Final answers:**\nProblem 1: \\( 4 \\)  \nProblem 2: \\( 86 \\)\n\n---\n\n```json\n{\n    \"reasoning\": \"For Problem 1: Define Q(x) = x^2 P(x) - 1. Given P(n) = 1/n^2 for n=1,...,2016, Q has roots 1,...,2016. Since deg P = 2015, deg Q = 2017, so Q(x) = C(x-1)...(x-2016)(x-r). From Q(0) = -1, we find C = 1/(2016! r). The problem asks for Q(0)+5 = -1+5 = 4. For Problem 2: Let roots a,b,c,d with ab = -32. Then abcd = -1984 gives cd = 62. Let S1 = a+b, S2 = c+d. From sum of roots: S1+S2=18. From sum of triple products: -32 S2 + 62 S1 = -200. Solve to get S1=4, S2=14. Then k = ab + cd + (a+b)(c+d) = -32 + 62 + 56 = 86.\",\n    \"answer_1\": \"4\",\n    \"answer_2\": \"86\"\n}\n```",
+  "problem_type": [
+    {
+      "A1650": [
+        "Mathematics -> Algebra -> Algebra -> Polynomial Operations"
+      ]
+    },
+    {
+      "A174": [
+        "Mathematics -> Algebra -> Algebra -> Polynomial Operations"
+      ]
+    }
+  ],
+  "output_answer": [
+    "4",
+    "86"
+  ],
+  "ground_truth": [
+    "4",
+    "\\[ k = 86 \\]"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 444,
+  "completion_tokens": 2052,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}
