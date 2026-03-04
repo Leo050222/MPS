@@ -927,6 +927,566 @@ class grokClient(BaseClient):
             return None
 
 
+class doubaoClient(BaseClient):
+    """豆包 doubao-seed 模型客户端。
+
+    使用 extra_body={"thinking": {"type": "enabled"/"disabled"}} 控制推理模式，
+    而非 reasoning_effort 参数。
+    """
+    def __init__(self, model: str = "doubao-seed-1-8-251228"):
+        super().__init__(model=model)
+
+    def get_response(self, prompt, reasoning: str = "minimal", seed: int = None):
+        try:
+            if isinstance(prompt, list):
+                messages = prompt
+            elif isinstance(prompt, str):
+                messages = [{"role": "user", "content": prompt}]
+            else:
+                raise ValueError(f"Unsupported prompt type: {type(prompt)}")
+
+            thinking_type = "disabled" if reasoning == "minimal" else "enabled"
+            extra_body = {"thinking": {"type": thinking_type}}
+            if seed is not None:
+                extra_body["seed"] = seed
+
+            kwargs = {
+                "model": self.model,
+                "messages": messages,
+                "stream": True,
+                "stream_options": {"include_usage": True},
+                "top_p": TOP_P,
+                "extra_body": extra_body,
+            }
+
+            completion = self.client.chat.completions.create(**kwargs)
+
+            full_content = ""
+            response_id = None
+            finish_reason = None
+            usage_info = None
+
+            for chunk in completion:
+                if chunk.id and not response_id:
+                    response_id = chunk.id
+                if chunk.choices and len(chunk.choices) > 0:
+                    choice = chunk.choices[0]
+                    if choice.delta and choice.delta.content:
+                        full_content += choice.delta.content
+                        print(choice.delta.content, end="", flush=True)
+                    if choice.finish_reason:
+                        finish_reason = choice.finish_reason
+                if chunk.usage:
+                    usage_info = chunk.usage
+                    print(f"\n\n=== Token 使用统计 ===")
+                    print(f"输入 Tokens: {chunk.usage.prompt_tokens}")
+                    print(f"输出 Tokens: {chunk.usage.completion_tokens}")
+
+            response = {
+                "id": response_id or f"chatcmpl-{hash(str(prompt))}",
+                "object": "chat.completion",
+                "created": int(time.time()),
+                "model": self.model,
+                "choices": [{
+                    "index": 0,
+                    "message": {"role": "assistant", "content": full_content},
+                    "finish_reason": finish_reason or "stop"
+                }]
+            }
+
+            if usage_info:
+                usage_dict = {
+                    "prompt_tokens": usage_info.prompt_tokens,
+                    "completion_tokens": usage_info.completion_tokens,
+                    "total_tokens": getattr(usage_info, 'total_tokens',
+                                            usage_info.prompt_tokens + usage_info.completion_tokens)
+                }
+                completion_tokens_details = {}
+                if hasattr(usage_info, 'completion_tokens_details') and usage_info.completion_tokens_details:
+                    details = usage_info.completion_tokens_details
+                    completion_tokens_details["reasoning_tokens"] = getattr(details, 'reasoning_tokens', 0)
+                usage_dict["completion_tokens_details"] = completion_tokens_details
+                response["usage"] = usage_dict
+            else:
+                response["usage"] = {
+                    "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0,
+                    "completion_tokens_details": {"reasoning_tokens": 0}
+                }
+
+            return response
+
+        except Exception as e:
+            logger.error(f"Error in doubao get_response: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            return None
+
+    async def get_response_async(self, prompt, reasoning: str = "minimal", seed: int = None):
+        """异步流式调用，使用 thinking 参数控制推理模式。"""
+        try:
+            if isinstance(prompt, list):
+                messages = prompt
+            elif isinstance(prompt, str):
+                messages = [{"role": "user", "content": prompt}]
+            else:
+                raise ValueError(f"Unsupported prompt type: {type(prompt)}")
+
+            thinking_type = "disabled" if reasoning == "minimal" else "enabled"
+            extra_body = {"thinking": {"type": thinking_type}}
+            if seed is not None:
+                extra_body["seed"] = seed
+
+            kwargs = {
+                "model": self.model,
+                "messages": messages,
+                "stream": True,
+                "stream_options": {"include_usage": True},
+                "top_p": TOP_P,
+                "extra_body": extra_body,
+            }
+
+            completion = await self.async_client.chat.completions.create(**kwargs)
+
+            full_content = ""
+            response_id = None
+            finish_reason = None
+            usage_info = None
+            model_name_from_response = self.model
+
+            async for chunk in completion:
+                if chunk.id and not response_id:
+                    response_id = chunk.id
+                if chunk.model:
+                    model_name_from_response = chunk.model
+                if chunk.choices and len(chunk.choices) > 0:
+                    choice = chunk.choices[0]
+                    if choice.delta and choice.delta.content:
+                        full_content += choice.delta.content
+                    if choice.finish_reason:
+                        finish_reason = choice.finish_reason
+                if chunk.usage:
+                    usage_info = chunk.usage
+
+            if not full_content and not usage_info:
+                logger.error("No content or usage from doubao async stream")
+                return None
+
+            response = {
+                "id": response_id or f"chatcmpl-{hash(str(prompt))}",
+                "object": "chat.completion",
+                "created": int(time.time()),
+                "model": model_name_from_response,
+                "choices": [{
+                    "index": 0,
+                    "message": {"role": "assistant", "content": full_content},
+                    "finish_reason": finish_reason or "stop"
+                }]
+            }
+
+            if usage_info:
+                usage_dict = {
+                    "prompt_tokens": usage_info.prompt_tokens,
+                    "completion_tokens": usage_info.completion_tokens,
+                    "total_tokens": getattr(usage_info, 'total_tokens',
+                                            usage_info.prompt_tokens + usage_info.completion_tokens)
+                }
+                completion_tokens_details = {}
+                if hasattr(usage_info, 'completion_tokens_details') and usage_info.completion_tokens_details:
+                    details = usage_info.completion_tokens_details
+                    completion_tokens_details["reasoning_tokens"] = getattr(details, 'reasoning_tokens', 0)
+                usage_dict["completion_tokens_details"] = completion_tokens_details
+                response["usage"] = usage_dict
+            else:
+                response["usage"] = {
+                    "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0,
+                    "completion_tokens_details": {"reasoning_tokens": 0}
+                }
+
+            return response
+
+        except Exception as e:
+            logger.error(f"Error in doubao async stream response: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            return None
+
+
+
+class zhipuClient(BaseClient):
+    """智谱 GLM 模型客户端。
+
+    使用 extra_body={"thinking": {"type": "enabled"/"disabled"}} 控制推理模式，
+    与 doubao 格式相同，base_url 指向 open.bigmodel.cn。
+    """
+    def __init__(self, model: str = "glm-4.5"):
+        super().__init__(model=model)
+
+    def get_response(self, prompt, reasoning: str = "minimal", seed: int = None):
+        try:
+            if isinstance(prompt, list):
+                messages = prompt
+            elif isinstance(prompt, str):
+                messages = [{"role": "user", "content": prompt}]
+            else:
+                raise ValueError(f"Unsupported prompt type: {type(prompt)}")
+
+            thinking_type = "disabled" if reasoning == "minimal" else "enabled"
+            extra_body = {"thinking": {"type": thinking_type}}
+            if seed is not None:
+                extra_body["seed"] = seed
+
+            kwargs = {
+                "model": self.model,
+                "messages": messages,
+                "stream": True,
+                "stream_options": {"include_usage": True},
+                "top_p": TOP_P,
+                "extra_body": extra_body,
+            }
+
+            completion = self.client.chat.completions.create(**kwargs)
+
+            full_content = ""
+            response_id = None
+            finish_reason = None
+            usage_info = None
+
+            for chunk in completion:
+                if chunk.id and not response_id:
+                    response_id = chunk.id
+                if chunk.choices and len(chunk.choices) > 0:
+                    choice = chunk.choices[0]
+                    if choice.delta and choice.delta.content:
+                        full_content += choice.delta.content
+                        print(choice.delta.content, end="", flush=True)
+                    if choice.finish_reason:
+                        finish_reason = choice.finish_reason
+                if chunk.usage:
+                    usage_info = chunk.usage
+                    print(f"\n\n=== Token 使用统计 ===")
+                    print(f"输入 Tokens: {chunk.usage.prompt_tokens}")
+                    print(f"输出 Tokens: {chunk.usage.completion_tokens}")
+
+            response = {
+                "id": response_id or f"chatcmpl-{hash(str(prompt))}",
+                "object": "chat.completion",
+                "created": int(time.time()),
+                "model": self.model,
+                "choices": [{
+                    "index": 0,
+                    "message": {"role": "assistant", "content": full_content},
+                    "finish_reason": finish_reason or "stop"
+                }]
+            }
+
+            if usage_info:
+                usage_dict = {
+                    "prompt_tokens": usage_info.prompt_tokens,
+                    "completion_tokens": usage_info.completion_tokens,
+                    "total_tokens": getattr(usage_info, 'total_tokens',
+                                            usage_info.prompt_tokens + usage_info.completion_tokens)
+                }
+                completion_tokens_details = {}
+                if hasattr(usage_info, 'completion_tokens_details') and usage_info.completion_tokens_details:
+                    details = usage_info.completion_tokens_details
+                    completion_tokens_details["reasoning_tokens"] = getattr(details, 'reasoning_tokens', 0)
+                usage_dict["completion_tokens_details"] = completion_tokens_details
+                response["usage"] = usage_dict
+            else:
+                response["usage"] = {
+                    "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0,
+                    "completion_tokens_details": {"reasoning_tokens": 0}
+                }
+
+            return response
+
+        except Exception as e:
+            logger.error(f"Error in zhipu get_response: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            return None
+
+    async def get_response_async(self, prompt, reasoning: str = "minimal", seed: int = None):
+        """异步流式调用，使用 thinking 参数控制推理模式。"""
+        try:
+            if isinstance(prompt, list):
+                messages = prompt
+            elif isinstance(prompt, str):
+                messages = [{"role": "user", "content": prompt}]
+            else:
+                raise ValueError(f"Unsupported prompt type: {type(prompt)}")
+
+            thinking_type = "disabled" if reasoning == "minimal" else "enabled"
+            extra_body = {"thinking": {"type": thinking_type}}
+            if seed is not None:
+                extra_body["seed"] = seed
+
+            kwargs = {
+                "model": self.model,
+                "messages": messages,
+                "stream": True,
+                "stream_options": {"include_usage": True},
+                "top_p": TOP_P,
+                "extra_body": extra_body,
+            }
+
+            completion = await self.async_client.chat.completions.create(**kwargs)
+
+            full_content = ""
+            response_id = None
+            finish_reason = None
+            usage_info = None
+            model_name_from_response = self.model
+
+            async for chunk in completion:
+                if chunk.id and not response_id:
+                    response_id = chunk.id
+                if chunk.model:
+                    model_name_from_response = chunk.model
+                if chunk.choices and len(chunk.choices) > 0:
+                    choice = chunk.choices[0]
+                    if choice.delta and choice.delta.content:
+                        full_content += choice.delta.content
+                    if choice.finish_reason:
+                        finish_reason = choice.finish_reason
+                if chunk.usage:
+                    usage_info = chunk.usage
+
+            if not full_content and not usage_info:
+                logger.error("No content or usage from zhipu async stream")
+                return None
+
+            response = {
+                "id": response_id or f"chatcmpl-{hash(str(prompt))}",
+                "object": "chat.completion",
+                "created": int(time.time()),
+                "model": model_name_from_response,
+                "choices": [{
+                    "index": 0,
+                    "message": {"role": "assistant", "content": full_content},
+                    "finish_reason": finish_reason or "stop"
+                }]
+            }
+
+            if usage_info:
+                usage_dict = {
+                    "prompt_tokens": usage_info.prompt_tokens,
+                    "completion_tokens": usage_info.completion_tokens,
+                    "total_tokens": getattr(usage_info, 'total_tokens',
+                                            usage_info.prompt_tokens + usage_info.completion_tokens)
+                }
+                completion_tokens_details = {}
+                if hasattr(usage_info, 'completion_tokens_details') and usage_info.completion_tokens_details:
+                    details = usage_info.completion_tokens_details
+                    completion_tokens_details["reasoning_tokens"] = getattr(details, 'reasoning_tokens', 0)
+                usage_dict["completion_tokens_details"] = completion_tokens_details
+                response["usage"] = usage_dict
+            else:
+                response["usage"] = {
+                    "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0,
+                    "completion_tokens_details": {"reasoning_tokens": 0}
+                }
+
+            return response
+
+        except Exception as e:
+            logger.error(f"Error in zhipu async stream response: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            return None
+
+
+class deepseekClient(BaseClient):
+    """DeepSeek V3.2 客户端。
+
+    统一使用 deepseek-chat 模型，通过 extra_body 控制思考模式：
+    - reasoning="minimal" → thinking disabled，支持 top_p
+    - reasoning!="minimal" → thinking enabled，不支持 top_p（官方限制）
+
+    流式响应中 delta.reasoning_content 为思考过程，仅收集 delta.content 作答案。
+    """
+    def __init__(self, model: str = "deepseek-v3.2"):
+        super().__init__(model=model)
+
+    def _thinking_kwargs(self, reasoning: str) -> tuple[dict, bool]:
+        """返回 (extra_body, use_top_p)"""
+        if reasoning == "minimal":
+            return {"thinking": {"type": "disabled"}}, True
+        return {"thinking": {"type": "enabled"}}, False
+
+    def get_response(self, prompt, reasoning: str = "minimal", seed: int = None):
+        try:
+            if isinstance(prompt, list):
+                messages = prompt
+            elif isinstance(prompt, str):
+                messages = [{"role": "user", "content": prompt}]
+            else:
+                raise ValueError(f"Unsupported prompt type: {type(prompt)}")
+
+            extra_body, use_top_p = self._thinking_kwargs(reasoning)
+            kwargs = {
+                "model": "deepseek-chat",
+                "messages": messages,
+                "stream": True,
+                "stream_options": {"include_usage": True},
+                "extra_body": extra_body,
+                "max_tokens": 131070,
+            }
+            if use_top_p:
+                kwargs["top_p"] = TOP_P
+            if seed is not None:
+                kwargs["seed"] = seed
+
+            completion = self.client.chat.completions.create(**kwargs)
+
+            full_content = ""
+            response_id = None
+            finish_reason = None
+            usage_info = None
+
+            for chunk in completion:
+                if chunk.id and not response_id:
+                    response_id = chunk.id
+                if chunk.choices and len(chunk.choices) > 0:
+                    choice = chunk.choices[0]
+                    if choice.delta and choice.delta.content:
+                        full_content += choice.delta.content
+                        print(choice.delta.content, end="", flush=True)
+                    if choice.finish_reason:
+                        finish_reason = choice.finish_reason
+                if chunk.usage:
+                    usage_info = chunk.usage
+                    print(f"\n\n=== Token 使用统计 ===")
+                    print(f"输入 Tokens: {chunk.usage.prompt_tokens}")
+                    print(f"输出 Tokens: {chunk.usage.completion_tokens}")
+
+            response = {
+                "id": response_id or f"chatcmpl-{hash(str(prompt))}",
+                "object": "chat.completion",
+                "created": int(time.time()),
+                "model": self.model,
+                "choices": [{
+                    "index": 0,
+                    "message": {"role": "assistant", "content": full_content},
+                    "finish_reason": finish_reason or "stop"
+                }]
+            }
+
+            if usage_info:
+                usage_dict = {
+                    "prompt_tokens": usage_info.prompt_tokens,
+                    "completion_tokens": usage_info.completion_tokens,
+                    "total_tokens": getattr(usage_info, 'total_tokens',
+                                            usage_info.prompt_tokens + usage_info.completion_tokens)
+                }
+                completion_tokens_details = {}
+                if hasattr(usage_info, 'completion_tokens_details') and usage_info.completion_tokens_details:
+                    details = usage_info.completion_tokens_details
+                    completion_tokens_details["reasoning_tokens"] = getattr(details, 'reasoning_tokens', 0)
+                usage_dict["completion_tokens_details"] = completion_tokens_details
+                response["usage"] = usage_dict
+            else:
+                response["usage"] = {
+                    "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0,
+                    "completion_tokens_details": {"reasoning_tokens": 0}
+                }
+
+            return response
+
+        except Exception as e:
+            logger.error(f"Error in deepseek get_response: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            return None
+
+    async def get_response_async(self, prompt, reasoning: str = "minimal", seed: int = None):
+        """异步流式调用。通过 extra_body thinking 参数控制思考模式。"""
+        try:
+            if isinstance(prompt, list):
+                messages = prompt
+            elif isinstance(prompt, str):
+                messages = [{"role": "user", "content": prompt}]
+            else:
+                raise ValueError(f"Unsupported prompt type: {type(prompt)}")
+
+            extra_body, use_top_p = self._thinking_kwargs(reasoning)
+            kwargs = {
+                "model": "deepseek-chat",
+                "messages": messages,
+                "stream": True,
+                "stream_options": {"include_usage": True},
+                "extra_body": extra_body,
+                "max_tokens": 131070,
+            }
+            if use_top_p:
+                kwargs["top_p"] = TOP_P
+            if seed is not None:
+                kwargs["seed"] = seed
+
+            completion = await self.async_client.chat.completions.create(**kwargs)
+
+            full_content = ""
+            response_id = None
+            finish_reason = None
+            usage_info = None
+
+            async for chunk in completion:
+                if chunk.id and not response_id:
+                    response_id = chunk.id
+                if chunk.choices and len(chunk.choices) > 0:
+                    choice = chunk.choices[0]
+                    # 只收集 content（答案），忽略 reasoning_content（思考过程）
+                    if choice.delta and choice.delta.content:
+                        full_content += choice.delta.content
+                    if choice.finish_reason:
+                        finish_reason = choice.finish_reason
+                if chunk.usage:
+                    usage_info = chunk.usage
+
+            if not full_content and not usage_info:
+                logger.error("No content or usage from deepseek async stream")
+                return None
+
+            response = {
+                "id": response_id or f"chatcmpl-{hash(str(prompt))}",
+                "object": "chat.completion",
+                "created": int(time.time()),
+                "model": self.model,
+                "choices": [{
+                    "index": 0,
+                    "message": {"role": "assistant", "content": full_content},
+                    "finish_reason": finish_reason or "stop"
+                }]
+            }
+
+            if usage_info:
+                usage_dict = {
+                    "prompt_tokens": usage_info.prompt_tokens,
+                    "completion_tokens": usage_info.completion_tokens,
+                    "total_tokens": getattr(usage_info, 'total_tokens',
+                                            usage_info.prompt_tokens + usage_info.completion_tokens)
+                }
+                completion_tokens_details = {}
+                if hasattr(usage_info, 'completion_tokens_details') and usage_info.completion_tokens_details:
+                    details = usage_info.completion_tokens_details
+                    completion_tokens_details["reasoning_tokens"] = getattr(details, 'reasoning_tokens', 0)
+                usage_dict["completion_tokens_details"] = completion_tokens_details
+                response["usage"] = usage_dict
+            else:
+                response["usage"] = {
+                    "prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0,
+                    "completion_tokens_details": {"reasoning_tokens": 0}
+                }
+
+            return response
+
+        except Exception as e:
+            logger.error(f"Error in deepseek async stream response: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            return None
+
+
 def get_client(model: str = ""):
     """Factory returning a client with model-specific behavior.
 
@@ -935,6 +1495,8 @@ def get_client(model: str = ""):
     - qwen-plus: uses `enable_thinking` (bool)
     - gemini-2.5-*: forces JSON output / thinkingConfig tweaks (async path)
     - grok-*: does not support reasoning_effort
+    - doubao-*: uses `thinking` param instead of `reasoning_effort`
+    - glm-4.5: uses `thinking` param (similar to doubao)
     """
 
     if model == "qwen-plus":
@@ -945,6 +1507,15 @@ def get_client(model: str = ""):
 
     if model in {"gemini-2.5-flash", "gemini-2.5-flash-thinking", "gemini-2.5-pro"}:
         return gemini25flashClient(model=model)
+
+    if model == "doubao-seed-1-8-251228":
+        return doubaoClient(model=model)
+
+    if model == "glm-4.5":
+        return zhipuClient(model=model)
+
+    if model == "deepseek-v3.2":
+        return deepseekClient(model=model)
 
     # Everything else: plain OpenAI-compatible chat completions.
     return BaseClient(model=model)

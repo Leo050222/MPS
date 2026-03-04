@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-03-03T06:52:07.227242+00:00",
+  "model": "deepseek-v3.2",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 108,
+  "math_problem": [
+    {
+      "A3630": "Let $n$ be square with 4 digits, such that all its digits are less than 6. If we add 1 to each digit the resulting number is another square. Find $n$ Instead of identifying the 4-digit perfect square satisfying the digit increment condition, simply find $m = a - 42$, where $a$ is the integer whose square is that number."
+    },
+    {
+      "A1051": "P is a polynomial. When P is divided by $x-1$, the remainder is -4 . When P is divided by $x-2$, the remainder is -1 . When $P$ is divided by $x-3$, the remainder is 4 . Determine the remainder when $P$ is divided by $x^{3}-6 x^{2}+11 x-6$."
+    }
+  ],
+  "reasoning_content": "Alright, let’s go step-by-step.\n\n---\n\n## **Problem 1**\n\nWe are told \\( n \\) is a 4-digit perfect square, all digits less than 6.  \nIf we add 1 to each digit, we get another perfect square.\n\nLet \\( n = \\overline{abcd} \\) with \\( 0 \\le a,b,c,d \\le 5 \\) and \\( a \\ge 1 \\).  \nAdding 1 to each digit gives \\( \\overline{(a+1)(b+1)(c+1)(d+1)} \\), which is also a perfect square.\n\nLet \\( n = k^2 \\) and \\( m^2 = n + 1111 \\) (since adding 1 to each digit means adding \\( 1000+100+10+1 = 1111 \\)).\n\nSo:\n\\[\nm^2 - k^2 = 1111\n\\]\n\\[\n(m-k)(m+k) = 1111\n\\]\n\nFactor \\( 1111 = 101 \\times 11 \\) (both prime).\n\nSo possible integer factor pairs of 1111:  \n\\( (1, 1111), (11, 101), (101, 11), (1111, 1) \\).\n\nWe have \\( m-k = d_1 \\), \\( m+k = d_2 \\) with \\( d_1 < d_2 \\) and \\( d_1 d_2 = 1111 \\), \\( m = \\frac{d_1+d_2}{2} \\), \\( k = \\frac{d_2-d_1}{2} \\).\n\n---\n\n**Case 1:** \\( d_1 = 1, d_2 = 1111 \\)  \n\\( m = (1+1111)/2 = 556 \\), \\( k = (1111-1)/2 = 555 \\)  \nThen \\( n = k^2 = 555^2 = 308025 \\) (6 digits, not 4 digits) → discard.\n\n**Case 2:** \\( d_1 = 11, d_2 = 101 \\)  \n\\( m = (11+101)/2 = 56 \\), \\( k = (101-11)/2 = 45 \\)  \n\\( n = 45^2 = 2025 \\) (4 digits).  \nDigits: 2,0,2,5 → all less than 6? Yes (max digit 5).  \nAdd 1 to each digit: 3,1,3,6 → 3136.  \nCheck: \\( 56^2 = 3136 \\) → perfect square. Works.\n\n**Case 3:** \\( d_1 = 101, d_2 = 11 \\) → \\( m = 56 \\) again, but then \\( m-k \\) negative? Actually \\( d_1 > d_2 \\) not possible since \\( m+k > m-k \\). So only \\( d_1 < d_2 \\) valid.\n\nSo only \\( k=45, m=56 \\) works for 4-digit \\( n \\).\n\n---\n\nWe are told: find \\( m = a - 42 \\), where \\( a \\) is the integer whose square is \\( n \\).  \nHere \\( n = 45^2 \\), so \\( a = 45 \\).  \nThen \\( m = a - 42 = 45 - 42 = 3 \\).\n\nSo **answer_1** = \\( 3 \\).\n\n---\n\n## **Problem 2**\n\nWe have polynomial \\( P(x) \\):\n\n- \\( P(1) = -4 \\)\n- \\( P(2) = -1 \\)\n- \\( P(3) = 4 \\)\n\nWe want remainder when \\( P(x) \\) divided by \\( x^3 - 6x^2 + 11x - 6 \\).\n\nFactor cubic:  \n\\( x^3 - 6x^2 + 11x - 6 = (x-1)(x-2)(x-3) \\).\n\nSo divisor is degree 3, so remainder \\( R(x) \\) is at most degree 2:  \n\\( R(x) = ax^2 + bx + c \\).\n\nWe know \\( P(x) = Q(x)(x-1)(x-2)(x-3) + R(x) \\), so  \n\\( P(1) = R(1) \\), \\( P(2) = R(2) \\), \\( P(3) = R(3) \\).\n\nThus:\n\\[\nR(1) = a + b + c = -4 \\quad (1)\n\\]\n\\[\nR(2) = 4a + 2b + c = -1 \\quad (2)\n\\]\n\\[\nR(3) = 9a + 3b + c = 4 \\quad (3)\n\\]\n\nSubtract (1) from (2):  \n\\( (4a+2b+c) - (a+b+c) = -1 - (-4) \\)  \n\\( 3a + b = 3 \\) → \\( b = 3 - 3a \\) … (4)\n\nSubtract (2) from (3):  \n\\( (9a+3b+c) - (4a+2b+c) = 4 - (-1) \\)  \n\\( 5a + b = 5 \\) … (5)\n\nSubstitute (4) into (5):  \n\\( 5a + (3 - 3a) = 5 \\)  \n\\( 2a + 3 = 5 \\) → \\( 2a = 2 \\) → \\( a = 1 \\).\n\nThen \\( b = 3 - 3(1) = 0 \\).\n\nFrom (1): \\( 1 + 0 + c = -4 \\) → \\( c = -5 \\).\n\nSo \\( R(x) = x^2 - 5 \\).\n\n---\n\n**Answer_2** = \\( x^2 - 5 \\).\n\n---\n\n**Final answers:**\n\n{\n    \"reasoning\": \"For Problem 1: n is a 4-digit square with digits <6, adding 1 to each digit gives another square. This means n+1111 is also a square. Solve m^2 - k^2 = 1111 with 1111 = 11*101, giving k=45, m=56, n=2025. Then a=45, m=a-42=3. For Problem 2: P(1)=-4, P(2)=-1, P(3)=4. Divisor is (x-1)(x-2)(x-3), so remainder R(x) is quadratic. Solve R(1)=-4, R(2)=-1, R(3)=4 to get R(x)=x^2-5.\",\n    \"answer_1\": \"3\",\n    \"answer_2\": \"x^2 - 5\"\n}",
+  "problem_type": [
+    {
+      "A3630": [
+        "Mathematics -> Number Theory -> Prime Numbers",
+        "Mathematics -> Number Theory -> Congruences"
+      ]
+    },
+    {
+      "A1051": [
+        "Mathematics -> Algebra -> Algebra -> Polynomial Operations"
+      ]
+    }
+  ],
+  "output_answer": [
+    "3",
+    "x^2 - 5"
+  ],
+  "ground_truth": [
+    "3",
+    "x^{2}-5"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 431,
+  "completion_tokens": 1445,
+  "reasoning_tokens": 0,
+  "cost": 0.0
+}

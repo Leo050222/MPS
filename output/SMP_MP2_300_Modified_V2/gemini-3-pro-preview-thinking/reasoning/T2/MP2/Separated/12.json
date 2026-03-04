@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-03-03T13:58:55.827401+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T2_MP2_seperated_Evaluation",
+  "Problem_ID": 12,
+  "math_problem": [
+    {
+      "A1457": "Pyramid $E A R L Y$ is placed in $(x, y, z)$ coordinates so that $E=(10,10,0), A=(10,-10,0), R=(-10,-10,0), L=(-10,10,0)$, and $Y=(0,0,10)$. Tunnels are drilled through the pyramid in such a way that one can move from $(x, y, z)$ to any of the 9 points $(x, y, z-1),(x \\pm 1, y, z-1)$, $(x, y \\pm 1, z-1),(x \\pm 1, y \\pm 1, z-1)$. Sean starts at $Y$ and moves randomly down to the base of the pyramid, choosing each of the possible paths with probability $\\frac{1}{9}$ each time. What is the probability that he ends up at the point $(8,9,0)$? Instead of computing the probability of reaching the specified base point, simply find $e = \\left(p_y - \\frac{25}{3}\\right)$, where $p_y$ is the number of steps with positive y-displacement required to achieve the net y-displacement to that point, derived from the total step count and net displacement equations in the y-direction."
+    },
+    {
+      "A1537": "In a game, \\(N\\) people are in a room. Each of them simultaneously writes down an integer between 0 and 100 inclusive. A person wins the game if their number is exactly two-thirds of the average of all the numbers written down. There can be multiple winners or no winners in this game. Let \\(m\\) be the maximum possible number such that it is possible to win the game by writing down \\(m\\). Find the smallest possible value of \\(N\\) for which it is possible to win the game by writing down \\(m\\) in a room of \\(N\\) people."
+    }
+  ],
+  "reasoning_content": "To solve Problem 1, we analyze the movement in the y-direction.\nThe pyramid has its apex at $Y=(0,0,10)$ and the base at $z=0$. Moving from the apex to the base requires exactly 10 steps, as each step decreases the z-coordinate by 1.\nLet $n_+, n_0, n_-$ be the number of steps where the change in y ($\\Delta y$) is $+1, 0, -1$ respectively.\nThe total number of steps is 10, so:\n$n_+ + n_0 + n_- = 10$\nThe starting y-coordinate is 0 and the target y-coordinate is 9. Thus, the net displacement in y is 9:\n$1 \\cdot n_+ + 0 \\cdot n_0 + (-1) \\cdot n_- = 9 \\implies n_+ - n_- = 9$\nFrom the second equation, $n_- = n_+ - 9$. Since $n_- \\ge 0$, we must have $n_+ \\ge 9$.\nSubstituting $n_-$ into the first equation:\n$n_+ + n_0 + (n_+ - 9) = 10$\n$2n_+ + n_0 = 19$\nSince $n_0 \\ge 0$, we have $2n_+ \\le 19$, which implies $n_+ \\le 9.5$.\nCombining $n_+ \\ge 9$ and $n_+ \\le 9.5$, the only integer solution is $n_+ = 9$.\nConsequently, $n_0 = 1$ and $n_- = 0$.\nThe value $p_y$ is defined as the number of steps with positive y-displacement, so $p_y = n_+ = 9$.\nWe are asked to find $e = p_y - \\frac{25}{3}$:\n$e = 9 - \\frac{25}{3} = \\frac{27}{3} - \\frac{25}{3} = \\frac{2}{3}$.\n\nTo solve Problem 2, we first find the maximum possible winning number $m$.\nLet there be $N$ people writing numbers $x_1, \\dots, x_N$. Let $S = \\sum x_i$. The average is $A = S/N$.\nA person wins if their number $x_w = \\frac{2}{3} A$.\nSubstituting $A$: $x_w = \\frac{2}{3} \\frac{x_w + S_{others}}{N}$, where $S_{others}$ is the sum of the numbers written by the other $N-1$ people.\n$3N x_w = 2 x_w + 2 S_{others} \\implies x_w(3N - 2) = 2 S_{others} \\implies x_w = \\frac{2 S_{others}}{3N - 2}$.\nTo maximize $x_w$, we maximize $S_{others}$. The maximum number one can write is 100, so max $S_{others} = 100(N-1)$.\nThe maximum winning number for a given $N$ is $f(N) = \\lfloor \\frac{200(N-1)}{3N-2} \\rfloor$.\nThe function $g(N) = \\frac{200(N-1)}{3N-2}$ is strictly increasing and approaches $200/3 = 66.66\\dots$ as $N \\to \\infty$.\nThus, the maximum possible integer value is $m = 66$.\nNow we find the smallest $N$ such that it is possible to win with $m=66$.\nWe need $66 = \\frac{2}{3} \\frac{66 + S_{others}}{N} \\implies 99N = 66 + S_{others} \\implies S_{others} = 99N - 66$.\nWe must be able to form this sum $S_{others}$ using $N-1$ numbers between 0 and 100.\nThe constraint is $S_{others} \\le 100(N-1)$.\n$99N - 66 \\le 100N - 100$\n$100 - 66 \\le 100N - 99N$\n$34 \\le N$.\nThus, the smallest possible value of $N$ is 34.\n\n{\n    \"reasoning\": \"For Problem 1, solving the system of equations for the number of steps in the y-direction (n+ + n0 + n- = 10 and n+ - n- = 9) yields a unique solution n+ = 9. Thus py = 9, and e = 9 - 25/3 = 2/3. For Problem 2, maximizing the winning number formula yields a limit of 66.66, so m=66. Solving for the minimum N required to achieve an average that supports a winning number of 66 leads to the inequality 99N - 66 <= 100(N-1), which simplifies to N >= 34.\",\n    \"answer_1\": \"2/3\",\n    \"answer_2\": \"34\"\n}",
+  "problem_type": [
+    {
+      "A1457": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Other"
+      ]
+    },
+    {
+      "A1537": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Mathematical Statistics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "2/3",
+    "34"
+  ],
+  "ground_truth": [
+    "2/3",
+    "34"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 699,
+  "completion_tokens": 14124,
+  "reasoning_tokens": 12926,
+  "cost": 0.0
+}

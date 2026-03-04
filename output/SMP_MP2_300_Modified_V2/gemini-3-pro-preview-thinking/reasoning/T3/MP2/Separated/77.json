@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-03-03T14:16:40.606794+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T3_MP2_seperated_Evaluation",
+  "Problem_ID": 77,
+  "math_problem": [
+    {
+      "A2333": "Marcus and four of his relatives are at a party. Each pair of the five people are either friends or enemies. For any two enemies, there is no person that they are both friends with. In how many ways is this possible? Instead of determining the total number of valid friendship and enmity assignments among the five people, simply find $q = s - 1$, where $s$ is the number of such assignments in which no two people are friends."
+    },
+    {
+      "A507": "How many lattice points are enclosed by the triangle with vertices $(0,99),(5,100)$, and $(2003,500) ?$ Don't count boundary points."
+    }
+  ],
+  "reasoning_content": "To solve these problems, we will analyze each one step by step.\n\n### Problem 1\n\n**1. Understand the Graph Condition:**\nWe have 5 people (vertices). Let the relationship \"friends\" be represented by an edge and \"enemies\" by the absence of an edge. The condition states: \"For any two enemies, there is no person that they are both friends with.\"\nIn graph theory terms, if two vertices $u$ and $v$ are not connected (enemies), they do not share a common neighbor.\nThis condition implies that the graph is a **disjoint union of cliques** (also known as a cluster graph). If two people are connected, they must belong to the same clique. If they are not connected, they belong to different cliques and share no common neighbors (which would be in the same clique as the neighbors).\n\n**2. Analyze the Specific Question:**\nThe problem asks to find $q = s - 1$, where $s$ is \"the number of such assignments in which no two people are friends.\"\n*   \"Such assignments\" refers to the valid graphs satisfying the condition (disjoint union of cliques).\n*   \"In which no two people are friends\" restricts our count to graphs with **no edges** (an empty edge set).\n\n**3. Calculate $s$:**\nWe need to count the number of graphs on 5 labeled vertices that are disjoint unions of cliques AND have no edges.\n*   A graph with no edges consists of 5 isolated vertices.\n*   This can be viewed as a disjoint union of 5 cliques of size 1.\n*   This configuration satisfies the condition (vacuously, or by definition of disjoint cliques).\n*   There is only **1** such graph (the empty graph).\n*   Therefore, $s = 1$.\n\n**4. Calculate $q$:**\n$q = s - 1 = 1 - 1 = 0$.\n\n*(Note: If the question had asked for the total number of valid assignments without the \"no friends\" restriction, the answer would be the 5th Bell number, $B_5 = 52$. However, the text explicitly restricts $s$ to the case with no friends.)*\n\n### Problem 2\n\n**1. Identify the Goal:**\nFind the number of lattice points strictly enclosed by the triangle with vertices $A(0,99)$, $B(5,100)$, and $C(2003,500)$. We will use **Pick's Theorem**:\n$$Area = I + \\frac{B}{2} - 1$$\nWhere:\n*   $Area$ is the area of the polygon.\n*   $I$ is the number of interior lattice points (what we need to find).\n*   $B$ is the number of lattice points on the boundary.\n\n**2. Calculate the Area:**\nWe use the Shoelace formula for the coordinates $(0,99), (5,100), (2003,500)$.\n$$2 \\cdot Area = |x_A(y_B - y_C) + x_B(y_C - y_A) + x_C(y_A - y_B)|$$\n$$2 \\cdot Area = |0(100 - 500) + 5(500 - 99) + 2003(99 - 100)|$$\n$$2 \\cdot Area = |0 + 5(401) + 2003(-1)|$$\n$$2 \\cdot Area = |2005 - 2003|$$\n$$2 \\cdot Area = 2$$\n$$Area = 1$$\n\n**3. Calculate Boundary Points ($B$):**\nThe number of lattice points on a segment connecting $(x_1, y_1)$ and $(x_2, y_2)$ is $\\gcd(|x_1-x_2|, |y_1-y_2|) + 1$. The total boundary points $B$ is the sum of the $\\gcd$ values for each side (since vertices are shared, $B = \\sum \\gcd$).\n\n*   **Side AB:** $(0,99)$ to $(5,100)$\n    $\\Delta x = 5, \\Delta y = 1$. $\\gcd(5, 1) = 1$.\n*   **Side AC:** $(0,99)$ to $(2003,500)$\n    $\\Delta x = 2003, \\Delta y = 401$.\n    Note that $2003 = 5 \\times 401 - 2$.\n    $\\gcd(2003, 401) = \\gcd(401, 2) = 1$.\n*   **Side BC:** $(5,100)$ to $(2003,500)$\n    $\\Delta x = 1998, \\Delta y = 400$.\n    $\\gcd(1998, 400) = \\gcd(999 \\times 2, 200 \\times 2) = 2 \\times \\gcd(999, 200)$.\n    $999 = 27 \\times 37$ and $200 = 8 \\times 25$. They share no factors.\n    So, $\\gcd(1998, 400) = 2$.\n\nTotal boundary points $B = 1 + 1 + 2 = 4$.\n\n**4. Calculate Interior Points ($I$):**\nUsing Pick's Theorem:\n$$1 = I + \\frac{4}{2} - 1$$\n$$1 = I + 2 - 1$$\n$$1 = I + 1$$\n$$I = 0$$\n\nThere are 0 lattice points enclosed by the triangle.\n\n{\n    \"reasoning\": \"For Problem 1, the condition implies the graph is a disjoint union of cliques. The problem asks for s, the number of such assignments where no two people are friends (empty graph). There is only 1 such graph, so s=1 and q=0. For Problem 2, using Pick's Theorem with Area=1 and Boundary Points=4 yields I=0.\",\n    \"answer_1\": \"0\",\n    \"answer_2\": \"0\"\n}",
+  "problem_type": [
+    {
+      "A2333": [
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    },
+    {
+      "A507": [
+        "Mathematics -> Geometry -> Plane Geometry -> Area",
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "0",
+    "0"
+  ],
+  "ground_truth": [
+    "0",
+    "0"
+  ],
+  "correctness": [
+    true,
+    true
+  ],
+  "prompt_tokens": 420,
+  "completion_tokens": 13636,
+  "reasoning_tokens": 12226,
+  "cost": 0.0
+}

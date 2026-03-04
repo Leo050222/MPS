@@ -7,7 +7,7 @@ import os
 conn = http.client.HTTPConnection("152.53.208.62", 9000)
 
 payload_dict = {
-   "model": "gemini-3-pro-preview-thinking",
+   "model": "claude-sonnet-4-5-20250929-thinking",
    "stream": True,
    "stream_options": {"include_usage": True},
    "messages": [
@@ -27,7 +27,7 @@ payload = json.dumps(payload_dict)
 
 headers = {
    'Content-Type': 'application/json',
-   'Authorization': f"Bearer sk-qyq6QZ5Of8zKMgVaZhHMc470DCUF4OLBF2cSqp5XHXfB02Z3" 
+   'Authorization': f"Bearer sk-OOE1HmqCFOJ7IibUVlP7dDOHMmB7SHVNdINEoCHi2xIlf3dl"
 }
 
 try:

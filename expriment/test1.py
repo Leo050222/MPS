@@ -32,7 +32,7 @@ payload = json.dumps(payload_dict)
 
 headers = {
    'Content-Type': 'application/json',
-   'Authorization': f"Bearer sk-Tw2ztDrUfDYTLLGJ16n0UieZrNJ7XTM03O2mU0w5rh8e0uma"  
+   'Authorization': f"Bearer sk-Ayw5kVPyT06A1AcODsyDUL3AlW4pIJMJtzHI1GGm1Czn00XB"
 }
 
 try:

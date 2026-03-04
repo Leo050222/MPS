@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-03-03T13:58:13.564277+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T2_MP2_synthesised_Evaluation",
+  "Problem_ID": 12,
+  "math_problem": "Pyramid $E A R L Y$ is placed in $(x, y, z)$ coordinates so that $E=(10,10,0), A=(10,-10,0), R=(-10,-10,0), L=(-10,10,0)$, and $Y=(0,0,10)$. Tunnels are drilled through the pyramid in such a way that one can move from $(x, y, z)$ to any of the 9 points $(x, y, z-1),(x \\pm 1, y, z-1)$, $(x, y \\pm 1, z-1),(x \\pm 1, y \\pm 1, z-1)$. Sean starts at $Y$ and moves randomly down to the base of the pyramid, choosing each of the possible paths with probability $\\frac{1}{9}$ each time. What is the probability that he ends up at the point $(8,9,0)$? Instead of computing the probability of reaching the specified base point, simply find $p_y$, where $p_y$ is the number of steps with positive y-displacement required to achieve the net y-displacement to that point, derived from the total step count and net displacement equations in the y-direction. In a game, $N$ people are in a room. Each of them simultaneously writes down an integer between 0 and 100 inclusive. A person wins the game if their number is exactly $\\left(p_y - \\frac{25}{3}\\right)$ of the average of all the numbers written down. There can be multiple winners or no winners in this game. Let $m$ be the maximum possible number such that it is possible to win the game by writing down $m$. Find the smallest possible value of $N$ for which it is possible to win the game by writing down $m$ in a room of $N$ people.",
+  "reasoning_content": "To find the value of $p_y$, we analyze the movement on the pyramid. Sean starts at $Y=(0,0,10)$ and ends at the base $z=0$, taking a total of 10 steps since each step reduces the z-coordinate by 1. The target point is $(8,9,0)$.\nLet $n_1$, $n_0$, and $n_{-1}$ be the number of steps where the change in the y-coordinate ($\\Delta y$) is $1$, $0$, and $-1$, respectively.\nWe have the following system of equations based on the total number of steps and the net y-displacement:\n1. $n_1 + n_0 + n_{-1} = 10$ (Total steps)\n2. $1 \\cdot n_1 + 0 \\cdot n_0 + (-1) \\cdot n_{-1} = 9$ (Net y-displacement)\n\nFrom equation (2), we have $n_1 - n_{-1} = 9$, which implies $n_{-1} = n_1 - 9$.\nSince $n_{-1} \\ge 0$, we must have $n_1 \\ge 9$.\nSubstituting $n_{-1}$ into equation (1):\n$n_1 + n_0 + (n_1 - 9) = 10$\n$2n_1 + n_0 = 19$\nSince $n_0 \\ge 0$, $2n_1 \\le 19$, so $n_1 \\le 9.5$.\nThe only integer value for $n_1$ satisfying $9 \\le n_1 \\le 9.5$ is $n_1 = 9$.\nSubstituting $n_1 = 9$ back, we get $n_{-1} = 0$ and $n_0 = 1$.\nThe value $p_y$ is defined as the number of steps with positive y-displacement, which is $n_1$.\nThus, $p_y = 9$.\n\nNow we consider the game. The winning condition is to write down a number equal to $\\left(p_y - \\frac{25}{3}\\right)$ of the average.\nThe multiplier is $K = 9 - \\frac{25}{3} = \\frac{27}{3} - \\frac{25}{3} = \\frac{2}{3}$.\nLet $A$ be the average of the $N$ numbers written down. A person wins if their number $x$ satisfies $x = \\frac{2}{3} A$.\nSince the numbers are integers between 0 and 100 inclusive, the maximum possible average $A$ is 100.\nThe maximum possible winning number $x$ is $\\frac{2}{3} \\times 100 = 66.66\\dots$.\nSince $x$ must be an integer, the maximum possible winning number is $m = 66$.\n\nWe need to find the smallest $N$ such that it is possible to win with $m=66$.\nFor $x=66$ to be a winning number, we must have $66 = \\frac{2}{3} A$, which implies $A = 99$.\nLet the numbers written by the $N$ people be $x_1, x_2, \\dots, x_N$. Let $x_1 = 66$.\nThe average $A = \\frac{\\sum x_i}{N} = 99$, so the sum $S = 99N$.\nWe have $x_1 + \\sum_{i=2}^N x_i = 99N$.\n$66 + \\sum_{i=2}^N x_i = 99N$.\n$\\sum_{i=2}^N x_i = 99N - 66$.\nSince each $x_i \\le 100$, the maximum sum for the remaining $N-1$ people is $100(N-1)$.\nTherefore, we must have:\n$99N - 66 \\le 100(N-1)$\n$99N - 66 \\le 100N - 100$\n$100 - 66 \\le 100N - 99N$\n$34 \\le N$\n\nThe smallest possible value of $N$ is 34.\n\n{\n    \"reasoning\": \"First, we determine p_y by solving the system of equations for the steps in the y-direction: n_1 + n_0 + n_{-1} = 10 and n_1 - n_{-1} = 9. This yields a unique solution n_1 = 9, so p_y = 9. The game multiplier is K = 9 - 25/3 = 2/3. The winning condition is x = (2/3) * Average. The maximum possible average is 100, so the maximum winning integer is m = floor(2/3 * 100) = 66. To win with 66, the average must be 99. With one person writing 66, the sum of the other N-1 numbers must be 99N - 66. Since each number is at most 100, 99N - 66 <= 100(N-1), which simplifies to N >= 34.\",\n    \"answer\": \"34\"\n}",
+  "problem_type": [
+    {
+      "A1457": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Other"
+      ]
+    },
+    {
+      "A1537": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Mathematical Statistics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "34"
+  ],
+  "ground_truth": [
+    "\\frac{550}{9^{10}}",
+    "34"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 701,
+  "completion_tokens": 11261,
+  "reasoning_tokens": 10028,
+  "cost": 0.0
+}

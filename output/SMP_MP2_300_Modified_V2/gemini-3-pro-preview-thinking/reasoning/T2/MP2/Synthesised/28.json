@@ -1,0 +1,36 @@
+{
+  "timestamp": "2026-03-03T14:05:43.581826+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T2_MP2_synthesised_Evaluation",
+  "Problem_ID": 28,
+  "math_problem": "Compute all ordered triples $(x, y, z)$ of real numbers satisfying the following system of equations: $$\\begin{aligned} x y+z & =40 \\\\\\\\ x z+y & =51 \\\\\\\\ x+y+z & =19 \\end{aligned}$$ Instead of computing all ordered triples of real numbers satisfying the system of equations, simply find $k = z + \\frac{17}{5}$, where $z$ is the third component in the solution corresponding to the smaller root for $x + 1$ among the roots of the quadratic equation derived from the system. There are 21 competitors with distinct skill levels numbered $1,2, \\ldots, 21$. They participate in a pingpong tournament as follows. First, a random competitor is chosen to be \"active\", while the rest are \"inactive.\" Every round, a random inactive competitor is chosen to play against the current active one. The player with the higher skill will win and become (or remain) active, while the loser will be eliminated from the tournament. The tournament lasts for 20 rounds, after which there will only be one player remaining. Alice is the competitor with skill $k$. What is the expected number of games that she will get to play?",
+  "reasoning_content": "To find the value of $k$, we first solve the system of equations:\n1) $xy + z = 40$\n2) $xz + y = 51$\n3) $x + y + z = 19$\n\nFrom (3), $y+z = 19-x$. Subtracting (1) from (2) gives $x(z-y) - (z-y) = 11$, so $(x-1)(z-y) = 11$.\nThus $z-y = \\frac{11}{x-1}$.\nSolving for $z$ and $y$ in terms of $x$:\n$2z = (19-x) + \\frac{11}{x-1}$\n$2y = (19-x) - \\frac{11}{x-1}$\nSubstituting into (1):\n$x \\left( \\frac{19-x}{2} - \\frac{11}{2(x-1)} \\right) + \\left( \\frac{19-x}{2} + \\frac{11}{2(x-1)} \\right) = 40$\nSimplifying leads to $x^2 - 18x + 72 = 0$, with roots $x=6$ and $x=12$.\nThe values of $x+1$ are $7$ and $13$. The smaller value is $7$, corresponding to $x=6$.\nFor $x=6$, $z = \\frac{19-6}{2} + \\frac{11}{2(5)} = 6.5 + 1.1 = 7.6$.\nThen $k = z + \\frac{17}{5} = 7.6 + 3.4 = 11$.\n\nAlice has skill level $k=11$. There are $n=21$ competitors with skills $1, \\dots, 21$.\nLet $L$ be the set of players with skill $<11$ ($|L|=10$) and $H$ be the set of players with skill $>11$ ($|H|=10$).\nThe tournament process is equivalent to arranging the players in a random permutation. Alice plays until she loses to a player in $H$ (or wins the tournament, which is impossible here).\nAlice plays exactly one game against a player in $H$ (the first one she encounters).\nShe plays against a player in $L$ if and only if she encounters them before any player in $H$.\nThis happens only if Alice appears before all players in $H$ in the permutation.\nLet $S = H \\cup \\{A\\}$. The size is $m=11$.\nAlice is the first among $S$ with probability $1/m = 1/11$.\nIf Alice is not first among $S$, she plays 0 games against $L$.\nIf Alice is first among $S$, let her position be $j_1$ and the position of the first player from $H$ be $j_2$.\nThe number of games against $L$ is $j_2 - j_1 - \\mathbb{I}(j_1=1)$.\nThe expected number of games Alice plays is $E[X] = 1 + E[G_L]$.\n$E[G_L] = \\frac{1}{11} \\left( E[j_2 - j_1] - P(j_1=1) \\right)$.\nUsing properties of random permutations:\n$E[j_2 - j_1] = \\frac{n+1}{m+1} = \\frac{22}{12} = \\frac{11}{6}$.\n$P(j_1=1) = \\frac{m}{n} = \\frac{11}{21}$.\n$E[G_L] = \\frac{1}{11} \\left( \\frac{11}{6} - \\frac{11}{21} \\right) = \\frac{1}{6} - \\frac{1}{21} = \\frac{7-2}{42} = \\frac{5}{42}$.\n$E[X] = 1 + \\frac{5}{42} = \\frac{47}{42}$.\n\n{  \n    \"reasoning\": \"First, we solved the system of equations to find x=6 and z=7.6, leading to k=11. Then, we modeled the tournament as a random permutation of the 21 players. Alice (skill 11) plays until she meets a player with skill > 11. The number of games she plays is 1 (against the better player) plus the number of weaker players she plays. She plays weaker players only if she appears before all 10 better players in the permutation. Using the linearity of expectation and properties of order statistics for the positions of the 11 relevant players (Alice + 10 better), we calculated the expected number of games to be 1 + 5/42 = 47/42.\",\n    \"answer\": \"47/42\"\n}",
+  "problem_type": [
+    {
+      "A2252": [
+        "Mathematics -> Algebra -> Algebra -> Algebraic Expressions",
+        "Mathematics -> Algebra -> Algebra -> Equations and Inequalities"
+      ]
+    },
+    {
+      "A2257": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Other",
+        "Mathematics -> Discrete Mathematics -> Combinatorics"
+      ]
+    }
+  ],
+  "output_answer": [
+    "47/42"
+  ],
+  "ground_truth": [
+    "(12,3,4),(6,5.4,7.6)",
+    "\\frac{47}{42}"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 556,
+  "completion_tokens": 21377,
+  "reasoning_tokens": 20232,
+  "cost": 0.0
+}

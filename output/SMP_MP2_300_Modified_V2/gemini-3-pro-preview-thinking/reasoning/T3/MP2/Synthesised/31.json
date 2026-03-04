@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-03-03T14:04:51.544685+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T3_MP2_synthesised_Evaluation",
+  "Problem_ID": 31,
+  "math_problem": "The game of Penta is played with teams of five players each, and there are five roles the players can play. Each of the five players chooses two of five roles they wish to play. If each player chooses their roles randomly, what is the probability that each role will have exactly two players? Instead of computing the probability that every role is selected by precisely two players, simply find T(favorable), the total number of favorable outcomes where each role receives exactly two choices. Given a positive integer $k$, let $\\|k\\|$ denote the absolute difference between $k$ and the nearest perfect square. For example, $\\|13\\|=3$ since the nearest perfect square to 13 is 16. Compute the smallest positive integer $n$ such that $\\frac{\\|1\\|+\\|2\\|+\\cdots+\\|n\\|}{n}=(T(favorable)-1940)$.",
+  "reasoning_content": "To find the value of $T(\\text{favorable})$, we model the problem as finding the number of ways to choose roles such that each of the 5 players chooses 2 distinct roles, and each of the 5 roles is chosen by exactly 2 players. This is equivalent to finding the number of $5 \\times 5$ binary matrices with all row sums equal to 2 and all column sums equal to 2. This is a known combinatorial problem (counting 2-regular bipartite graphs on $2n$ vertices).\nFor $n=5$, the number of such matrices is 2040.\nThus, $T(\\text{favorable}) = 2040$.\n\nThe equation to solve is:\n$$ \\frac{\\sum_{k=1}^n \\|k\\|}{n} = 2040 - 1940 = 100 $$\nLet $S(n) = \\sum_{k=1}^n \\|k\\|$. We seek the smallest $n$ such that $S(n) = 100n$.\nThe term $\\|k\\|$ is the distance from $k$ to the nearest perfect square. The integers $k$ for which $m^2$ is the nearest perfect square form an interval $I_m = [m^2 - m + 1, m^2 + m]$. The sum of $\\|k\\|$ for $k \\in I_m$ is $m^2$.\nLet $N_M$ be the end of interval $I_M$, so $N_M = M^2 + M$. The sum up to $N_M$ is:\n$$ S(N_M) = \\sum_{m=1}^M m^2 = \\frac{M(M+1)(2M+1)}{6} $$\nThe average value at $N_M$ is $\\frac{S(N_M)}{N_M} = \\frac{2M+1}{6}$.\nWe want this average to be approximately 100.\n$$ \\frac{2M+1}{6} \\approx 100 \\implies 2M \\approx 599 \\implies M \\approx 300 $$\nChecking $M=299$: $N_{299} = 299(300) = 89700$.\nAverage is $\\frac{599}{6} < 100$.\nChecking $M=300$: $N_{300} = 300(301) = 90300$.\nAverage is $\\frac{601}{6} > 100$.\nThe solution $n$ lies within interval $I_{300}$, which starts at $n_{start} = N_{299} + 1 = 89701$.\nLet $n = N_{299} + k$. We require $S(n) = 100n$.\n$$ S(N_{299}) + \\sum_{j=1}^k \\|N_{299} + j\\| = 100(N_{299} + k) $$\nWe calculate the deficit at $N_{299}$:\n$$ D = 100 N_{299} - S(N_{299}) = 100(89700) - \\frac{299(300)(599)}{6} = 8970000 - 8955050 = 14950 $$\nWe need $\\sum_{j=1}^k (\\|N_{299} + j\\| - 100) = 14950$.\nFor $j$ in the first half of $I_{300}$, $\\|N_{299} + j\\| = 300 - j$.\nLet $b_j = \\|N_{299} + j\\| - 100 = 200 - j$.\nThe sum is $\\sum_{j=1}^k (200 - j) = 200k - \\frac{k(k+1)}{2}$.\nSetting this equal to 14950:\n$$ 200k - \\frac{k^2+k}{2} = 14950 $$\n$$ 400k - k^2 - k = 29900 $$\n$$ k^2 - 399k + 29900 = 0 $$\nSolving for $k$:\n$$ k = \\frac{399 \\pm \\sqrt{399^2 - 4(29900)}}{2} = \\frac{399 \\pm \\sqrt{159201 - 119600}}{2} = \\frac{399 \\pm \\sqrt{39601}}{2} $$\n$$ k = \\frac{399 \\pm 199}{2} $$\nThe solutions are $k = 100$ and $k = 299$.\nThe smallest solution is $k=100$.\nThus, $n = N_{299} + 100 = 89700 + 100 = 89800$.\n\n{  \n    \"reasoning\": \"The number of favorable outcomes T(favorable) is the number of 5x5 binary matrices with row and column sums equal to 2, which is 2040. The equation becomes sum(|k|)/n = 100. Analyzing the partial sums of |k|, we find the solution lies in the block of integers closest to 300^2. Solving the resulting quadratic equation yields the smallest integer n.\",\n    \"answer\": \"89800\"\n}",
+  "problem_type": [
+    {
+      "A682": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Combinations",
+        "Mathematics -> Discrete Mathematics -> Graph Theory"
+      ]
+    },
+    {
+      "A1519": [
+        "Mathematics -> Number Theory -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "89800"
+  ],
+  "ground_truth": [
+    "\\frac{51}{2500}",
+    "89800"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 473,
+  "completion_tokens": 17196,
+  "reasoning_tokens": 15896,
+  "cost": 0.0
+}

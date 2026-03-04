@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-03-03T14:03:09.611941+00:00",
+  "model": "gemini-3-pro-preview-thinking",
+  "type": "T5_MP2_synthesised_Evaluation",
+  "Problem_ID": 11,
+  "math_problem": "Find the smallest constant $C$ such that for every real polynomial $P(x)$ of degree 3 that has a root in the interval $[0,1]$, \n\\[ \\int_0^1 \\left| P(x) \\right|\\,dx \\leq C \\max_{x \\in [0,1]} \\left| P(x) \\right|. \\] Instead of determining the smallest constant guaranteeing the stated integral inequality for all such cubic polynomials, simply find $\\alpha = P(1)$, where $P(1)$ is the value at $x=1$ of the extremal cubic polynomial, normalized so that its maximum absolute value on $[0,1]$ is $1$ and having a root in $[0,1]$, that achieves the supremum of $\\int_0^1 |P(x)| \\, dx$ among all qualifying polynomials. Let $n$ be an even positive integer. Let $p$ be a monic, real polynomial of degree $2n$; that is to say, $p(x) = x^{2n} + a_{2n-1} x^{2n-1} + \\cdots + a_1 x + a_0$ for some real coefficients $a_0, \\dots, a_{2n-1}$. Suppose that $p(\\alpha / k) = k^(\\alpha + 1)$ for all integers $k$ such that $1 \\leq |k| \\leq n$. Find all other real numbers $x$ for which $p(\\alpha / x) = x^(\\alpha + 1)$.",
+  "reasoning_content": "To solve this problem, we first need to determine the value of $\\alpha = P(1)$ for the extremal cubic polynomial $P(x)$.\nThe problem asks for the polynomial $P(x)$ of degree 3 with a root in $[0,1]$ and $\\max_{x \\in [0,1]} |P(x)| = 1$ that maximizes $\\int_0^1 |P(x)| \\, dx$.\nIt is a known result (related to the Zolotarev polynomials and the $L_1$ norm of polynomials) that for degree $n=3$, the extremal polynomial with a root at one endpoint (which maximizes the integral) is unique up to sign.\nLet the root be at $x=0$. The polynomial is given by $P(x) = 4x^3 - 8x^2 + 5x$.\nLet's verify the properties:\n1. $P(0) = 0$.\n2. Critical points: $P'(x) = 12x^2 - 16x + 5 = 0 \\implies x = \\frac{16 \\pm \\sqrt{256 - 240}}{24} = \\frac{16 \\pm 4}{24}$. Roots are $1/2$ and $5/6$.\n   $P(1/2) = 4(1/8) - 8(1/4) + 5(1/2) = 0.5 - 2 + 2.5 = 1$.\n   $P(5/6) = 25/27 < 1$.\n   $P(1) = 4 - 8 + 5 = 1$.\n   The maximum absolute value on $[0,1]$ is $1$.\n3. The integral is $\\int_0^1 (4x^3 - 8x^2 + 5x) dx = 1 - 8/3 + 5/2 = 5/6$. This is the maximum possible value.\nThe value at $x=1$ is $P(1) = 1$. Thus, $\\alpha = 1$.\n\nNext, we solve the second part of the problem with $\\alpha = 1$.\nWe are given a monic polynomial $p(x)$ of degree $2n$ (where $n$ is an even positive integer) such that $p(1/k) = k^2$ for all integers $k$ with $1 \\le |k| \\le n$.\nLet $y = 1/x$. The condition becomes $p(y) = 1/y^2$ for $y \\in \\{\\pm 1, \\pm 1/2, \\dots, \\pm 1/n\\}$.\nThis implies $y^2 p(y) - 1 = 0$ for these $2n$ values.\nConsider the polynomial $Q(y) = y^2 p(y) - 1$. Since $p(y)$ is monic of degree $2n$, $Q(y)$ is of the form $y^{2n+2} + \\dots - 1$.\nThe roots of $Q(y)$ include the $2n$ values $1/k$.\nSince the roots are symmetric and $p(y)$ is determined by symmetric values, $Q(y)$ is an even function.\nWe can write $Q(y) = S(y) \\prod_{k=1}^n (y^2 - \\frac{1}{k^2})$, where $S(y)$ is a monic polynomial of degree 2.\nLet $S(y) = y^2 + c$.\nWe determine $c$ using the constant term of $Q(y)$.\n$Q(0) = -1$.\nAlso $Q(0) = S(0) \\prod_{k=1}^n (-\\frac{1}{k^2}) = c (-1)^n \\frac{1}{(n!)^2}$.\nSince $n$ is even, $(-1)^n = 1$.\nSo $c \\frac{1}{(n!)^2} = -1 \\implies c = -(n!)^2$.\nThus $S(y) = y^2 - (n!)^2$.\nThe roots of $S(y)$ are given by $y^2 - (n!)^2 = 0 \\implies y = \\pm n!$.\nWe want to find all other real numbers $x$ such that $p(1/x) = x^2$.\nThis is equivalent to finding the roots of $Q(y)$ where $y = 1/x$.\nThe roots of $Q(y)$ are the $2n$ values $1/k$ (which correspond to $x=k$) and the 2 values from $S(y)$, which are $y = \\pm n!$.\nThese correspond to $x = \\pm \\frac{1}{n!}$.\nSince $n$ is a positive even integer, these values are real and distinct from the integers $k$.\n\n{\n    \"reasoning\": \"The extremal cubic polynomial maximizing the L1 norm on [0,1] with a root in the interval and max norm 1 is P(x) = 4x^3 - 8x^2 + 5x, which gives P(1) = 1, so alpha = 1. The polynomial p(x) satisfies p(1/k) = k^2 for k = +/- 1 to +/- n. This leads to the equation y^2 p(y) - 1 = 0 having roots 1/k and +/- n!. The values x corresponding to y = +/- n! are x = +/- 1/n!.\",\n    \"answer\": \"\\\\pm \\\\frac{1}{n!}\"\n}",
+  "problem_type": [
+    {
+      "A3234": [
+        "Mathematics -> Calculus -> Integral Calculus -> Applications of Integrals",
+        "Mathematics -> Algebra -> Algebra -> Polynomial Operations"
+      ]
+    },
+    {
+      "A3243": [
+        "Mathematics -> Algebra -> Algebra -> Polynomial Operations"
+      ]
+    }
+  ],
+  "output_answer": [
+    "\\\\pm \\\\frac{1}{n!}"
+  ],
+  "ground_truth": [
+    "\\frac{5}{6}",
+    "\\pm 1/n!"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 624,
+  "completion_tokens": 22858,
+  "reasoning_tokens": 21582,
+  "cost": 0.0
+}

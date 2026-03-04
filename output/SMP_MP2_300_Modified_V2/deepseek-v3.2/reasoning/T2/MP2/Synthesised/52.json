@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-03-03T06:58:16.052899+00:00",
+  "model": "deepseek-v3.2",
+  "type": "T2_MP2_synthesised_Evaluation",
+  "Problem_ID": 52,
+  "math_problem": "Suppose that $x, y$, and $z$ are non-negative real numbers such that $x+y+z=1$. What is the maximum possible value of $x+y^{2}+z^{3}$ ? Instead of finding the maximum possible value of $x + y^2 + z^3$, simply find $k = z + 1/2$, where $z$ is the value of the variable with the cubic term in the non-negative real numbers $x, y, z$ satisfying $x + y + z = 1$ that achieve this maximum. Indecisive Andy starts out at the midpoint of the 1-unit-long segment $\\overline{H T}$. He flips $(k + 4019/2)$ coins. On each flip, if the coin is heads, he moves halfway towards endpoint $H$, and if the coin is tails, he moves halfway towards endpoint $T$. After his $(k + 4019/2)$ moves, what is the expected distance between Andy and the point on $\\overline{H T}$ ?",
+  "reasoning_content": "We are given an optimization problem followed by a probability problem. First, maximize \\(f(x,y,z) = x + y^2 + z^3\\) subject to \\(x + y + z = 1\\) and \\(x, y, z \\ge 0\\). Rewrite as \\(f = 1 - y - z + y^2 + z^3\\). Since \\(y^2 - y \\le 0\\) and \\(z^3 - z \\le 0\\) for \\(y, z \\in [0,1]\\), we have \\(f \\le 1\\), with equality only when \\(y(y-1)=0\\) and \\(z(z^2-1)=0\\). This gives the corner points \\((1,0,0)\\), \\((0,1,0)\\), and \\((0,0,1)\\), all yielding \\(f=1\\). Thus the maximum is 1, and \\(z\\) can be 0 or 1.\n\nWe need \\(k = z + 1/2\\). If \\(z = 0\\), then \\(k = 1/2\\); if \\(z = 1\\), then \\(k = 3/2\\). In either case, \\(N = k + 4019/2\\) is an integer (2010 or 2011), so the number of coin flips is a positive integer.\n\nAndy starts at the midpoint of segment \\(HT\\) of length 1. Let \\(H=0\\), \\(T=1\\), so the midpoint is \\(1/2\\). Each flip: if heads, move halfway to \\(H\\) (new position = old/2); if tails, move halfway to \\(T\\) (new position = (old+1)/2). After \\(N\\) moves, let \\(X_N\\) be his position. We interpret \"the point on \\(HT\\)\" as the starting midpoint, so we want \\(E[|X_N - 1/2|]\\).\n\nWe show that for any \\(N \\ge 1\\), \\(E[|X_N - 1/2|] = 1/4\\). This can be seen by noting that \\(X_N = (1/2 + S)/2^N\\), where \\(S\\) is uniformly distributed over \\(\\{0,1,\\dots,2^N-1\\}\\). Then \\(E[|X_N - 1/2|] = \\frac{1}{2^{2N+1}} \\sum_{s=0}^{2^N-1} |2s - (2^N-1)| = \\frac{1}{4}\\). Alternatively, by induction: for \\(N=1\\), the distance is always \\(1/4\\); assuming it holds for \\(N\\), one can show it holds for \\(N+1\\). Thus, regardless of \\(N\\) (as long as \\(N \\ge 1\\)), the expected distance is \\(1/4\\).\n\n{  \n    \"reasoning\": \"The maximum of \\(x+y^2+z^3\\) subject to \\(x+y+z=1\\) and nonnegative variables is 1, achieved at corners where \\(z=0\\) or \\(z=1\\). Thus \\(k = z+1/2\\) is either \\(1/2\\) or \\(3/2\\), making \\(N = k+4019/2\\) an integer. For Andy's process, the expected distance from the midpoint after any positive integer number of moves is constant at \\(1/4\\).\",  \n    \"answer\": \"1/4\"  \n}",
+  "problem_type": [
+    {
+      "A2327": [
+        "Mathematics -> Algebra -> Intermediate Algebra -> Other"
+      ]
+    },
+    {
+      "A2337": [
+        "Mathematics -> Applied Mathematics -> Statistics -> Probability -> Counting Methods -> Other"
+      ]
+    }
+  ],
+  "output_answer": [
+    "1/4"
+  ],
+  "ground_truth": [
+    "1",
+    "\\frac{1}{4}"
+  ],
+  "correctness": [
+    true
+  ],
+  "prompt_tokens": 494,
+  "completion_tokens": 22650,
+  "reasoning_tokens": 21919,
+  "cost": 0.0
+}
