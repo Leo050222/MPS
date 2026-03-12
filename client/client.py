@@ -293,7 +293,7 @@ class BaseClient:
                 "top_p": TOP_P
             }
 
-            if "grok-" not in model_name and reasoning != "minimal" or "false" or False:
+            if "grok-" not in model_name and reasoning not in ("minimal", "false", "False"):
                 payload["reasoning_effort"] = reasoning
             
             # 添加 seed 参数（如果提供）
@@ -1043,6 +1043,7 @@ class doubaoClient(BaseClient):
                 "stream_options": {"include_usage": True},
                 "top_p": TOP_P,
                 "extra_body": extra_body,
+                "max_completion_tokens": 65536,  
             }
 
             completion = await self.async_client.chat.completions.create(**kwargs)
@@ -1118,6 +1119,8 @@ class zhipuClient(BaseClient):
     使用 extra_body={"thinking": {"type": "enabled"/"disabled"}} 控制推理模式，
     与 doubao 格式相同，base_url 指向 open.bigmodel.cn。
     """
+    STREAM_TIMEOUT = 180  # 3 minutes max per request
+
     def __init__(self, model: str = "glm-4.5"):
         super().__init__(model=model)
 
@@ -1150,8 +1153,13 @@ class zhipuClient(BaseClient):
             response_id = None
             finish_reason = None
             usage_info = None
+            stream_start = time.time()
 
             for chunk in completion:
+                if time.time() - stream_start > self.STREAM_TIMEOUT:
+                    logger.warning(f"zhipu stream timeout after {self.STREAM_TIMEOUT}s, truncating")
+                    finish_reason = "timeout"
+                    break
                 if chunk.id and not response_id:
                     response_id = chunk.id
                 if chunk.choices and len(chunk.choices) > 0:
@@ -1237,8 +1245,13 @@ class zhipuClient(BaseClient):
             finish_reason = None
             usage_info = None
             model_name_from_response = self.model
+            stream_start = time.time()
 
             async for chunk in completion:
+                if time.time() - stream_start > self.STREAM_TIMEOUT:
+                    logger.warning(f"zhipu async stream timeout after {self.STREAM_TIMEOUT}s, truncating")
+                    finish_reason = "timeout"
+                    break
                 if chunk.id and not response_id:
                     response_id = chunk.id
                 if chunk.model:
@@ -1330,7 +1343,7 @@ class deepseekClient(BaseClient):
                 "stream": True,
                 "stream_options": {"include_usage": True},
                 "extra_body": extra_body,
-                "max_tokens": 131070,
+                "max_tokens": 65536,
             }
             if use_top_p:
                 kwargs["top_p"] = TOP_P
@@ -1410,14 +1423,16 @@ class deepseekClient(BaseClient):
                 raise ValueError(f"Unsupported prompt type: {type(prompt)}")
 
             extra_body, use_top_p = self._thinking_kwargs(reasoning)
+            max_tokens = 8192 if reasoning == "minimal" else 65536  # minimal 模式下官方限制 max_tokens 不超过 8192
             kwargs = {
                 "model": "deepseek-chat",
                 "messages": messages,
                 "stream": True,
                 "stream_options": {"include_usage": True},
                 "extra_body": extra_body,
-                "max_tokens": 131070,
+                "max_tokens": max_tokens,
             }
+            
             if use_top_p:
                 kwargs["top_p"] = TOP_P
             if seed is not None:

@@ -540,6 +540,7 @@ async def process_single_problem_async(
                 response = None
 
             if response is None:
+                out_file = os.path.join(output_path, f"{Problem_ID}.json")
                 with open(out_file, "w", encoding="utf-8") as f:
                     json.dump(empty_json, f, ensure_ascii=False, indent=2)
                 logger.warning(f"[{Problem_ID}] Empty response, retrying... {attempt}/{max_retry}")
